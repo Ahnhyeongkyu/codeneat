@@ -50,11 +50,45 @@ export function minifySql(input: string): SqlResult {
     if (!input.trim()) {
       return { output: "", error: null };
     }
-    const output = input
-      .replace(/--.*$/gm, "")
-      .replace(/\/\*[\s\S]*?\*\//g, "")
-      .replace(/\s+/g, " ")
-      .trim();
+    // Remove comments while preserving string literals
+    let result = "";
+    let i = 0;
+    while (i < input.length) {
+      // Single-quoted string literal
+      if (input[i] === "'") {
+        let j = i + 1;
+        while (j < input.length) {
+          if (input[j] === "'" && input[j + 1] === "'") {
+            j += 2; // escaped quote
+          } else if (input[j] === "'") {
+            j++;
+            break;
+          } else {
+            j++;
+          }
+        }
+        result += input.slice(i, j);
+        i = j;
+      // Double-quoted identifier
+      } else if (input[i] === '"') {
+        let j = i + 1;
+        while (j < input.length && input[j] !== '"') j++;
+        result += input.slice(i, j + 1);
+        i = j + 1;
+      // Block comment
+      } else if (input[i] === "/" && input[i + 1] === "*") {
+        const end = input.indexOf("*/", i + 2);
+        i = end === -1 ? input.length : end + 2;
+      // Line comment
+      } else if (input[i] === "-" && input[i + 1] === "-") {
+        const end = input.indexOf("\n", i);
+        i = end === -1 ? input.length : end;
+      } else {
+        result += input[i];
+        i++;
+      }
+    }
+    const output = result.replace(/\s+/g, " ").trim();
     return { output, error: null };
   } catch (e) {
     return { output: "", error: (e as Error).message };

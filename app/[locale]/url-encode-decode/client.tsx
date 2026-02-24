@@ -48,7 +48,7 @@ export default function UrlEncodeClient() {
         <div className="flex-1" />
         {output && (
           <Button variant="outline" size="sm" onClick={handleSwap}>
-            Swap
+            {t("common.swap")}
           </Button>
         )}
         <Button variant="outline" size="sm" onClick={handleClear}>

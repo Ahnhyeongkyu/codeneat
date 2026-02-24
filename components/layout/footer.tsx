@@ -70,31 +70,25 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Legal */}
+          {/* Links */}
           <div>
             <h3 className="mb-4 text-sm font-semibold">
               {t("footer.product")}
             </h3>
             <ul className="space-y-2">
               <li>
-                <Link
-                  href="/"
+                <a
+                  href="https://github.com/Ahnhyeongkyu/codeneat"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                 >
-                  {t("footer.about")}
-                </Link>
+                  {t("footer.github")}
+                </a>
               </li>
               <li>
                 <Link
-                  href="/"
-                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  {t("footer.blog")}
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/"
+                  href="/privacy"
                   className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                 >
                   {t("footer.privacy")}
@@ -102,7 +96,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="/"
+                  href="/terms"
                   className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                 >
                   {t("footer.terms")}

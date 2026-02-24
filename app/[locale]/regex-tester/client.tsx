@@ -83,7 +83,7 @@ export default function RegexTesterClient() {
 
       {/* Test string */}
       <div className="mb-4">
-        <label className="mb-2 block text-sm font-medium">Test String</label>
+        <label className="mb-2 block text-sm font-medium">{t("common.testString")}</label>
         <Textarea
           value={testString}
           onChange={(e) => setTestString(e.target.value)}
@@ -95,7 +95,7 @@ export default function RegexTesterClient() {
       {/* Highlighted result */}
       {highlightedText && (
         <div className="mb-4">
-          <label className="mb-2 block text-sm font-medium">Highlighted</label>
+          <label className="mb-2 block text-sm font-medium">{t("common.highlighted")}</label>
           <div className="min-h-[100px] whitespace-pre-wrap rounded-lg border bg-card p-4 font-mono text-sm">
             {highlightedText.map((seg, i) =>
               seg.highlighted ? (
@@ -123,7 +123,7 @@ export default function RegexTesterClient() {
                 <div className="flex items-center gap-4 text-sm">
                   <span className="font-mono text-primary">{match.match}</span>
                   <span className="text-muted-foreground">
-                    Index: {match.index}
+                    {t("common.index")}: {match.index}
                   </span>
                 </div>
                 {match.groups.length > 0 && (

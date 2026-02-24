@@ -145,7 +145,7 @@ export default function JsonFormatterClient() {
           {validation.valid ? (
             <Badge variant="secondary" className="gap-1 bg-primary/10 text-primary">
               <CheckCircle2 className="h-4 w-4" />
-              Valid JSON
+              {t("common.validJson")}
             </Badge>
           ) : (
             <Badge variant="destructive" className="gap-1">

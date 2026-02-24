@@ -67,13 +67,13 @@ export default function DiffCheckerClient() {
           {/* Stats */}
           <div className="mb-4 flex gap-2">
             <Badge variant="secondary" className="gap-1 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-              +{result.stats.additions} added
+              +{t("common.added", { count: result.stats.additions })}
             </Badge>
             <Badge variant="secondary" className="gap-1 bg-red-500/10 text-red-600 dark:text-red-400">
-              -{result.stats.deletions} removed
+              -{t("common.removed", { count: result.stats.deletions })}
             </Badge>
             <Badge variant="secondary">
-              {result.stats.unchanged} unchanged
+              {t("common.unchanged", { count: result.stats.unchanged })}
             </Badge>
           </div>
 

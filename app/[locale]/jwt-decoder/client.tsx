@@ -50,7 +50,7 @@ export default function JwtDecoderClient() {
     <ToolLayout toolKey="jwtDecoder">
       {/* Action bar */}
       <div className="mb-4 flex flex-wrap items-center gap-2">
-        <Button onClick={handleDecode}>Decode</Button>
+        <Button onClick={handleDecode}>{t("tools.jwtDecoder.decode")}</Button>
         <div className="flex-1" />
         <Button variant="outline" size="sm" onClick={handleSample}>
           {t("common.sample")}

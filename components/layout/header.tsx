@@ -7,9 +7,12 @@ import { MobileNav } from "./mobile-nav";
 const toolLinks = [
   { href: "/json-formatter", key: "jsonFormatter" },
   { href: "/base64-encode-decode", key: "base64" },
+  { href: "/url-encode-decode", key: "urlEncode" },
   { href: "/regex-tester", key: "regexTester" },
   { href: "/diff-checker", key: "diffChecker" },
+  { href: "/jwt-decoder", key: "jwtDecoder" },
   { href: "/sql-formatter", key: "sqlFormatter" },
+  { href: "/hash-generator", key: "hashGenerator" },
 ] as const;
 
 export function Header() {

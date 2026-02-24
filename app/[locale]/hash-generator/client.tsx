@@ -20,20 +20,25 @@ export default function HashGeneratorClient() {
   const [singleHash, setSingleHash] = useState("");
   const [allHashes, setAllHashes] = useState<Record<string, string> | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleGenerate = useCallback(async () => {
+    setLoading(true);
     const result = await generateHash(input, algorithm);
     setSingleHash(result.hash);
     setAllHashes(null);
     setError(result.error);
+    setLoading(false);
   }, [input, algorithm]);
 
   const handleGenerateAll = useCallback(async () => {
     if (!input) return;
+    setLoading(true);
     const results = await generateAllHashes(input);
     setAllHashes(results);
     setSingleHash("");
     setError(null);
+    setLoading(false);
   }, [input]);
 
   const handleClear = useCallback(() => {
@@ -47,9 +52,11 @@ export default function HashGeneratorClient() {
     <ToolLayout toolKey="hashGenerator">
       {/* Action bar */}
       <div className="mb-4 flex flex-wrap items-center gap-2">
-        <Button onClick={handleGenerate}>{t("tools.hashGenerator.generate")}</Button>
+        <Button onClick={handleGenerate} disabled={loading}>
+          {loading ? "..." : t("tools.hashGenerator.generate")}
+        </Button>
         <Button variant="outline" onClick={handleGenerateAll}>
-          Generate All
+          {t("common.generateAll")}
         </Button>
 
         {/* Algorithm selector */}

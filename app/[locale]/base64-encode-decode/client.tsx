@@ -49,7 +49,7 @@ export default function Base64Client() {
         <div className="flex-1" />
         {output && (
           <Button variant="outline" size="sm" onClick={handleSwap}>
-            Swap
+            {t("common.swap")}
           </Button>
         )}
         <Button variant="outline" size="sm" onClick={handleClear}>
