@@ -36,6 +36,12 @@ yarn-error.log*
 # vercel
 .vercel
 
+# internal docs
+CLAUDE.md
+PRD.md
+MARKETING.md
+ENV_TEMPLATE.md
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
