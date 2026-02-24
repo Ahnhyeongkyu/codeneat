@@ -6,7 +6,7 @@ import { ToolLayout } from "@/components/tool-layout";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { computeDiff, type DiffResult } from "@/lib/tools/diff";
+import { computeDiff, computeLineDiff, type DiffResult, type LineDiff } from "@/lib/tools/diff";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcut";
 
 const MAX_INPUT_SIZE = 5 * 1024 * 1024; // 5MB
@@ -16,9 +16,12 @@ export default function DiffCheckerClient() {
   const [original, setOriginal] = useState("");
   const [modified, setModified] = useState("");
   const [result, setResult] = useState<DiffResult | null>(null);
+  const [diffView, setDiffView] = useState<"inline" | "side">("inline");
+  const [lineDiffs, setLineDiffs] = useState<LineDiff[]>([]);
 
   const handleCompare = useCallback(() => {
     setResult(computeDiff(original, modified));
+    setLineDiffs(computeLineDiff(original, modified));
   }, [original, modified]);
 
   const handleClear = useCallback(() => {
@@ -42,6 +45,22 @@ export default function DiffCheckerClient() {
       {/* Action bar */}
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <Button onClick={handleCompare}>{t("tools.diffChecker.compare")}</Button>
+        <div className="flex gap-1">
+          <Button
+            variant={diffView === "inline" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setDiffView("inline")}
+          >
+            {t("tools.diffChecker.inline")}
+          </Button>
+          <Button
+            variant={diffView === "side" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setDiffView("side")}
+          >
+            {t("tools.diffChecker.sideBySide")}
+          </Button>
+        </div>
         <div className="flex-1" />
         <Button variant="outline" size="sm" onClick={handleClear}>
           {t("common.clear")}
@@ -104,34 +123,96 @@ export default function DiffCheckerClient() {
             </Badge>
           </div>
 
-          {/* Inline diff */}
-          <div className="overflow-auto rounded-lg border bg-card p-4">
-            <pre className="whitespace-pre-wrap font-mono text-sm">
-              {result.diffs.map((segment, i) => {
-                if (segment.type === "insert") {
-                  return (
-                    <span
-                      key={i}
-                      className="bg-primary/20 text-primary"
+          {diffView === "inline" ? (
+            /* Inline diff */
+            <div className="overflow-auto rounded-lg border bg-card p-4">
+              <pre className="whitespace-pre-wrap font-mono text-sm">
+                {result.diffs.map((segment, i) => {
+                  if (segment.type === "insert") {
+                    return (
+                      <span
+                        key={i}
+                        className="bg-primary/20 text-primary"
+                      >
+                        {segment.text}
+                      </span>
+                    );
+                  }
+                  if (segment.type === "delete") {
+                    return (
+                      <span
+                        key={i}
+                        className="bg-destructive/20 text-destructive line-through"
+                      >
+                        {segment.text}
+                      </span>
+                    );
+                  }
+                  return <span key={i}>{segment.text}</span>;
+                })}
+              </pre>
+            </div>
+          ) : (
+            /* Side-by-Side diff */
+            <div className="overflow-auto rounded-lg border">
+              <div className="grid grid-cols-2 divide-x">
+                {/* Left header */}
+                <div className="bg-muted/50 px-4 py-2 text-xs font-medium text-muted-foreground">
+                  {t("tools.diffChecker.original")}
+                </div>
+                {/* Right header */}
+                <div className="bg-muted/50 px-4 py-2 text-xs font-medium text-muted-foreground">
+                  {t("tools.diffChecker.modified")}
+                </div>
+              </div>
+              <div className="divide-y">
+                {lineDiffs.map((row, i) => (
+                  <div key={i} className="grid grid-cols-2 divide-x font-mono text-sm">
+                    <div
+                      className={`flex ${
+                        row.left.type === "delete"
+                          ? "bg-destructive/10"
+                          : row.left.type === "empty"
+                            ? "bg-muted/30"
+                            : ""
+                      }`}
                     >
-                      {segment.text}
-                    </span>
-                  );
-                }
-                if (segment.type === "delete") {
-                  return (
-                    <span
-                      key={i}
-                      className="bg-destructive/20 text-destructive line-through"
+                      <span className="w-10 shrink-0 select-none border-r px-2 py-0.5 text-right text-xs text-muted-foreground">
+                        {row.left.lineNo ?? ""}
+                      </span>
+                      <span
+                        className={`flex-1 whitespace-pre-wrap px-2 py-0.5 ${
+                          row.left.type === "delete" ? "text-destructive" : ""
+                        }`}
+                      >
+                        {row.left.text}
+                      </span>
+                    </div>
+                    <div
+                      className={`flex ${
+                        row.right.type === "insert"
+                          ? "bg-primary/10"
+                          : row.right.type === "empty"
+                            ? "bg-muted/30"
+                            : ""
+                      }`}
                     >
-                      {segment.text}
-                    </span>
-                  );
-                }
-                return <span key={i}>{segment.text}</span>;
-              })}
-            </pre>
-          </div>
+                      <span className="w-10 shrink-0 select-none border-r px-2 py-0.5 text-right text-xs text-muted-foreground">
+                        {row.right.lineNo ?? ""}
+                      </span>
+                      <span
+                        className={`flex-1 whitespace-pre-wrap px-2 py-0.5 ${
+                          row.right.type === "insert" ? "text-primary" : ""
+                        }`}
+                      >
+                        {row.right.text}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </ToolLayout>

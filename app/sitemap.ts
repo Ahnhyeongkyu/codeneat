@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { getAllPosts } from "@/lib/blog";
 
 const tools = [
   "json-formatter",
@@ -21,6 +22,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.9,
   }));
 
+  const blogPages: MetadataRoute.Sitemap = getAllPosts().map((post) => ({
+    url: `${baseUrl}/blog/${post.slug}`,
+    lastModified: new Date(post.date),
+    changeFrequency: "monthly",
+    priority: 0.7,
+  }));
+
   return [
     {
       url: baseUrl,
@@ -29,6 +37,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     ...toolPages,
+    {
+      url: `${baseUrl}/blog`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    ...blogPages,
     {
       url: `${baseUrl}/privacy`,
       lastModified: new Date(),

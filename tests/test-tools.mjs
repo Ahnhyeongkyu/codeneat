@@ -51,9 +51,11 @@ function section(name) {
 
 // ─── Import all tool modules ─────────────────────────────────────────────────
 
-const { formatJson, minifyJson, validateJson, buildJsonTree } = await import("../lib/tools/json.ts");
+const { formatJson, minifyJson, validateJson, buildJsonTree, jsonToYaml, yamlToJson, jsonToCsv, highlightJson } = await import("../lib/tools/json.ts");
+const { encodeShareState, decodeShareState } = await import("../lib/share.ts");
+const { getAllPosts, getPostBySlug } = await import("../lib/blog.ts");
 const { testRegex } = await import("../lib/tools/regex.ts");
-const { computeDiff } = await import("../lib/tools/diff.ts");
+const { computeDiff, computeLineDiff } = await import("../lib/tools/diff.ts");
 const { formatSql, minifySql } = await import("../lib/tools/sql.ts");
 const { encodeUrl, decodeUrl, encodeFullUrl, decodeFullUrl } = await import("../lib/tools/url-encode.ts");
 const { encodeBase64, decodeBase64 } = await import("../lib/tools/base64.ts");
@@ -519,6 +521,19 @@ if (hasCryptoSubtle) {
     "generateHash: SHA-1 of 'hello' matches known value"
   );
 
+  // MD5 of "hello" -> known hash
+  const r1md5 = await generateHash("hello", "MD5");
+  assertEqual(r1md5.error, null, "generateHash: MD5 of 'hello' has no error");
+  assertEqual(
+    r1md5.hash,
+    "5d41402abc4b2a76b9719d911017c592",
+    "generateHash: MD5 of 'hello' matches known value"
+  );
+
+  // MD5 of empty string
+  const r1md5e = await generateHash("", "MD5");
+  assertEqual(r1md5e.hash, "", "generateHash: MD5 empty input returns empty hash");
+
   // 2. Empty input -> empty result
   const r2 = await generateHash("", "SHA-256");
   assertEqual(r2, { hash: "", error: null }, "generateHash: empty input returns empty hash");
@@ -526,7 +541,8 @@ if (hasCryptoSubtle) {
   // 3. generateAllHashes returns all 4 algorithms
   const r3 = await generateAllHashes("hello");
   const algos = Object.keys(r3);
-  assertEqual(algos.length, 4, "generateAllHashes: returns 4 algorithm results");
+  assertEqual(algos.length, 5, "generateAllHashes: returns 5 algorithm results");
+  assert(algos.includes("MD5"), "generateAllHashes: includes MD5");
   assert(algos.includes("SHA-1"), "generateAllHashes: includes SHA-1");
   assert(algos.includes("SHA-256"), "generateAllHashes: includes SHA-256");
   assert(algos.includes("SHA-384"), "generateAllHashes: includes SHA-384");
@@ -541,6 +557,183 @@ if (hasCryptoSubtle) {
   skip("generateHash: crypto.subtle not available in this environment");
   skip("generateHash: empty input (skipped)");
   skip("generateAllHashes: all 4 algorithms (skipped)");
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// diff.ts - computeLineDiff (Side-by-Side)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+section("diff.ts - computeLineDiff");
+{
+  const lines = computeLineDiff("line1\nline2\nline3", "line1\nchanged\nline3");
+  assert(lines.length >= 3, "computeLineDiff: returns at least 3 rows");
+
+  // First and last lines are equal
+  const equalRows = lines.filter(r => r.left.type === "equal" && r.right.type === "equal");
+  assert(equalRows.length >= 2, "computeLineDiff: at least 2 equal rows (line1, line3)");
+
+  // Should have delete and insert for the changed line
+  const hasDelete = lines.some(r => r.left.type === "delete");
+  const hasInsert = lines.some(r => r.right.type === "insert");
+  assert(hasDelete, "computeLineDiff: has deleted line");
+  assert(hasInsert, "computeLineDiff: has inserted line");
+
+  // Empty inputs
+  const emptyLines = computeLineDiff("", "new");
+  assert(emptyLines.length >= 1, "computeLineDiff: empty original produces rows");
+
+  // Identical inputs
+  const sameLines = computeLineDiff("same\ntext", "same\ntext");
+  assert(sameLines.every(r => r.left.type === "equal"), "computeLineDiff: identical texts are all equal");
+
+  // Line numbers
+  assert(lines[0].left.lineNo === 1, "computeLineDiff: first left lineNo is 1");
+  assert(lines[0].right.lineNo === 1, "computeLineDiff: first right lineNo is 1");
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// json.ts - jsonToYaml, yamlToJson, jsonToCsv, highlightJson
+// ═══════════════════════════════════════════════════════════════════════════════
+
+section("json.ts - jsonToYaml");
+{
+  const r1 = jsonToYaml('{"name":"test","count":42}');
+  assertEqual(r1.error, null, "jsonToYaml: valid JSON has no error");
+  assert(r1.output.includes("name: test"), "jsonToYaml: output contains 'name: test'");
+  assert(r1.output.includes("count: 42"), "jsonToYaml: output contains 'count: 42'");
+
+  const r2 = jsonToYaml("not json");
+  assert(r2.error !== null, "jsonToYaml: invalid JSON returns error");
+
+  const r3 = jsonToYaml("  ");
+  assertEqual(r3.output, "", "jsonToYaml: empty input returns empty output");
+}
+
+section("json.ts - yamlToJson");
+{
+  const r1 = yamlToJson("name: test\ncount: 42\n");
+  assertEqual(r1.error, null, "yamlToJson: valid YAML has no error");
+  const parsed = JSON.parse(r1.output);
+  assertEqual(parsed.name, "test", "yamlToJson: parsed name matches");
+  assertEqual(parsed.count, 42, "yamlToJson: parsed count matches");
+
+  const r2 = yamlToJson("  ");
+  assertEqual(r2.output, "", "yamlToJson: empty input returns empty output");
+
+  // Array YAML
+  const r3 = yamlToJson("- a\n- b\n- c\n");
+  assertEqual(r3.error, null, "yamlToJson: array YAML has no error");
+  const arr = JSON.parse(r3.output);
+  assertEqual(arr.length, 3, "yamlToJson: array length is 3");
+}
+
+section("json.ts - jsonToCsv");
+{
+  const r1 = jsonToCsv('[{"name":"Alice","age":30},{"name":"Bob","age":25}]');
+  assertEqual(r1.error, null, "jsonToCsv: valid array has no error");
+  const lines = r1.output.split("\n");
+  assertEqual(lines[0], "name,age", "jsonToCsv: header row correct");
+  assertEqual(lines[1], "Alice,30", "jsonToCsv: first data row correct");
+  assertEqual(lines[2], "Bob,25", "jsonToCsv: second data row correct");
+
+  // Single object → treated as array of 1
+  const r2 = jsonToCsv('{"x":1,"y":2}');
+  assertEqual(r2.error, null, "jsonToCsv: single object has no error");
+  assert(r2.output.includes("x,y"), "jsonToCsv: single object headers correct");
+
+  // CSV escaping
+  const r3 = jsonToCsv('[{"msg":"hello, world","quote":"she said \\"hi\\""}]');
+  assertEqual(r3.error, null, "jsonToCsv: escaping has no error");
+  assert(r3.output.includes('"hello, world"'), "jsonToCsv: comma in value is quoted");
+
+  const r4 = jsonToCsv("  ");
+  assertEqual(r4.output, "", "jsonToCsv: empty input returns empty output");
+
+  const r5 = jsonToCsv("invalid");
+  assert(r5.error !== null, "jsonToCsv: invalid JSON returns error");
+}
+
+section("json.ts - highlightJson");
+{
+  const tokens = highlightJson('{"name": "test", "count": 42, "active": true, "meta": null}');
+  assert(tokens.length > 0, "highlightJson: returns tokens");
+
+  const keyTokens = tokens.filter(t => t.type === "key");
+  assert(keyTokens.length >= 3, "highlightJson: has key tokens");
+  assert(keyTokens.some(t => t.text === '"name"'), "highlightJson: found 'name' key");
+
+  const stringTokens = tokens.filter(t => t.type === "string");
+  assert(stringTokens.some(t => t.text === '"test"'), "highlightJson: found 'test' string value");
+
+  const numberTokens = tokens.filter(t => t.type === "number");
+  assert(numberTokens.some(t => t.text === "42"), "highlightJson: found number 42");
+
+  const booleanTokens = tokens.filter(t => t.type === "boolean");
+  assert(booleanTokens.some(t => t.text === "true"), "highlightJson: found boolean true");
+
+  const nullTokens = tokens.filter(t => t.type === "null");
+  assert(nullTokens.some(t => t.text === "null"), "highlightJson: found null");
+
+  const braceTokens = tokens.filter(t => t.type === "brace");
+  assert(braceTokens.length >= 2, "highlightJson: has brace tokens");
+
+  // Empty
+  const empty = highlightJson("");
+  assertEqual(empty.length, 0, "highlightJson: empty input returns no tokens");
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// share.ts - encodeShareState / decodeShareState
+// ═══════════════════════════════════════════════════════════════════════════════
+
+section("share.ts - encodeShareState / decodeShareState");
+{
+  // Round-trip test
+  const state = { input: '{"hello":"world"}' };
+  const encoded = encodeShareState(state);
+  assert(encoded.length > 0, "encodeShareState: produces non-empty output");
+  assert(!encoded.includes("+"), "encodeShareState: URL-safe (no +)");
+  assert(!encoded.includes("/"), "encodeShareState: URL-safe (no /)");
+
+  const decoded = decodeShareState(encoded);
+  assertEqual(decoded.input, state.input, "decodeShareState: round-trip preserves input");
+
+  // UTF-8 support
+  const utf8State = { input: '한국어 テスト 🚀' };
+  const utf8Encoded = encodeShareState(utf8State);
+  const utf8Decoded = decodeShareState(utf8Encoded);
+  assertEqual(utf8Decoded.input, utf8State.input, "share: round-trip UTF-8 preserves data");
+
+  // Empty/null handling
+  const nullResult = decodeShareState("");
+  assertEqual(nullResult, null, "decodeShareState: empty string returns null");
+
+  const invalidResult = decodeShareState("!!!invalid!!!");
+  assertEqual(invalidResult, null, "decodeShareState: invalid input returns null");
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// blog.ts - getAllPosts / getPostBySlug
+// ═══════════════════════════════════════════════════════════════════════════════
+
+section("blog.ts - getAllPosts / getPostBySlug");
+{
+  const posts = getAllPosts();
+  assert(posts.length >= 4, "getAllPosts: returns at least 4 posts");
+  assert(posts.every(p => p.slug && p.title && p.content), "getAllPosts: all posts have slug, title, content");
+
+  // Sorted by date descending
+  for (let i = 1; i < posts.length; i++) {
+    assert(posts[i - 1].date >= posts[i].date, `getAllPosts: sorted descending (${posts[i-1].date} >= ${posts[i].date})`);
+  }
+
+  // getPostBySlug
+  const post = getPostBySlug("json-formatting-best-practices");
+  assert(post !== undefined, "getPostBySlug: found json-formatting post");
+  assertEqual(post.relatedTool, "jsonFormatter", "getPostBySlug: relatedTool is jsonFormatter");
+
+  const missing = getPostBySlug("nonexistent-post");
+  assertEqual(missing, undefined, "getPostBySlug: nonexistent returns undefined");
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════

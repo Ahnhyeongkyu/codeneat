@@ -71,6 +71,13 @@
       "minify": "Minify",
       "treeView": "Tree View",
       "rawView": "Raw View",
+      "toYaml": "JSON → YAML",
+      "toCsv": "JSON → CSV",
+      "fromYaml": "YAML → JSON",
+      "uploadFile": "Upload File",
+      "syntaxHighlight": "Highlight",
+      "yamlConvertError": "Invalid input for YAML conversion",
+      "csvConvertError": "JSON must be an array of objects for CSV conversion",
       "faq": {
         "q1": "What is JSON formatting?",
         "a1": "JSON formatting (or beautifying) adds proper indentation and line breaks to compressed JSON data, making it easier to read and debug.",
@@ -190,8 +197,8 @@
     },
     "hashGenerator": {
       "title": "Hash Generator",
-      "description": "Generate SHA-1, SHA-256, SHA-384, and SHA-512 hashes from any text.",
-      "shortDescription": "Generate SHA hashes",
+      "description": "Generate MD5, SHA-1, SHA-256, SHA-384, and SHA-512 hashes from any text.",
+      "shortDescription": "Generate MD5 & SHA hashes",
       "inputPlaceholder": "Enter text to hash...",
       "algorithm": "Algorithm",
       "generate": "Generate",
@@ -202,13 +209,14 @@
         "q2": "Which algorithm should I use?",
         "a2": "SHA-256 is the most commonly recommended. SHA-1 is considered weak for security purposes. SHA-384 and SHA-512 provide longer hashes for higher security requirements.",
         "q3": "Does this tool support MD5?",
-        "a3": "This tool uses the Web Crypto API which supports SHA-1, SHA-256, SHA-384, and SHA-512. MD5 is not included as it is considered cryptographically broken and should not be used for security purposes."
+        "a3": "Yes! We support MD5, SHA-1, SHA-256, SHA-384, and SHA-512. Note that MD5 is considered cryptographically broken — use SHA-256 or higher for security purposes."
       }
     }
   },
   "common": {
     "copy": "Copy",
     "copied": "Copied!",
+    "share": "Share",
     "clear": "Clear",
     "download": "Download",
     "upload": "Upload",
