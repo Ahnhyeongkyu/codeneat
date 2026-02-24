@@ -34,10 +34,11 @@ export async function generateHash(
 export async function generateAllHashes(
   input: string
 ): Promise<Record<HashAlgorithm, string>> {
-  const results: Record<string, string> = {};
-  for (const algo of HASH_ALGORITHMS) {
-    const result = await generateHash(input, algo.value);
-    results[algo.value] = result.hash;
-  }
-  return results as Record<HashAlgorithm, string>;
+  const entries = await Promise.all(
+    HASH_ALGORITHMS.map(async (algo) => {
+      const result = await generateHash(input, algo.value);
+      return [algo.value, result.hash] as const;
+    })
+  );
+  return Object.fromEntries(entries) as Record<HashAlgorithm, string>;
 }

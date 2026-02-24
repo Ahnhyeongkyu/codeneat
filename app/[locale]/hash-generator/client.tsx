@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { ToolLayout } from "@/components/tool-layout";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { CopyButton } from "@/components/copy-button";
+import { DownloadButton } from "@/components/download-button";
 import {
   generateHash,
   generateAllHashes,
@@ -24,6 +25,23 @@ export default function HashGeneratorClient() {
   const [allHashes, setAllHashes] = useState<Record<string, string> | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  // Auto-generate hash on input change
+  useEffect(() => {
+    if (!input) {
+      setSingleHash("");
+      setAllHashes(null);
+      return;
+    }
+    let cancelled = false;
+    generateHash(input, algorithm).then((result) => {
+      if (!cancelled) {
+        setSingleHash(result.hash);
+        setError(result.error);
+      }
+    });
+    return () => { cancelled = true; };
+  }, [input, algorithm]);
 
   const handleGenerate = useCallback(async () => {
     setLoading(true);
@@ -121,7 +139,7 @@ export default function HashGeneratorClient() {
             <label className="text-sm font-medium">
               {algorithm} {t("tools.hashGenerator.result")}
             </label>
-            <CopyButton text={singleHash} />
+            <div className="flex gap-1"><CopyButton text={singleHash} /><DownloadButton text={singleHash} filename="hash.txt" /></div>
           </div>
           <div className="rounded-lg border bg-card p-4">
             <p className="break-all font-mono text-sm">{singleHash}</p>

@@ -6,6 +6,7 @@ import { ToolLayout } from "@/components/tool-layout";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { CopyButton } from "@/components/copy-button";
+import { DownloadButton } from "@/components/download-button";
 import {
   formatSql,
   minifySql,
@@ -23,12 +24,14 @@ export default function SqlFormatterClient() {
   const [output, setOutput] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [dialect, setDialect] = useState<SqlDialect>("sql");
+  const [indent, setIndent] = useState<number>(2);
+  const [keywordCase, setKeywordCase] = useState<"upper" | "lower" | "preserve">("upper");
 
   const handleFormat = useCallback(() => {
-    const result = formatSql(input, dialect);
+    const result = formatSql(input, dialect, indent, keywordCase);
     setOutput(result.output);
     setError(result.error);
-  }, [input, dialect]);
+  }, [input, dialect, indent, keywordCase]);
 
   const handleMinify = useCallback(() => {
     const result = minifySql(input);
@@ -38,10 +41,10 @@ export default function SqlFormatterClient() {
 
   const handleSample = useCallback(() => {
     setInput(SQL_SAMPLE);
-    const result = formatSql(SQL_SAMPLE, dialect);
+    const result = formatSql(SQL_SAMPLE, dialect, indent, keywordCase);
     setOutput(result.output);
     setError(null);
-  }, [dialect]);
+  }, [dialect, indent, keywordCase]);
 
   const handleClear = useCallback(() => {
     setInput("");
@@ -78,6 +81,23 @@ export default function SqlFormatterClient() {
             </option>
           ))}
         </select>
+        <select
+          value={indent}
+          onChange={(e) => setIndent(Number(e.target.value))}
+          className="rounded-md border bg-background px-2 py-1.5 text-sm"
+        >
+          <option value={2}>2 spaces</option>
+          <option value={4}>4 spaces</option>
+        </select>
+        <select
+          value={keywordCase}
+          onChange={(e) => setKeywordCase(e.target.value as "upper" | "lower" | "preserve")}
+          className="rounded-md border bg-background px-2 py-1.5 text-sm"
+        >
+          <option value="upper">UPPER</option>
+          <option value="lower">lower</option>
+          <option value="preserve">Preserve</option>
+        </select>
 
         <div className="flex-1" />
         <Button variant="outline" size="sm" onClick={handleSample}>
@@ -110,7 +130,7 @@ export default function SqlFormatterClient() {
         <div>
           <div className="mb-2 flex items-center justify-between">
             <label className="text-sm font-medium">{t("common.output")}</label>
-            {output && <CopyButton text={output} />}
+            {output && <div className="flex gap-1"><CopyButton text={output} /><DownloadButton text={output} filename="formatted.sql" /></div>}
           </div>
           {error ? (
             <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4">

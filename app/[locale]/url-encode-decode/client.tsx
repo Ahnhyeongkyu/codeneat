@@ -6,7 +6,7 @@ import { ToolLayout } from "@/components/tool-layout";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { CopyButton } from "@/components/copy-button";
-import { encodeUrl, decodeUrl } from "@/lib/tools/url-encode";
+import { encodeUrl, decodeUrl, encodeFullUrl, decodeFullUrl } from "@/lib/tools/url-encode";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcut";
 
 const MAX_INPUT_SIZE = 5 * 1024 * 1024; // 5MB
@@ -16,18 +16,21 @@ export default function UrlEncodeClient() {
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [mode, setMode] = useState<"component" | "full">("component");
 
   const handleEncode = useCallback(() => {
-    const result = encodeUrl(input);
+    const fn = mode === "component" ? encodeUrl : encodeFullUrl;
+    const result = fn(input);
     setOutput(result.output);
     setError(result.error);
-  }, [input]);
+  }, [input, mode]);
 
   const handleDecode = useCallback(() => {
-    const result = decodeUrl(input);
+    const fn = mode === "component" ? decodeUrl : decodeFullUrl;
+    const result = fn(input);
     setOutput(result.output);
     setError(result.error);
-  }, [input]);
+  }, [input, mode]);
 
   const handleSwap = useCallback(() => {
     setInput(output);
@@ -56,6 +59,14 @@ export default function UrlEncodeClient() {
         <Button variant="outline" onClick={handleDecode}>
           {t("tools.urlEncode.decode")}
         </Button>
+        <select
+          value={mode}
+          onChange={(e) => setMode(e.target.value as "component" | "full")}
+          className="rounded-md border bg-background px-2 py-1.5 text-sm"
+        >
+          <option value="component">Component</option>
+          <option value="full">Full URL</option>
+        </select>
         <div className="flex-1" />
         {output && (
           <Button variant="outline" size="sm" onClick={handleSwap}>

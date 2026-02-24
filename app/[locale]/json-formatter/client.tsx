@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { CopyButton } from "@/components/copy-button";
+import { DownloadButton } from "@/components/download-button";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcut";
 import {
   formatJson,
@@ -80,15 +81,16 @@ export default function JsonFormatterClient() {
   const [error, setError] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<"raw" | "tree">("raw");
   const [tree, setTree] = useState<JsonTreeNode | null>(null);
+  const [indent, setIndent] = useState<number>(2);
 
   const validation = input.trim() ? validateJson(input) : null;
 
   const handleFormat = useCallback(() => {
-    const result = formatJson(input);
+    const result = formatJson(input, indent);
     setOutput(result.output);
     setError(result.error);
     setViewMode("raw");
-  }, [input]);
+  }, [input, indent]);
 
   const handleMinify = useCallback(() => {
     const result = minifyJson(input);
@@ -106,11 +108,11 @@ export default function JsonFormatterClient() {
 
   const handleSample = useCallback(() => {
     setInput(JSON_SAMPLE);
-    const result = formatJson(JSON_SAMPLE);
+    const result = formatJson(JSON_SAMPLE, indent);
     setOutput(result.output);
     setError(null);
     setViewMode("raw");
-  }, []);
+  }, [indent]);
 
   const handleClear = useCallback(() => {
     setInput("");
@@ -142,6 +144,15 @@ export default function JsonFormatterClient() {
         >
           {t("tools.jsonFormatter.treeView")}
         </Button>
+        <select
+          value={indent}
+          onChange={(e) => setIndent(Number(e.target.value))}
+          className="rounded-md border bg-background px-2 py-1.5 text-sm"
+        >
+          <option value={2}>2 spaces</option>
+          <option value={4}>4 spaces</option>
+          <option value={1}>Tab</option>
+        </select>
         <div className="flex-1" />
         <Button variant="outline" size="sm" onClick={handleSample}>
           {t("common.sample")}
@@ -197,7 +208,7 @@ export default function JsonFormatterClient() {
         <div>
           <div className="mb-2 flex items-center justify-between">
             <label className="text-sm font-medium">{t("common.output")}</label>
-            {output && viewMode === "raw" && <CopyButton text={output} />}
+            {output && viewMode === "raw" && <div className="flex gap-1"><CopyButton text={output} /><DownloadButton text={output} filename="formatted.json" /></div>}
           </div>
 
           {error && viewMode === "raw" ? (

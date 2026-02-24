@@ -27,7 +27,8 @@ export const SQL_DIALECTS: { value: SqlDialect; label: string }[] = [
 export function formatSql(
   input: string,
   dialect: SqlDialect = "sql",
-  indent: number = 2
+  indent: number = 2,
+  keywordCase: "upper" | "lower" | "preserve" = "upper"
 ): SqlResult {
   try {
     if (!input.trim()) {
@@ -36,7 +37,7 @@ export function formatSql(
     const output = sqlFormat(input, {
       language: dialect,
       tabWidth: indent,
-      keywordCase: "upper",
+      keywordCase: keywordCase,
       linesBetweenQueries: 2,
     });
     return { output, error: null };

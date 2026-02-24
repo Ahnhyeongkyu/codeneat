@@ -62,7 +62,12 @@ export function buildJsonTree(input: string): { tree: JsonTreeNode | null; error
   }
 }
 
-function buildNode(key: string, value: unknown): JsonTreeNode {
+const MAX_TREE_DEPTH = 50;
+
+function buildNode(key: string, value: unknown, depth: number = 0): JsonTreeNode {
+  if (depth > MAX_TREE_DEPTH) {
+    return { type: "string", key, value: "[Max depth exceeded]" };
+  }
   if (value === null) {
     return { type: "null", key };
   }
@@ -71,7 +76,7 @@ function buildNode(key: string, value: unknown): JsonTreeNode {
       type: "array",
       key,
       length: value.length,
-      children: value.map((item, i) => buildNode(String(i), item)),
+      children: value.map((item, i) => buildNode(String(i), item, depth + 1)),
     };
   }
   if (typeof value === "object") {
@@ -79,7 +84,7 @@ function buildNode(key: string, value: unknown): JsonTreeNode {
       type: "object",
       key,
       children: Object.entries(value as Record<string, unknown>).map(([k, v]) =>
-        buildNode(k, v)
+        buildNode(k, v, depth + 1)
       ),
     };
   }

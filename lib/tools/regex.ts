@@ -10,6 +10,9 @@ export interface RegexResult {
   error: string | null;
 }
 
+const MAX_MATCHES = 1000;
+const MATCH_TIMEOUT_MS = 3000;
+
 export function testRegex(
   pattern: string,
   testString: string,
@@ -23,9 +26,26 @@ export function testRegex(
     const hasGlobal = flags.includes("g");
     const regex = new RegExp(pattern, hasGlobal ? flags : flags + "g");
     const matches: RegexMatch[] = [];
+    const startTime = performance.now();
 
     let match: RegExpExecArray | null;
     while ((match = regex.exec(testString)) !== null) {
+      // ReDoS protection: timeout after 3 seconds
+      if (performance.now() - startTime > MATCH_TIMEOUT_MS) {
+        return {
+          matches,
+          error: `Matching timed out after ${MATCH_TIMEOUT_MS / 1000}s. The pattern may be too complex (catastrophic backtracking).`,
+        };
+      }
+
+      // Limit total matches to prevent memory issues
+      if (matches.length >= MAX_MATCHES) {
+        return {
+          matches,
+          error: `Stopped after ${MAX_MATCHES} matches. Use a more specific pattern.`,
+        };
+      }
+
       const groups: { name: string; value: string }[] = [];
       if (match.groups) {
         for (const [name, value] of Object.entries(match.groups)) {

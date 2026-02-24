@@ -71,6 +71,32 @@ export default function JwtDecoderClient() {
         </Button>
       </div>
 
+      {/* Color-coded token preview */}
+      {input.trim() && input.includes(".") && (
+        <div className="mb-4 overflow-auto rounded-lg border bg-card p-4">
+          <p className="break-all font-mono text-sm">
+            {(() => {
+              const parts = input.trim().split(".");
+              if (parts.length !== 3) return <span>{input}</span>;
+              return (
+                <>
+                  <span className="text-red-500 dark:text-red-400">{parts[0]}</span>
+                  <span className="text-muted-foreground">.</span>
+                  <span className="text-violet-600 dark:text-violet-400">{parts[1]}</span>
+                  <span className="text-muted-foreground">.</span>
+                  <span className="text-sky-600 dark:text-sky-400">{parts[2]}</span>
+                </>
+              );
+            })()}
+          </p>
+          <div className="mt-2 flex gap-4 text-xs text-muted-foreground">
+            <span><span className="inline-block h-2 w-2 rounded-full bg-red-500 mr-1"></span>Header</span>
+            <span><span className="inline-block h-2 w-2 rounded-full bg-violet-600 mr-1"></span>Payload</span>
+            <span><span className="inline-block h-2 w-2 rounded-full bg-sky-600 mr-1"></span>Signature</span>
+          </div>
+        </div>
+      )}
+
       {/* Input */}
       <div className="mb-6">
         <div className="mb-2 flex items-center justify-between">
@@ -83,7 +109,15 @@ export default function JwtDecoderClient() {
         </div>
         <Textarea
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={(e) => {
+            const val = e.target.value;
+            setInput(val);
+            if (val.trim()) {
+              setResult(decodeJwt(val.trim()));
+            } else {
+              setResult(null);
+            }
+          }}
           placeholder={t("tools.jwtDecoder.inputPlaceholder")}
           className="min-h-[120px] font-mono text-sm"
         />
