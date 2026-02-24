@@ -1,0 +1,236 @@
+{
+  "metadata": {
+    "title": "CodeNeat — Clean Up Your Code",
+    "description": "Free online developer tools: JSON Formatter, Base64 Encoder, Regex Tester, Diff Checker & more. Privacy-first — your data never leaves your browser.",
+    "keywords": "json formatter, base64 encode decode, regex tester, diff checker, jwt decoder, sql formatter, hash generator, url encode decode, developer tools, online tools"
+  },
+  "nav": {
+    "home": "Home",
+    "tools": "Tools",
+    "jsonFormatter": "JSON Formatter",
+    "base64": "Base64 Encode/Decode",
+    "urlEncode": "URL Encode/Decode",
+    "regexTester": "Regex Tester",
+    "diffChecker": "Diff Checker",
+    "jwtDecoder": "JWT Decoder",
+    "sqlFormatter": "SQL Formatter",
+    "hashGenerator": "Hash Generator",
+    "allTools": "All Tools",
+    "darkMode": "Dark Mode",
+    "lightMode": "Light Mode"
+  },
+  "home": {
+    "hero": {
+      "title": "Clean Up Your Code",
+      "subtitle": "Free, fast, and private developer tools. Format, encode, decode, and validate — all in your browser.",
+      "badge": "Your data never leaves your browser",
+      "cta": "Explore Tools"
+    },
+    "tools": {
+      "title": "Developer Tools",
+      "subtitle": "Everything you need, right in your browser. No data sent to any server."
+    },
+    "features": {
+      "title": "Why CodeNeat?",
+      "privacy": {
+        "title": "Privacy First",
+        "description": "All processing happens in your browser. Your data never touches our servers."
+      },
+      "fast": {
+        "title": "Blazing Fast",
+        "description": "Instant results with no server round-trips. Works offline too."
+      },
+      "free": {
+        "title": "100% Free",
+        "description": "All tools are free to use, no sign-up required. No limits."
+      },
+      "modern": {
+        "title": "Modern UI",
+        "description": "Clean, intuitive interface with dark mode support and keyboard shortcuts."
+      }
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "q1": "Is CodeNeat really free?",
+      "a1": "Yes! All developer tools are completely free to use with no sign-up required.",
+      "q2": "Is my data safe?",
+      "a2": "Absolutely. All data processing happens entirely in your browser. We never send your code or data to any server.",
+      "q3": "Does it work offline?",
+      "a3": "Yes, once loaded, most tools work without an internet connection since all processing is client-side.",
+      "q4": "What tools are available?",
+      "a4": "We offer JSON Formatter, Base64 Encoder/Decoder, URL Encoder/Decoder, Regex Tester, Diff Checker, JWT Decoder, SQL Formatter, and Hash Generator — with more coming soon."
+    }
+  },
+  "tools": {
+    "jsonFormatter": {
+      "title": "JSON Formatter & Viewer",
+      "description": "Format, validate, and beautify JSON data instantly. View as tree or raw text.",
+      "shortDescription": "Format & validate JSON",
+      "inputPlaceholder": "Paste your JSON here...",
+      "format": "Format",
+      "minify": "Minify",
+      "treeView": "Tree View",
+      "rawView": "Raw View",
+      "faq": {
+        "q1": "What is JSON formatting?",
+        "a1": "JSON formatting (or beautifying) adds proper indentation and line breaks to compressed JSON data, making it easier to read and debug.",
+        "q2": "Can I validate JSON online?",
+        "a2": "Yes. Our JSON formatter validates your JSON in real-time as you type, instantly showing syntax errors with line numbers.",
+        "q3": "Is my JSON data sent to a server?",
+        "a3": "No. All JSON formatting, validation, and tree view processing happens entirely in your browser. Your data never leaves your device."
+      }
+    },
+    "base64": {
+      "title": "Base64 Encode / Decode",
+      "description": "Encode text to Base64 or decode Base64 to text instantly.",
+      "shortDescription": "Encode & decode Base64",
+      "inputPlaceholder": "Enter text to encode or Base64 to decode...",
+      "encode": "Encode",
+      "decode": "Decode",
+      "faq": {
+        "q1": "What is Base64 encoding?",
+        "a1": "Base64 is a binary-to-text encoding scheme that converts binary data into ASCII characters. It is commonly used for embedding images in HTML, encoding email attachments, and transmitting data in URLs.",
+        "q2": "Does Base64 encoding encrypt my data?",
+        "a2": "No. Base64 is an encoding, not encryption. It transforms data into a different format but does not protect it. Anyone can decode Base64 back to the original data.",
+        "q3": "Does this tool support UTF-8?",
+        "a3": "Yes. Our Base64 tool fully supports UTF-8 encoded text, including special characters, emojis, and non-Latin scripts."
+      }
+    },
+    "urlEncode": {
+      "title": "URL Encode / Decode",
+      "description": "Encode or decode URL components. Handles special characters safely.",
+      "shortDescription": "Encode & decode URLs",
+      "inputPlaceholder": "Enter URL or text to encode/decode...",
+      "encode": "Encode",
+      "decode": "Decode",
+      "faq": {
+        "q1": "What is URL encoding?",
+        "a1": "URL encoding (also called percent-encoding) replaces special characters in a URL with a percent sign (%) followed by two hexadecimal digits. This ensures URLs are transmitted correctly.",
+        "q2": "When should I URL encode?",
+        "a2": "You should URL encode query parameters, form data, and any text that contains special characters like spaces, ampersands, or non-ASCII characters before including them in a URL.",
+        "q3": "What is the difference between encodeURI and encodeURIComponent?",
+        "a3": "encodeURI encodes a full URI but preserves characters like : / ? & =. encodeURIComponent encodes individual components more aggressively, converting those characters too. Our tool uses encodeURIComponent for maximum safety."
+      }
+    },
+    "regexTester": {
+      "title": "Regex Tester",
+      "description": "Test regular expressions with real-time matching, group highlighting, and a cheat sheet.",
+      "shortDescription": "Test & debug regex",
+      "patternPlaceholder": "Enter regex pattern...",
+      "testStringPlaceholder": "Enter test string...",
+      "flags": "Flags",
+      "matches": "Matches",
+      "noMatch": "No match found",
+      "cheatSheet": "Cheat Sheet",
+      "faq": {
+        "q1": "What are regex flags?",
+        "a1": "Regex flags modify how a pattern is matched. Common flags include: g (global - find all matches), i (case-insensitive), m (multiline - ^ and $ match line boundaries), and s (dotAll - dot matches newlines).",
+        "q2": "How do I use capture groups?",
+        "a2": "Wrap part of your pattern in parentheses to create a capture group. For example, (\\d+)-(\\d+) captures two groups of digits separated by a dash. Named groups use the syntax (?<name>pattern).",
+        "q3": "Is the regex tested in real-time?",
+        "a3": "Yes. Matches are highlighted instantly as you type both the pattern and test string. No button click needed for matching — results update automatically."
+      }
+    },
+    "diffChecker": {
+      "title": "Diff Checker",
+      "description": "Compare two texts and see the differences highlighted side by side.",
+      "shortDescription": "Compare text differences",
+      "original": "Original",
+      "modified": "Modified",
+      "originalPlaceholder": "Paste original text...",
+      "modifiedPlaceholder": "Paste modified text...",
+      "compare": "Compare",
+      "sideBySide": "Side by Side",
+      "inline": "Inline",
+      "faq": {
+        "q1": "How does the diff checker work?",
+        "a1": "Our diff checker uses the diff-match-patch algorithm to find the minimum set of changes between two texts. Additions are highlighted in green, deletions in red, and unchanged text is shown normally.",
+        "q2": "Can I compare code with this tool?",
+        "a2": "Yes. You can compare any text including source code, configuration files, SQL queries, or plain text documents. The tool preserves formatting and whitespace.",
+        "q3": "Is there a size limit?",
+        "a3": "There is no hard limit. Since all processing happens in your browser, performance depends on your device. Texts up to several megabytes work smoothly on modern devices."
+      }
+    },
+    "jwtDecoder": {
+      "title": "JWT Decoder",
+      "description": "Decode and inspect JWT tokens. View header, payload, and verify expiration.",
+      "shortDescription": "Decode JWT tokens",
+      "inputPlaceholder": "Paste your JWT token here...",
+      "header": "Header",
+      "payload": "Payload",
+      "signature": "Signature",
+      "expired": "Expired",
+      "valid": "Valid",
+      "faq": {
+        "q1": "What is a JWT token?",
+        "a1": "A JSON Web Token (JWT) is a compact, URL-safe token format used for authentication and information exchange. It consists of three parts: a header (algorithm info), payload (claims/data), and signature.",
+        "q2": "Can this tool verify JWT signatures?",
+        "a2": "This tool decodes and inspects JWT tokens, showing the header, payload, and expiration status. Signature verification requires the secret key, which we intentionally do not ask for to protect your security.",
+        "q3": "Is it safe to paste my JWT here?",
+        "a3": "Yes. All decoding happens in your browser — your token is never sent to any server. However, never share JWT tokens publicly as they may contain sensitive claims."
+      }
+    },
+    "sqlFormatter": {
+      "title": "SQL Formatter",
+      "description": "Format and beautify SQL queries. Supports MySQL, PostgreSQL, SQLite, and more.",
+      "shortDescription": "Format SQL queries",
+      "inputPlaceholder": "Paste your SQL query here...",
+      "dialect": "Dialect",
+      "format": "Format",
+      "minify": "Minify",
+      "faq": {
+        "q1": "What SQL dialects are supported?",
+        "a1": "We support Standard SQL, MySQL, PostgreSQL, SQLite, SQL Server (T-SQL), PL/SQL, and MariaDB. Select your dialect from the dropdown for optimal formatting.",
+        "q2": "Does the formatter change my query logic?",
+        "a2": "No. The formatter only changes whitespace, indentation, and keyword casing. Your query logic, table names, and values remain exactly the same.",
+        "q3": "Can I minify SQL queries?",
+        "a3": "Yes. Use the Minify button to compress your SQL into a single line by removing unnecessary whitespace and comments. This is useful for embedding SQL in application code."
+      }
+    },
+    "hashGenerator": {
+      "title": "Hash Generator",
+      "description": "Generate SHA-1, SHA-256, SHA-384, and SHA-512 hashes from any text.",
+      "shortDescription": "Generate SHA hashes",
+      "inputPlaceholder": "Enter text to hash...",
+      "algorithm": "Algorithm",
+      "generate": "Generate",
+      "result": "Hash Result",
+      "faq": {
+        "q1": "What is a hash function?",
+        "a1": "A hash function converts input data of any size into a fixed-size string of characters. The same input always produces the same hash, but you cannot reverse a hash back to the original data.",
+        "q2": "Which algorithm should I use?",
+        "a2": "SHA-256 is the most commonly recommended. SHA-1 is considered weak for security purposes. SHA-384 and SHA-512 provide longer hashes for higher security requirements.",
+        "q3": "Does this tool support MD5?",
+        "a3": "This tool uses the Web Crypto API which supports SHA-1, SHA-256, SHA-384, and SHA-512. MD5 is not included as it is considered cryptographically broken and should not be used for security purposes."
+      }
+    }
+  },
+  "common": {
+    "copy": "Copy",
+    "copied": "Copied!",
+    "clear": "Clear",
+    "download": "Download",
+    "upload": "Upload",
+    "paste": "Paste",
+    "sample": "Load Sample",
+    "input": "Input",
+    "output": "Output",
+    "error": "Error",
+    "privacyBadge": "Your data never leaves your browser",
+    "relatedTools": "Related Tools",
+    "faq": "Frequently Asked Questions",
+    "madeWith": "Made with"
+  },
+  "footer": {
+    "tools": "Tools",
+    "product": "Product",
+    "legal": "Legal",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "about": "About",
+    "blog": "Blog",
+    "github": "GitHub",
+    "tagline": "Clean Up Your Code",
+    "copyright": "© {year} CodeNeat. All rights reserved."
+  }
+}
