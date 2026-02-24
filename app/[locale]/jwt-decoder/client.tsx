@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { ToolLayout } from "@/components/tool-layout";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,9 @@ import { Badge } from "@/components/ui/badge";
 import { CopyButton } from "@/components/copy-button";
 import { decodeJwt, buildSampleJwt, type JwtParts } from "@/lib/tools/jwt";
 import { AlertCircle, CheckCircle2, Clock } from "lucide-react";
+import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcut";
+
+const MAX_INPUT_SIZE = 5 * 1024 * 1024; // 5MB
 
 function JsonBlock({ label, data }: { label: string; data: Record<string, unknown> | null }) {
   if (!data) return null;
@@ -46,6 +49,14 @@ export default function JwtDecoderClient() {
     setResult(null);
   }, []);
 
+  const shortcuts = useMemo(() => ({
+    "ctrl+enter": handleDecode,
+  }), [handleDecode]);
+  useKeyboardShortcuts(shortcuts);
+
+  const inputSize = new Blob([input]).size;
+  const isOversize = inputSize > MAX_INPUT_SIZE;
+
   return (
     <ToolLayout toolKey="jwtDecoder">
       {/* Action bar */}
@@ -62,7 +73,14 @@ export default function JwtDecoderClient() {
 
       {/* Input */}
       <div className="mb-6">
-        <label className="mb-2 block text-sm font-medium">{t("common.input")}</label>
+        <div className="mb-2 flex items-center justify-between">
+          <label className="text-sm font-medium">{t("common.input")}</label>
+          {input && (
+            <span className={`text-xs ${isOversize ? "text-destructive" : "text-muted-foreground"}`}>
+              {(inputSize / 1024).toFixed(1)} KB
+            </span>
+          )}
+        </div>
         <Textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}

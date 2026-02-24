@@ -46,7 +46,7 @@
       },
       "modern": {
         "title": "Modern UI",
-        "description": "Clean, intuitive interface with dark mode support and keyboard shortcuts."
+        "description": "Clean, intuitive interface with dark mode and Ctrl+Enter shortcuts."
       }
     },
     "faq": {

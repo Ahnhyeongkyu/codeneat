@@ -1,12 +1,15 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { ToolLayout } from "@/components/tool-layout";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { computeDiff, type DiffResult } from "@/lib/tools/diff";
+import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcut";
+
+const MAX_INPUT_SIZE = 5 * 1024 * 1024; // 5MB
 
 export default function DiffCheckerClient() {
   const t = useTranslations();
@@ -24,6 +27,16 @@ export default function DiffCheckerClient() {
     setResult(null);
   }, []);
 
+  const shortcuts = useMemo(() => ({
+    "ctrl+enter": handleCompare,
+  }), [handleCompare]);
+  useKeyboardShortcuts(shortcuts);
+
+  const originalSize = new Blob([original]).size;
+  const originalOversize = originalSize > MAX_INPUT_SIZE;
+  const modifiedSize = new Blob([modified]).size;
+  const modifiedOversize = modifiedSize > MAX_INPUT_SIZE;
+
   return (
     <ToolLayout toolKey="diffChecker">
       {/* Action bar */}
@@ -38,9 +51,16 @@ export default function DiffCheckerClient() {
       {/* Input panels */}
       <div className="mb-6 grid gap-4 lg:grid-cols-2">
         <div>
-          <label className="mb-2 block text-sm font-medium">
-            {t("tools.diffChecker.original")}
-          </label>
+          <div className="mb-2 flex items-center justify-between">
+            <label className="text-sm font-medium">
+              {t("tools.diffChecker.original")}
+            </label>
+            {original && (
+              <span className={`text-xs ${originalOversize ? "text-destructive" : "text-muted-foreground"}`}>
+                {(originalSize / 1024).toFixed(1)} KB
+              </span>
+            )}
+          </div>
           <Textarea
             value={original}
             onChange={(e) => setOriginal(e.target.value)}
@@ -49,9 +69,16 @@ export default function DiffCheckerClient() {
           />
         </div>
         <div>
-          <label className="mb-2 block text-sm font-medium">
-            {t("tools.diffChecker.modified")}
-          </label>
+          <div className="mb-2 flex items-center justify-between">
+            <label className="text-sm font-medium">
+              {t("tools.diffChecker.modified")}
+            </label>
+            {modified && (
+              <span className={`text-xs ${modifiedOversize ? "text-destructive" : "text-muted-foreground"}`}>
+                {(modifiedSize / 1024).toFixed(1)} KB
+              </span>
+            )}
+          </div>
           <Textarea
             value={modified}
             onChange={(e) => setModified(e.target.value)}

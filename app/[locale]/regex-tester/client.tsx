@@ -9,6 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { testRegex, REGEX_CHEAT_SHEET } from "@/lib/tools/regex";
 
+const MAX_INPUT_SIZE = 5 * 1024 * 1024; // 5MB
+
 export default function RegexTesterClient() {
   const t = useTranslations();
   const [pattern, setPattern] = useState("");
@@ -47,6 +49,9 @@ export default function RegexTesterClient() {
     );
   };
 
+  const inputSize = new Blob([testString]).size;
+  const isOversize = inputSize > MAX_INPUT_SIZE;
+
   return (
     <ToolLayout toolKey="regexTester">
       {/* Pattern + Flags */}
@@ -83,7 +88,14 @@ export default function RegexTesterClient() {
 
       {/* Test string */}
       <div className="mb-4">
-        <label className="mb-2 block text-sm font-medium">{t("common.testString")}</label>
+        <div className="mb-2 flex items-center justify-between">
+          <label className="text-sm font-medium">{t("common.testString")}</label>
+          {testString && (
+            <span className={`text-xs ${isOversize ? "text-destructive" : "text-muted-foreground"}`}>
+              {(inputSize / 1024).toFixed(1)} KB
+            </span>
+          )}
+        </div>
         <Textarea
           value={testString}
           onChange={(e) => setTestString(e.target.value)}

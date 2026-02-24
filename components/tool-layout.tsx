@@ -58,7 +58,15 @@ export function ToolLayout({ toolKey, children }: ToolLayoutProps) {
         <p className="text-muted-foreground">
           {t(`tools.${toolKey}.description`)}
         </p>
-        <PrivacyBadge />
+        <div className="flex items-center gap-4">
+          <PrivacyBadge />
+          <span className="hidden text-xs text-muted-foreground sm:inline">
+            <kbd className="rounded border bg-muted px-1.5 py-0.5 font-mono text-[10px]">Ctrl</kbd>
+            {" + "}
+            <kbd className="rounded border bg-muted px-1.5 py-0.5 font-mono text-[10px]">Enter</kbd>
+            {" to run"}
+          </span>
+        </div>
       </div>
 
       {/* Tool Content */}

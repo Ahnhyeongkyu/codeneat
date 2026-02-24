@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { ToolLayout } from "@/components/tool-layout";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,9 @@ import {
   HASH_ALGORITHMS,
   type HashAlgorithm,
 } from "@/lib/tools/hash";
+import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcut";
+
+const MAX_INPUT_SIZE = 5 * 1024 * 1024; // 5MB
 
 export default function HashGeneratorClient() {
   const t = useTranslations();
@@ -48,6 +51,14 @@ export default function HashGeneratorClient() {
     setError(null);
   }, []);
 
+  const shortcuts = useMemo(() => ({
+    "ctrl+enter": handleGenerate,
+  }), [handleGenerate]);
+  useKeyboardShortcuts(shortcuts);
+
+  const inputSize = new Blob([input]).size;
+  const isOversize = inputSize > MAX_INPUT_SIZE;
+
   return (
     <ToolLayout toolKey="hashGenerator">
       {/* Action bar */}
@@ -80,7 +91,14 @@ export default function HashGeneratorClient() {
 
       {/* Input */}
       <div className="mb-6">
-        <label className="mb-2 block text-sm font-medium">{t("common.input")}</label>
+        <div className="mb-2 flex items-center justify-between">
+          <label className="text-sm font-medium">{t("common.input")}</label>
+          {input && (
+            <span className={`text-xs ${isOversize ? "text-destructive" : "text-muted-foreground"}`}>
+              {(inputSize / 1024).toFixed(1)} KB
+            </span>
+          )}
+        </div>
         <Textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}

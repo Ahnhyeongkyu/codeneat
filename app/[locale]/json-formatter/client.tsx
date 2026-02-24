@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { ToolLayout } from "@/components/tool-layout";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { CopyButton } from "@/components/copy-button";
+import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcut";
 import {
   formatJson,
   minifyJson,
@@ -16,6 +17,8 @@ import {
   type JsonTreeNode,
 } from "@/lib/tools/json";
 import { AlertCircle, CheckCircle2, ChevronRight, ChevronDown } from "lucide-react";
+
+const MAX_INPUT_SIZE = 5 * 1024 * 1024; // 5MB
 
 function TreeNode({ node, depth = 0 }: { node: JsonTreeNode; depth?: number }) {
   const [expanded, setExpanded] = useState(depth < 2);
@@ -116,6 +119,15 @@ export default function JsonFormatterClient() {
     setTree(null);
   }, []);
 
+  const shortcuts = useMemo(() => ({
+    "ctrl+enter": handleFormat,
+    "ctrl+shift+m": handleMinify,
+  }), [handleFormat, handleMinify]);
+  useKeyboardShortcuts(shortcuts);
+
+  const inputSize = new Blob([input]).size;
+  const isOversize = inputSize > MAX_INPUT_SIZE;
+
   return (
     <ToolLayout toolKey="jsonFormatter">
       {/* Action bar */}
@@ -160,7 +172,19 @@ export default function JsonFormatterClient() {
       <div className="grid gap-4 lg:grid-cols-2">
         {/* Input */}
         <div>
-          <label className="mb-2 block text-sm font-medium">{t("common.input")}</label>
+          <div className="mb-2 flex items-center justify-between">
+            <label className="text-sm font-medium">{t("common.input")}</label>
+            {input && (
+              <span className={`text-xs ${isOversize ? "text-destructive" : "text-muted-foreground"}`}>
+                {(inputSize / 1024).toFixed(1)} KB
+              </span>
+            )}
+          </div>
+          {isOversize && (
+            <p className="mb-2 text-xs text-destructive">
+              Input exceeds 5 MB. Performance may be affected.
+            </p>
+          )}
           <Textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
