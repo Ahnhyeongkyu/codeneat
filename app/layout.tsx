@@ -42,6 +42,7 @@ export const metadata: Metadata = {
     title: "CodeNeat — Clean Up Your Code",
     description:
       "Free online developer tools. Privacy-first — your data never leaves your browser.",
+    images: [{ url: "https://codeneat.dev/api/og", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
@@ -52,6 +53,9 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+  },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
   },
 };
 
