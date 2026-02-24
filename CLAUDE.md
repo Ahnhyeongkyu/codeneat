@@ -98,4 +98,9 @@ Layout: max-w-6xl mx-auto (도구 페이지)
 
 ## 현재 진행 상황
 - Sprint 0: 인프라 세팅 완료
-- Sprint 1: 도구 8개 개발 대기
+- Sprint 1: 도구 8개 개발 완료
+- SEO: metadata + JSON-LD + OG Image 완료
+- Analytics: GA4 + AdSense 셋업 완료
+- 배포: Vercel 프로덕션 (codeneat-eta.vercel.app)
+- GitHub: github.com/Ahnhyeongkyu/codeneat
+- 도메인: codeneat.dev (DNS 설정 대기)
