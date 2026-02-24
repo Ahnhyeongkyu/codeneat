@@ -80,19 +80,19 @@ export default function JwtDecoderClient() {
               if (parts.length !== 3) return <span>{input}</span>;
               return (
                 <>
-                  <span className="text-red-500 dark:text-red-400">{parts[0]}</span>
+                  <span className="text-emerald-600 dark:text-emerald-400">{parts[0]}</span>
                   <span className="text-muted-foreground">.</span>
-                  <span className="text-violet-600 dark:text-violet-400">{parts[1]}</span>
+                  <span className="text-amber-600 dark:text-amber-400">{parts[1]}</span>
                   <span className="text-muted-foreground">.</span>
-                  <span className="text-sky-600 dark:text-sky-400">{parts[2]}</span>
+                  <span className="text-foreground/50">{parts[2]}</span>
                 </>
               );
             })()}
           </p>
           <div className="mt-2 flex gap-4 text-xs text-muted-foreground">
-            <span><span className="inline-block h-2 w-2 rounded-full bg-red-500 mr-1"></span>Header</span>
-            <span><span className="inline-block h-2 w-2 rounded-full bg-violet-600 mr-1"></span>Payload</span>
-            <span><span className="inline-block h-2 w-2 rounded-full bg-sky-600 mr-1"></span>Signature</span>
+            <span><span className="inline-block h-2 w-2 rounded-full bg-emerald-600 mr-1"></span>Header</span>
+            <span><span className="inline-block h-2 w-2 rounded-full bg-amber-500 mr-1"></span>Payload</span>
+            <span><span className="inline-block h-2 w-2 rounded-full bg-foreground/40 mr-1"></span>Signature</span>
           </div>
         </div>
       )}

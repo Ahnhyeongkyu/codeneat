@@ -34,6 +34,8 @@ function TreeNode({ node, depth = 0 }: { node: JsonTreeNode; depth?: number }) {
         <button
           onClick={() => setExpanded(!expanded)}
           className="flex items-center gap-1 text-sm hover:text-primary"
+          aria-expanded={expanded}
+          aria-label={`${expanded ? "Collapse" : "Expand"} ${node.key}`}
         >
           {expanded ? (
             <ChevronDown className="h-4 w-4" />
@@ -56,7 +58,7 @@ function TreeNode({ node, depth = 0 }: { node: JsonTreeNode; depth?: number }) {
       : node.type === "number"
         ? "text-amber-600 dark:text-amber-400"
         : node.type === "boolean"
-          ? "text-sky-600 dark:text-sky-400"
+          ? "text-primary dark:text-primary"
           : "text-muted-foreground";
 
   const displayValue =
@@ -148,10 +150,11 @@ export default function JsonFormatterClient() {
           value={indent}
           onChange={(e) => setIndent(Number(e.target.value))}
           className="rounded-md border bg-background px-2 py-1.5 text-sm"
+          aria-label="Indentation"
         >
-          <option value={2}>2 spaces</option>
-          <option value={4}>4 spaces</option>
-          <option value={1}>Tab</option>
+          <option value={2}>{t("common.indent.twoSpaces")}</option>
+          <option value={4}>{t("common.indent.fourSpaces")}</option>
+          <option value={1}>{t("common.indent.tab")}</option>
         </select>
         <div className="flex-1" />
         <Button variant="outline" size="sm" onClick={handleSample}>
@@ -193,7 +196,7 @@ export default function JsonFormatterClient() {
           </div>
           {isOversize && (
             <p className="mb-2 text-xs text-destructive">
-              Input exceeds 5 MB. Performance may be affected.
+              {t("common.oversizeWarning")}
             </p>
           )}
           <Textarea

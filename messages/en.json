@@ -229,7 +229,23 @@
     "privacyBadge": "Your data never leaves your browser",
     "relatedTools": "Related Tools",
     "faq": "Frequently Asked Questions",
-    "madeWith": "Made with"
+    "madeWith": "Made with",
+    "loading": "Processing...",
+    "oversizeWarning": "Input exceeds 5 MB. Performance may be affected.",
+    "indent": {
+      "twoSpaces": "2 spaces",
+      "fourSpaces": "4 spaces",
+      "tab": "Tab"
+    },
+    "keywordCase": {
+      "upper": "UPPER",
+      "lower": "lower",
+      "preserve": "Preserve"
+    },
+    "encodeMode": {
+      "component": "Component",
+      "fullUrl": "Full URL"
+    }
   },
   "footer": {
     "tools": "Tools",

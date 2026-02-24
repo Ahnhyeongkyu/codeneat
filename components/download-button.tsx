@@ -20,7 +20,7 @@ export function DownloadButton({ text, filename = "output.txt" }: DownloadButton
   };
 
   return (
-    <Button variant="outline" size="sm" onClick={handleDownload} className="gap-1">
+    <Button variant="outline" size="sm" onClick={handleDownload} className="gap-1" aria-label="Download as file" title="Download as file">
       <Download className="h-4 w-4" />
     </Button>
   );

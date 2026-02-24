@@ -74,6 +74,7 @@ export default function SqlFormatterClient() {
           value={dialect}
           onChange={(e) => setDialect(e.target.value as SqlDialect)}
           className="rounded-md border bg-background px-2 py-1.5 text-sm"
+          aria-label="SQL dialect"
         >
           {SQL_DIALECTS.map((d) => (
             <option key={d.value} value={d.value}>
@@ -85,18 +86,20 @@ export default function SqlFormatterClient() {
           value={indent}
           onChange={(e) => setIndent(Number(e.target.value))}
           className="rounded-md border bg-background px-2 py-1.5 text-sm"
+          aria-label="Indentation"
         >
-          <option value={2}>2 spaces</option>
-          <option value={4}>4 spaces</option>
+          <option value={2}>{t("common.indent.twoSpaces")}</option>
+          <option value={4}>{t("common.indent.fourSpaces")}</option>
         </select>
         <select
           value={keywordCase}
           onChange={(e) => setKeywordCase(e.target.value as "upper" | "lower" | "preserve")}
           className="rounded-md border bg-background px-2 py-1.5 text-sm"
+          aria-label="Keyword case"
         >
-          <option value="upper">UPPER</option>
-          <option value="lower">lower</option>
-          <option value="preserve">Preserve</option>
+          <option value="upper">{t("common.keywordCase.upper")}</option>
+          <option value="lower">{t("common.keywordCase.lower")}</option>
+          <option value="preserve">{t("common.keywordCase.preserve")}</option>
         </select>
 
         <div className="flex-1" />

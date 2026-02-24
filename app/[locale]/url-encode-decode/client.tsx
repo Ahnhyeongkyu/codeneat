@@ -63,9 +63,10 @@ export default function UrlEncodeClient() {
           value={mode}
           onChange={(e) => setMode(e.target.value as "component" | "full")}
           className="rounded-md border bg-background px-2 py-1.5 text-sm"
+          aria-label="Encoding mode"
         >
-          <option value="component">Component</option>
-          <option value="full">Full URL</option>
+          <option value="component">{t("common.encodeMode.component")}</option>
+          <option value="full">{t("common.encodeMode.fullUrl")}</option>
         </select>
         <div className="flex-1" />
         {output && (

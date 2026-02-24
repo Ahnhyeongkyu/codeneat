@@ -93,10 +93,10 @@ export default function DiffCheckerClient() {
         <div>
           {/* Stats */}
           <div className="mb-4 flex gap-2">
-            <Badge variant="secondary" className="gap-1 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+            <Badge variant="secondary" className="gap-1 bg-primary/10 text-primary">
               +{t("common.added", { count: result.stats.additions })}
             </Badge>
-            <Badge variant="secondary" className="gap-1 bg-red-500/10 text-red-600 dark:text-red-400">
+            <Badge variant="secondary" className="gap-1 bg-destructive/10 text-destructive">
               -{t("common.removed", { count: result.stats.deletions })}
             </Badge>
             <Badge variant="secondary">
@@ -112,7 +112,7 @@ export default function DiffCheckerClient() {
                   return (
                     <span
                       key={i}
-                      className="bg-emerald-500/20 text-emerald-700 dark:text-emerald-300"
+                      className="bg-primary/20 text-primary"
                     >
                       {segment.text}
                     </span>
@@ -122,7 +122,7 @@ export default function DiffCheckerClient() {
                   return (
                     <span
                       key={i}
-                      className="bg-red-500/20 text-red-700 line-through dark:text-red-300"
+                      className="bg-destructive/20 text-destructive line-through"
                     >
                       {segment.text}
                     </span>

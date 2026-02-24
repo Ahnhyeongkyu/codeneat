@@ -11,6 +11,13 @@ import { testRegex, REGEX_CHEAT_SHEET } from "@/lib/tools/regex";
 
 const MAX_INPUT_SIZE = 5 * 1024 * 1024; // 5MB
 
+const FLAG_LABELS: Record<string, string> = {
+  g: "Global — find all matches",
+  i: "Case insensitive",
+  m: "Multiline — ^ and $ match line boundaries",
+  s: "DotAll — dot matches newlines",
+};
+
 export default function RegexTesterClient() {
   const t = useTranslations();
   const [pattern, setPattern] = useState("");
@@ -72,6 +79,9 @@ export default function RegexTesterClient() {
               size="sm"
               onClick={() => toggleFlag(flag)}
               className="w-8 font-mono"
+              aria-label={FLAG_LABELS[flag]}
+              aria-pressed={flags.includes(flag)}
+              title={FLAG_LABELS[flag]}
             >
               {flag}
             </Button>
@@ -123,7 +133,7 @@ export default function RegexTesterClient() {
       )}
 
       {/* Matches */}
-      <div className="mb-4">
+      <div className="mb-4" aria-live="polite">
         <div className="mb-2 flex items-center gap-2">
           <label className="text-sm font-medium">{t("tools.regexTester.matches")}</label>
           <Badge variant="secondary">{result.matches.length}</Badge>

@@ -82,7 +82,7 @@ export default function HashGeneratorClient() {
       {/* Action bar */}
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <Button onClick={handleGenerate} disabled={loading}>
-          {loading ? "..." : t("tools.hashGenerator.generate")}
+          {loading ? t("common.loading") : t("tools.hashGenerator.generate")}
         </Button>
         <Button variant="outline" onClick={handleGenerateAll}>
           {t("common.generateAll")}
@@ -93,6 +93,7 @@ export default function HashGeneratorClient() {
           value={algorithm}
           onChange={(e) => setAlgorithm(e.target.value as HashAlgorithm)}
           className="rounded-md border bg-background px-2 py-1.5 text-sm"
+          aria-label="Hash algorithm"
         >
           {HASH_ALGORITHMS.map((a) => (
             <option key={a.value} value={a.value}>
