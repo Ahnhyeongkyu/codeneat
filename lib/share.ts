@@ -10,10 +10,10 @@ export interface ShareState {
   [key: string]: string;
 }
 
-/** Encode state object into a URL-safe hash string */
+/** Encode state object into a URL-safe hash string. Returns "" if too large. */
 export function encodeShareState(state: ShareState): string {
   const json = JSON.stringify(state);
-  if (new Blob([json]).size > MAX_SHARE_SIZE) {
+  if (new TextEncoder().encode(json).length > MAX_SHARE_SIZE) {
     return "";
   }
   // btoa works with Latin1, so encode UTF-8 first

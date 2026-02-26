@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Link } from "@/i18n/routing";
 import { getPostBySlug, getAllPosts } from "@/lib/blog";
+import { SafeHtml } from "@/components/safe-html";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -96,9 +97,9 @@ export default async function BlogPostPage({ params }: Props) {
           </div>
         </header>
 
-        <div
+        <SafeHtml
+          html={post.content}
           className="prose prose-neutral dark:prose-invert max-w-none"
-          dangerouslySetInnerHTML={{ __html: post.content }}
         />
 
         {post.relatedTool && (

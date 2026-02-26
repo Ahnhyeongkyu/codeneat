@@ -5,7 +5,7 @@ export interface JsonFormatResult {
   error: string | null;
 }
 
-export function formatJson(input: string, indent: number = 2): JsonFormatResult {
+export function formatJson(input: string, indent: number | string = 2): JsonFormatResult {
   try {
     if (!input.trim()) {
       return { output: "", error: null };
@@ -14,7 +14,7 @@ export function formatJson(input: string, indent: number = 2): JsonFormatResult 
     const output = JSON.stringify(parsed, null, indent);
     return { output, error: null };
   } catch (e) {
-    return { output: "", error: (e as Error).message };
+    return { output: "", error: e instanceof Error ? e.message : String(e) };
   }
 }
 
@@ -27,7 +27,7 @@ export function minifyJson(input: string): JsonFormatResult {
     const output = JSON.stringify(parsed);
     return { output, error: null };
   } catch (e) {
-    return { output: "", error: (e as Error).message };
+    return { output: "", error: e instanceof Error ? e.message : String(e) };
   }
 }
 
@@ -39,7 +39,7 @@ export function validateJson(input: string): { valid: boolean; error: string | n
     JSON.parse(input);
     return { valid: true, error: null };
   } catch (e) {
-    return { valid: false, error: (e as Error).message };
+    return { valid: false, error: e instanceof Error ? e.message : String(e) };
   }
 }
 
@@ -60,7 +60,7 @@ export function buildJsonTree(input: string): { tree: JsonTreeNode | null; error
     const tree = buildNode("root", parsed);
     return { tree, error: null };
   } catch (e) {
-    return { tree: null, error: (e as Error).message };
+    return { tree: null, error: e instanceof Error ? e.message : String(e) };
   }
 }
 
@@ -118,20 +118,20 @@ export function jsonToYaml(input: string): JsonFormatResult {
     });
     return { output, error: null };
   } catch (e) {
-    return { output: "", error: (e as Error).message };
+    return { output: "", error: e instanceof Error ? e.message : String(e) };
   }
 }
 
-export function yamlToJson(input: string, indent: number = 2): JsonFormatResult {
+export function yamlToJson(input: string, indent: number | string = 2): JsonFormatResult {
   try {
     if (!input.trim()) {
       return { output: "", error: null };
     }
-    const parsed = yaml.load(input);
+    const parsed = yaml.load(input, { schema: yaml.JSON_SCHEMA });
     const output = JSON.stringify(parsed, null, indent);
     return { output, error: null };
   } catch (e) {
-    return { output: "", error: (e as Error).message };
+    return { output: "", error: e instanceof Error ? e.message : String(e) };
   }
 }
 
@@ -181,7 +181,7 @@ export function jsonToCsv(input: string): JsonFormatResult {
 
     return { output: lines.join("\n"), error: null };
   } catch (e) {
-    return { output: "", error: (e as Error).message };
+    return { output: "", error: e instanceof Error ? e.message : String(e) };
   }
 }
 

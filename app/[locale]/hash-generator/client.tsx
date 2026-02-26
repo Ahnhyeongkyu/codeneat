@@ -26,7 +26,7 @@ export default function HashGeneratorClient() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // Auto-generate hash on input change
+  // Auto-generate hash on input change (debounced)
   useEffect(() => {
     if (!input) {
       setSingleHash("");
@@ -34,13 +34,15 @@ export default function HashGeneratorClient() {
       return;
     }
     let cancelled = false;
-    generateHash(input, algorithm).then((result) => {
-      if (!cancelled) {
-        setSingleHash(result.hash);
-        setError(result.error);
-      }
-    });
-    return () => { cancelled = true; };
+    const timer = setTimeout(() => {
+      generateHash(input, algorithm).then((result) => {
+        if (!cancelled) {
+          setSingleHash(result.hash);
+          setError(result.error);
+        }
+      });
+    }, 300);
+    return () => { cancelled = true; clearTimeout(timer); };
   }, [input, algorithm]);
 
   const handleGenerate = useCallback(async () => {
@@ -69,12 +71,17 @@ export default function HashGeneratorClient() {
     setError(null);
   }, []);
 
+  const HASH_SAMPLE = "Hello, World!";
+  const handleSample = useCallback(() => {
+    setInput(HASH_SAMPLE);
+  }, []);
+
   const shortcuts = useMemo(() => ({
     "ctrl+enter": handleGenerate,
   }), [handleGenerate]);
   useKeyboardShortcuts(shortcuts);
 
-  const inputSize = new Blob([input]).size;
+  const inputSize = useMemo(() => new TextEncoder().encode(input).length, [input]);
   const isOversize = inputSize > MAX_INPUT_SIZE;
 
   return (
@@ -103,6 +110,9 @@ export default function HashGeneratorClient() {
         </select>
 
         <div className="flex-1" />
+        <Button variant="outline" size="sm" onClick={handleSample}>
+          {t("common.sample")}
+        </Button>
         <Button variant="outline" size="sm" onClick={handleClear}>
           {t("common.clear")}
         </Button>
@@ -111,7 +121,7 @@ export default function HashGeneratorClient() {
       {/* Input */}
       <div className="mb-6">
         <div className="mb-2 flex items-center justify-between">
-          <label className="text-sm font-medium">{t("common.input")}</label>
+          <label htmlFor="hash-input" className="text-sm font-medium">{t("common.input")}</label>
           {input && (
             <span className={`text-xs ${isOversize ? "text-destructive" : "text-muted-foreground"}`}>
               {(inputSize / 1024).toFixed(1)} KB
@@ -119,6 +129,7 @@ export default function HashGeneratorClient() {
           )}
         </div>
         <Textarea
+          id="hash-input"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={t("tools.hashGenerator.inputPlaceholder")}
@@ -128,14 +139,14 @@ export default function HashGeneratorClient() {
 
       {/* Error */}
       {error && (
-        <div className="mb-4 rounded-lg border border-destructive/50 bg-destructive/10 p-4">
+        <div role="alert" className="mb-4 rounded-lg border border-destructive/50 bg-destructive/10 p-4">
           <p className="text-sm text-destructive">{error}</p>
         </div>
       )}
 
       {/* Single hash result */}
       {singleHash && (
-        <div className="mb-4">
+        <div className="mb-4" aria-live="polite">
           <div className="mb-2 flex items-center justify-between">
             <label className="text-sm font-medium">
               {algorithm} {t("tools.hashGenerator.result")}

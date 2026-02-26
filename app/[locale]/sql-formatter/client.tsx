@@ -57,7 +57,7 @@ export default function SqlFormatterClient() {
   }), [handleFormat]);
   useKeyboardShortcuts(shortcuts);
 
-  const inputSize = new Blob([input]).size;
+  const inputSize = useMemo(() => new TextEncoder().encode(input).length, [input]);
   const isOversize = inputSize > MAX_INPUT_SIZE;
 
   return (
@@ -115,7 +115,7 @@ export default function SqlFormatterClient() {
       <div className="grid gap-4 lg:grid-cols-2">
         <div>
           <div className="mb-2 flex items-center justify-between">
-            <label className="text-sm font-medium">{t("common.input")}</label>
+            <label htmlFor="sql-input" className="text-sm font-medium">{t("common.input")}</label>
             {input && (
               <span className={`text-xs ${isOversize ? "text-destructive" : "text-muted-foreground"}`}>
                 {(inputSize / 1024).toFixed(1)} KB
@@ -123,6 +123,7 @@ export default function SqlFormatterClient() {
             )}
           </div>
           <Textarea
+            id="sql-input"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder={t("tools.sqlFormatter.inputPlaceholder")}
@@ -130,13 +131,13 @@ export default function SqlFormatterClient() {
           />
         </div>
 
-        <div>
+        <div aria-live="polite">
           <div className="mb-2 flex items-center justify-between">
-            <label className="text-sm font-medium">{t("common.output")}</label>
+            <label htmlFor="sql-output" className="text-sm font-medium">{t("common.output")}</label>
             {output && <div className="flex gap-1"><CopyButton text={output} /><DownloadButton text={output} filename="formatted.sql" /></div>}
           </div>
           {error ? (
-            <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4">
+            <div role="alert" className="rounded-lg border border-destructive/50 bg-destructive/10 p-4">
               <p className="text-sm text-destructive">{error}</p>
             </div>
           ) : (

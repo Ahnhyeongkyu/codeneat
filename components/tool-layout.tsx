@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, useState, useEffect } from "react";
 import { PrivacyBadge } from "@/components/privacy-badge";
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
@@ -26,16 +26,46 @@ const allTools = [
   { href: "/hash-generator", key: "hashGenerator", icon: Hash },
 ] as const;
 
+// Semantic relevance mapping: each tool maps to its most related tools (by use case)
+const relatedToolMap: Record<string, string[]> = {
+  jsonFormatter: ["diffChecker", "sqlFormatter", "base64"],
+  base64: ["urlEncode", "hashGenerator", "jwtDecoder"],
+  urlEncode: ["base64", "hashGenerator", "regexTester"],
+  regexTester: ["diffChecker", "jsonFormatter", "sqlFormatter"],
+  diffChecker: ["jsonFormatter", "sqlFormatter", "regexTester"],
+  jwtDecoder: ["base64", "hashGenerator", "jsonFormatter"],
+  sqlFormatter: ["jsonFormatter", "diffChecker", "regexTester"],
+  hashGenerator: ["base64", "jwtDecoder", "urlEncode"],
+};
+
 interface ToolLayoutProps {
   toolKey: string;
   children: ReactNode;
 }
 
+function ShortcutHint() {
+  const [isMac, setIsMac] = useState(false);
+  useEffect(() => {
+    setIsMac(navigator.platform?.toLowerCase().includes("mac") || navigator.userAgent?.includes("Mac"));
+  }, []);
+  return (
+    <span className="hidden text-xs text-muted-foreground sm:inline">
+      <kbd className="rounded border bg-muted px-1.5 py-0.5 font-mono text-[10px]">{isMac ? "\u2318" : "Ctrl"}</kbd>
+      {" + "}
+      <kbd className="rounded border bg-muted px-1.5 py-0.5 font-mono text-[10px]">Enter</kbd>
+      {" to run"}
+    </span>
+  );
+}
+
 export function ToolLayout({ toolKey, children }: ToolLayoutProps) {
   const t = useTranslations();
-  const relatedTools = allTools.filter((tool) => tool.key !== toolKey);
+  const relatedKeys = relatedToolMap[toolKey] ?? [];
+  const relatedTools = relatedKeys
+    .map((key) => allTools.find((tool) => tool.key === key))
+    .filter(Boolean) as typeof allTools[number][];
 
-  const faqKeys = ["q1", "q2", "q3"] as const;
+  const faqKeys = ["q1", "q2", "q3", "q4", "q5"] as const;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
@@ -60,12 +90,7 @@ export function ToolLayout({ toolKey, children }: ToolLayoutProps) {
         </p>
         <div className="flex items-center gap-4">
           <PrivacyBadge />
-          <span className="hidden text-xs text-muted-foreground sm:inline">
-            <kbd className="rounded border bg-muted px-1.5 py-0.5 font-mono text-[10px]">Ctrl</kbd>
-            {" + "}
-            <kbd className="rounded border bg-muted px-1.5 py-0.5 font-mono text-[10px]">Enter</kbd>
-            {" to run"}
-          </span>
+          <ShortcutHint />
         </div>
       </div>
 
@@ -84,9 +109,7 @@ export function ToolLayout({ toolKey, children }: ToolLayoutProps) {
                 {t(`tools.${toolKey}.faq.${qKey}`)}
               </h3>
               <p className="mt-2 text-sm text-muted-foreground">
-                {t(
-                  `tools.${toolKey}.faq.${qKey.replace("q", "a") as "a1" | "a2" | "a3"}`
-                )}
+                {t(`tools.${toolKey}.faq.${qKey.replace("q", "a")}`)}
               </p>
             </div>
           ))}
@@ -99,7 +122,7 @@ export function ToolLayout({ toolKey, children }: ToolLayoutProps) {
           {t("common.relatedTools")}
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {relatedTools.slice(0, 3).map((tool) => {
+          {relatedTools.map((tool) => {
             const Icon = tool.icon;
             return (
               <Link

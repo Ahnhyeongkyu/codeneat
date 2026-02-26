@@ -37,6 +37,16 @@ export default function JsonFormatterPage() {
       answer:
         "No. All JSON formatting, validation, and tree view processing happens entirely in your browser. Your data never leaves your device.",
     },
+    {
+      question: "Can I convert JSON to YAML or CSV?",
+      answer:
+        "Yes. Use the JSON → YAML or JSON → CSV buttons to convert your data. You can also convert YAML back to JSON with the YAML → JSON button.",
+    },
+    {
+      question: "What is the maximum file size I can format?",
+      answer:
+        "You can format JSON files up to 5 MB. You can also upload .json, .yaml, or .csv files directly using the Upload button.",
+    },
   ]);
 
   return (

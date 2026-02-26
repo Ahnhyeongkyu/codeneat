@@ -17,7 +17,7 @@ export function encodeBase64(input: string): Base64Result {
     const output = btoa(binary);
     return { output, error: null };
   } catch (e) {
-    return { output: "", error: (e as Error).message };
+    return { output: "", error: e instanceof Error ? e.message : String(e) };
   }
 }
 
@@ -36,6 +36,6 @@ export function decodeBase64(input: string): Base64Result {
     const output = decoder.decode(bytes);
     return { output, error: null };
   } catch (e) {
-    return { output: "", error: (e as Error).message };
+    return { output: "", error: e instanceof Error ? e.message : String(e) };
   }
 }

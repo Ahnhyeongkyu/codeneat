@@ -90,7 +90,7 @@ export default function JsonFormatterClient() {
   const [error, setError] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<"raw" | "tree" | "highlighted">("raw");
   const [tree, setTree] = useState<JsonTreeNode | null>(null);
-  const [indent, setIndent] = useState<number>(2);
+  const [indent, setIndent] = useState<number | string>(2);
   const [highlightTokens, setHighlightTokens] = useState<HighlightToken[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -107,7 +107,7 @@ export default function JsonFormatterClient() {
 
   const getShareState = useCallback(() => ({ input }), [input]);
 
-  const validation = input.trim() ? validateJson(input) : null;
+  const validation = useMemo(() => input.trim() ? validateJson(input) : null, [input]);
 
   const handleFormat = useCallback(() => {
     const result = formatJson(input, indent);
@@ -194,6 +194,21 @@ export default function JsonFormatterClient() {
     e.target.value = "";
   }, [indent, t]);
 
+  const handlePaste = useCallback((e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    const pasted = e.clipboardData.getData("text");
+    if (!pasted.trim()) return;
+    // Let the paste happen normally, then auto-format
+    setTimeout(() => {
+      const result = formatJson(pasted, indent);
+      if (!result.error) {
+        setOutput(result.output);
+        setHighlightTokens(highlightJson(result.output));
+        setError(null);
+        setViewMode("highlighted");
+      }
+    }, 0);
+  }, [indent]);
+
   const handleClear = useCallback(() => {
     setInput("");
     setOutput("");
@@ -208,7 +223,7 @@ export default function JsonFormatterClient() {
   }), [handleFormat, handleMinify]);
   useKeyboardShortcuts(shortcuts);
 
-  const inputSize = new Blob([input]).size;
+  const inputSize = useMemo(() => new TextEncoder().encode(input).length, [input]);
   const isOversize = inputSize > MAX_INPUT_SIZE;
 
   return (
@@ -227,13 +242,16 @@ export default function JsonFormatterClient() {
         </Button>
         <select
           value={indent}
-          onChange={(e) => setIndent(Number(e.target.value))}
+          onChange={(e) => {
+            const v = e.target.value;
+            setIndent(v === "\t" ? "\t" : Number(v));
+          }}
           className="rounded-md border bg-background px-2 py-1.5 text-sm"
           aria-label="Indentation"
         >
           <option value={2}>{t("common.indent.twoSpaces")}</option>
           <option value={4}>{t("common.indent.fourSpaces")}</option>
-          <option value={1}>{t("common.indent.tab")}</option>
+          <option value={"\t"}>{t("common.indent.tab")}</option>
         </select>
         <div className="flex-1" />
         <Button variant="outline" size="sm" onClick={handleSample}>
@@ -295,7 +313,7 @@ export default function JsonFormatterClient() {
         {/* Input */}
         <div>
           <div className="mb-2 flex items-center justify-between">
-            <label className="text-sm font-medium">{t("common.input")}</label>
+            <label htmlFor="json-input" className="text-sm font-medium">{t("common.input")}</label>
             {input && (
               <span className={`text-xs ${isOversize ? "text-destructive" : "text-muted-foreground"}`}>
                 {(inputSize / 1024).toFixed(1)} KB
@@ -308,25 +326,27 @@ export default function JsonFormatterClient() {
             </p>
           )}
           <Textarea
+            id="json-input"
             value={input}
             onChange={(e) => setInput(e.target.value)}
+            onPaste={handlePaste}
             placeholder={t("tools.jsonFormatter.inputPlaceholder")}
             className="min-h-[400px] font-mono text-sm"
           />
         </div>
 
         {/* Output */}
-        <div>
+        <div aria-live="polite">
           <div className="mb-2 flex items-center justify-between">
-            <label className="text-sm font-medium">{t("common.output")}</label>
+            <label htmlFor="json-output" className="text-sm font-medium">{t("common.output")}</label>
             <div className="flex gap-1">
               {input && <ShareButton getState={getShareState} />}
               {output && viewMode === "raw" && <><CopyButton text={output} /><DownloadButton text={output} filename="formatted.json" /></>}
             </div>
           </div>
 
-          {error && viewMode !== "tree" ? (
-            <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4">
+          {error ? (
+            <div role="alert" className="rounded-lg border border-destructive/50 bg-destructive/10 p-4">
               <p className="text-sm text-destructive">{error}</p>
             </div>
           ) : viewMode === "tree" && tree ? (

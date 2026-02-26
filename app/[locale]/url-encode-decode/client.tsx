@@ -6,6 +6,7 @@ import { ToolLayout } from "@/components/tool-layout";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { CopyButton } from "@/components/copy-button";
+import { DownloadButton } from "@/components/download-button";
 import { encodeUrl, decodeUrl, encodeFullUrl, decodeFullUrl } from "@/lib/tools/url-encode";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcut";
 
@@ -44,12 +45,21 @@ export default function UrlEncodeClient() {
     setError(null);
   }, []);
 
+  const URL_SAMPLE = "https://example.com/search?q=hello world&lang=한국어&page=1#results";
+  const handleSample = useCallback(() => {
+    setInput(URL_SAMPLE);
+    const fn = mode === "component" ? encodeUrl : encodeFullUrl;
+    const result = fn(URL_SAMPLE);
+    setOutput(result.output);
+    setError(result.error);
+  }, [mode]);
+
   const shortcuts = useMemo(() => ({
     "ctrl+enter": handleEncode,
   }), [handleEncode]);
   useKeyboardShortcuts(shortcuts);
 
-  const inputSize = new Blob([input]).size;
+  const inputSize = useMemo(() => new TextEncoder().encode(input).length, [input]);
   const isOversize = inputSize > MAX_INPUT_SIZE;
 
   return (
@@ -69,6 +79,9 @@ export default function UrlEncodeClient() {
           <option value="full">{t("common.encodeMode.fullUrl")}</option>
         </select>
         <div className="flex-1" />
+        <Button variant="outline" size="sm" onClick={handleSample}>
+          {t("common.sample")}
+        </Button>
         {output && (
           <Button variant="outline" size="sm" onClick={handleSwap}>
             {t("common.swap")}
@@ -82,7 +95,7 @@ export default function UrlEncodeClient() {
       <div className="grid gap-4 lg:grid-cols-2">
         <div>
           <div className="mb-2 flex items-center justify-between">
-            <label className="text-sm font-medium">{t("common.input")}</label>
+            <label htmlFor="url-input" className="text-sm font-medium">{t("common.input")}</label>
             {input && (
               <span className={`text-xs ${isOversize ? "text-destructive" : "text-muted-foreground"}`}>
                 {(inputSize / 1024).toFixed(1)} KB
@@ -90,6 +103,7 @@ export default function UrlEncodeClient() {
             )}
           </div>
           <Textarea
+            id="url-input"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder={t("tools.urlEncode.inputPlaceholder")}
@@ -97,13 +111,13 @@ export default function UrlEncodeClient() {
           />
         </div>
 
-        <div>
+        <div aria-live="polite">
           <div className="mb-2 flex items-center justify-between">
-            <label className="text-sm font-medium">{t("common.output")}</label>
-            {output && <CopyButton text={output} />}
+            <label htmlFor="url-output" className="text-sm font-medium">{t("common.output")}</label>
+            {output && <div className="flex gap-1"><CopyButton text={output} /><DownloadButton text={output} filename="url-encoded.txt" /></div>}
           </div>
           {error ? (
-            <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4">
+            <div role="alert" className="rounded-lg border border-destructive/50 bg-destructive/10 p-4">
               <p className="text-sm text-destructive">{error}</p>
             </div>
           ) : (

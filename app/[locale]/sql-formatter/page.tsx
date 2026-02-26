@@ -37,6 +37,16 @@ export default function SqlFormatterPage() {
       answer:
         "Yes. Use the Minify button to compress your SQL into a single line by removing unnecessary whitespace and comments. This is useful for embedding SQL in application code.",
     },
+    {
+      question: "Can I customize keyword casing?",
+      answer:
+        "Yes. Choose between UPPER (SELECT, FROM), lower (select, from), or Preserve (keep original casing) using the keyword case dropdown. UPPER is the most common SQL convention.",
+    },
+    {
+      question: "Does the formatter handle complex queries?",
+      answer:
+        "Yes. The formatter handles subqueries, CTEs (WITH clauses), JOINs, UNION, window functions, and other advanced SQL features. It properly indents nested structures for readability.",
+    },
   ]);
 
   return (

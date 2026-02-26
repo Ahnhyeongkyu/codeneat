@@ -5,8 +5,10 @@ import { useTranslations } from "next-intl";
 import { ToolLayout } from "@/components/tool-layout";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { CopyButton } from "@/components/copy-button";
+import { DownloadButton } from "@/components/download-button";
 import { Badge } from "@/components/ui/badge";
-import { computeDiff, computeLineDiff, type DiffResult, type LineDiff } from "@/lib/tools/diff";
+import { computeDiff, computeLineDiff, DIFF_SAMPLE, type DiffResult, type LineDiff } from "@/lib/tools/diff";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcut";
 
 const MAX_INPUT_SIZE = 5 * 1024 * 1024; // 5MB
@@ -30,14 +32,29 @@ export default function DiffCheckerClient() {
     setResult(null);
   }, []);
 
+  const handleSample = useCallback(() => {
+    setOriginal(DIFF_SAMPLE.original);
+    setModified(DIFF_SAMPLE.modified);
+    setResult(computeDiff(DIFF_SAMPLE.original, DIFF_SAMPLE.modified));
+    setLineDiffs(computeLineDiff(DIFF_SAMPLE.original, DIFF_SAMPLE.modified));
+  }, []);
+
+  const handleSwap = useCallback(() => {
+    const temp = original;
+    setOriginal(modified);
+    setModified(temp);
+    setResult(null);
+    setLineDiffs([]);
+  }, [original, modified]);
+
   const shortcuts = useMemo(() => ({
     "ctrl+enter": handleCompare,
   }), [handleCompare]);
   useKeyboardShortcuts(shortcuts);
 
-  const originalSize = new Blob([original]).size;
+  const originalSize = useMemo(() => new TextEncoder().encode(original).length, [original]);
   const originalOversize = originalSize > MAX_INPUT_SIZE;
-  const modifiedSize = new Blob([modified]).size;
+  const modifiedSize = useMemo(() => new TextEncoder().encode(modified).length, [modified]);
   const modifiedOversize = modifiedSize > MAX_INPUT_SIZE;
 
   return (
@@ -62,6 +79,14 @@ export default function DiffCheckerClient() {
           </Button>
         </div>
         <div className="flex-1" />
+        {(original || modified) && (
+          <Button variant="outline" size="sm" onClick={handleSwap}>
+            {t("common.swap")}
+          </Button>
+        )}
+        <Button variant="outline" size="sm" onClick={handleSample}>
+          {t("common.sample")}
+        </Button>
         <Button variant="outline" size="sm" onClick={handleClear}>
           {t("common.clear")}
         </Button>
@@ -71,7 +96,7 @@ export default function DiffCheckerClient() {
       <div className="mb-6 grid gap-4 lg:grid-cols-2">
         <div>
           <div className="mb-2 flex items-center justify-between">
-            <label className="text-sm font-medium">
+            <label htmlFor="diff-original" className="text-sm font-medium">
               {t("tools.diffChecker.original")}
             </label>
             {original && (
@@ -81,6 +106,7 @@ export default function DiffCheckerClient() {
             )}
           </div>
           <Textarea
+            id="diff-original"
             value={original}
             onChange={(e) => setOriginal(e.target.value)}
             placeholder={t("tools.diffChecker.originalPlaceholder")}
@@ -89,7 +115,7 @@ export default function DiffCheckerClient() {
         </div>
         <div>
           <div className="mb-2 flex items-center justify-between">
-            <label className="text-sm font-medium">
+            <label htmlFor="diff-modified" className="text-sm font-medium">
               {t("tools.diffChecker.modified")}
             </label>
             {modified && (
@@ -99,6 +125,7 @@ export default function DiffCheckerClient() {
             )}
           </div>
           <Textarea
+            id="diff-modified"
             value={modified}
             onChange={(e) => setModified(e.target.value)}
             placeholder={t("tools.diffChecker.modifiedPlaceholder")}
@@ -109,7 +136,7 @@ export default function DiffCheckerClient() {
 
       {/* Result */}
       {result && (
-        <div>
+        <div aria-live="polite">
           {/* Stats */}
           <div className="mb-4 flex gap-2">
             <Badge variant="secondary" className="gap-1 bg-primary/10 text-primary">

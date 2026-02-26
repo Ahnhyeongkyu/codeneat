@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { ToolLayout } from "@/components/tool-layout";
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { testRegex, REGEX_CHEAT_SHEET } from "@/lib/tools/regex";
+import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcut";
+import { CopyButton } from "@/components/copy-button";
 
 const MAX_INPUT_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -56,15 +58,33 @@ export default function RegexTesterClient() {
     );
   };
 
-  const inputSize = new Blob([testString]).size;
+  const REGEX_SAMPLE = { pattern: "\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b", flags: "gi", test: "Contact us at support@example.com or sales@company.org for more info." };
+
+  const handleSample = useCallback(() => {
+    setPattern(REGEX_SAMPLE.pattern);
+    setFlags(REGEX_SAMPLE.flags);
+    setTestString(REGEX_SAMPLE.test);
+  }, []);
+
+  const handleCheatSheetClick = useCallback((pat: string) => {
+    setPattern(pat);
+  }, []);
+
+  const shortcuts = useMemo(() => ({
+    "ctrl+enter": () => {}, // Regex auto-matches; shortcut is no-op for consistency
+  }), []);
+  useKeyboardShortcuts(shortcuts);
+
+  const inputSize = useMemo(() => new TextEncoder().encode(testString).length, [testString]);
   const isOversize = inputSize > MAX_INPUT_SIZE;
 
   return (
     <ToolLayout toolKey="regexTester">
-      {/* Pattern + Flags */}
-      <div className="mb-4 flex gap-2">
+      {/* Action bar */}
+      <div className="mb-4 flex flex-wrap items-center gap-2">
         <div className="flex-1">
           <Input
+            id="regex-pattern"
             value={pattern}
             onChange={(e) => setPattern(e.target.value)}
             placeholder={t("tools.regexTester.patternPlaceholder")}
@@ -87,11 +107,14 @@ export default function RegexTesterClient() {
             </Button>
           ))}
         </div>
+        <Button variant="outline" size="sm" onClick={handleSample}>
+          {t("common.sample")}
+        </Button>
       </div>
 
       {/* Error */}
       {result.error && (
-        <div className="mb-4 rounded-lg border border-destructive/50 bg-destructive/10 p-4">
+        <div role="alert" className="mb-4 rounded-lg border border-destructive/50 bg-destructive/10 p-4">
           <p className="text-sm text-destructive">{result.error}</p>
         </div>
       )}
@@ -99,7 +122,7 @@ export default function RegexTesterClient() {
       {/* Test string */}
       <div className="mb-4">
         <div className="mb-2 flex items-center justify-between">
-          <label className="text-sm font-medium">{t("common.testString")}</label>
+          <label htmlFor="regex-test" className="text-sm font-medium">{t("common.testString")}</label>
           {testString && (
             <span className={`text-xs ${isOversize ? "text-destructive" : "text-muted-foreground"}`}>
               {(inputSize / 1024).toFixed(1)} KB
@@ -107,6 +130,7 @@ export default function RegexTesterClient() {
           )}
         </div>
         <Textarea
+          id="regex-test"
           value={testString}
           onChange={(e) => setTestString(e.target.value)}
           placeholder={t("tools.regexTester.testStringPlaceholder")}
@@ -184,14 +208,19 @@ export default function RegexTesterClient() {
                 <h3 className="mb-2 font-semibold">{category.category}</h3>
                 <div className="space-y-1">
                   {category.items.map((item) => (
-                    <div key={item.pattern} className="flex gap-4 text-sm">
+                    <button
+                      key={item.pattern}
+                      onClick={() => handleCheatSheetClick(item.pattern)}
+                      className="flex w-full gap-4 rounded px-1 py-0.5 text-left text-sm hover:bg-accent"
+                      title="Click to try"
+                    >
                       <code className="w-20 shrink-0 font-mono text-primary">
                         {item.pattern}
                       </code>
                       <span className="text-muted-foreground">
                         {item.description}
                       </span>
-                    </div>
+                    </button>
                   ))}
                 </div>
               </div>

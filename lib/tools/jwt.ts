@@ -62,7 +62,7 @@ export function decodeJwt(token: string): JwtParts {
 
     return { header, payload, signature, isExpired, expiresAt, issuedAt, error: null };
   } catch (e) {
-    return { ...empty, error: (e as Error).message };
+    return { ...empty, error: e instanceof Error ? e.message : String(e) };
   }
 }
 

@@ -36,6 +36,16 @@ export default function UrlEncodePage() {
       answer:
         "encodeURI encodes a full URI but preserves characters like : / ? & =. encodeURIComponent encodes individual components more aggressively, converting those characters too. Our tool uses encodeURIComponent for maximum safety.",
     },
+    {
+      question: "Why do spaces become %20 or +?",
+      answer:
+        "In URL encoding, spaces are represented as %20 (standard) or + (form encoding). Our Component mode uses %20, which is the RFC 3986 standard and works universally in URLs.",
+    },
+    {
+      question: "Can I encode entire URLs or just query parameters?",
+      answer:
+        "Use Component mode for query parameters and individual values. Use Full URL mode for encoding complete URLs while preserving the URL structure (protocol, host, path separators).",
+    },
   ]);
 
   return (

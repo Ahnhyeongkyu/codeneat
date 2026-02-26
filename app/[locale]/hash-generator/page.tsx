@@ -37,6 +37,16 @@ export default function HashGeneratorPage() {
       answer:
         "This tool uses the Web Crypto API which supports SHA-1, SHA-256, SHA-384, and SHA-512. MD5 is not included as it is considered cryptographically broken and should not be used for security purposes.",
     },
+    {
+      question: "Can I generate all hashes at once?",
+      answer:
+        "Yes. Click the Generate All button to compute MD5, SHA-1, SHA-256, SHA-384, and SHA-512 hashes simultaneously. This is useful for comparing hash outputs across algorithms.",
+    },
+    {
+      question: "Is hashing the same as encryption?",
+      answer:
+        "No. Hashing is a one-way function — you cannot reverse a hash to get the original data. Encryption is two-way — encrypted data can be decrypted with the correct key. Hashing is used for verification, encryption for confidentiality.",
+    },
   ]);
 
   return (

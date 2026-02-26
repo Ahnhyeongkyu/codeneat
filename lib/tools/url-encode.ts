@@ -11,7 +11,7 @@ export function encodeUrl(input: string): UrlEncodeResult {
     const output = encodeURIComponent(input);
     return { output, error: null };
   } catch (e) {
-    return { output: "", error: (e as Error).message };
+    return { output: "", error: e instanceof Error ? e.message : String(e) };
   }
 }
 
@@ -23,7 +23,7 @@ export function decodeUrl(input: string): UrlEncodeResult {
     const output = decodeURIComponent(input);
     return { output, error: null };
   } catch (e) {
-    return { output: "", error: (e as Error).message };
+    return { output: "", error: e instanceof Error ? e.message : String(e) };
   }
 }
 
@@ -35,7 +35,7 @@ export function encodeFullUrl(input: string): UrlEncodeResult {
     const output = encodeURI(input);
     return { output, error: null };
   } catch (e) {
-    return { output: "", error: (e as Error).message };
+    return { output: "", error: e instanceof Error ? e.message : String(e) };
   }
 }
 
@@ -47,6 +47,6 @@ export function decodeFullUrl(input: string): UrlEncodeResult {
     const output = decodeURI(input);
     return { output, error: null };
   } catch (e) {
-    return { output: "", error: (e as Error).message };
+    return { output: "", error: e instanceof Error ? e.message : String(e) };
   }
 }

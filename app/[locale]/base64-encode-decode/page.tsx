@@ -36,6 +36,16 @@ export default function Base64Page() {
       answer:
         "Yes. Our Base64 tool fully supports UTF-8 encoded text, including special characters, emojis, and non-Latin scripts.",
     },
+    {
+      question: "What is the difference between Base64 and Base64URL?",
+      answer:
+        "Standard Base64 uses + and / characters which are not URL-safe. Base64URL replaces them with - and _ to make the output safe for use in URLs and filenames.",
+    },
+    {
+      question: "Where is Base64 commonly used?",
+      answer:
+        "Base64 is used in data URIs (embedding images in CSS/HTML), email attachments (MIME), JWT tokens, API authentication headers, and storing binary data in JSON or XML.",
+    },
   ]);
 
   return (

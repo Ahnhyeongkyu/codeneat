@@ -54,7 +54,7 @@ export default function JwtDecoderClient() {
   }), [handleDecode]);
   useKeyboardShortcuts(shortcuts);
 
-  const inputSize = new Blob([input]).size;
+  const inputSize = useMemo(() => new TextEncoder().encode(input).length, [input]);
   const isOversize = inputSize > MAX_INPUT_SIZE;
 
   return (
@@ -100,7 +100,7 @@ export default function JwtDecoderClient() {
       {/* Input */}
       <div className="mb-6">
         <div className="mb-2 flex items-center justify-between">
-          <label className="text-sm font-medium">{t("common.input")}</label>
+          <label htmlFor="jwt-input" className="text-sm font-medium">{t("common.input")}</label>
           {input && (
             <span className={`text-xs ${isOversize ? "text-destructive" : "text-muted-foreground"}`}>
               {(inputSize / 1024).toFixed(1)} KB
@@ -108,6 +108,7 @@ export default function JwtDecoderClient() {
           )}
         </div>
         <Textarea
+          id="jwt-input"
           value={input}
           onChange={(e) => {
             const val = e.target.value;
@@ -125,7 +126,7 @@ export default function JwtDecoderClient() {
 
       {/* Error */}
       {result?.error && (
-        <div className="mb-4 rounded-lg border border-destructive/50 bg-destructive/10 p-4">
+        <div role="alert" className="mb-4 rounded-lg border border-destructive/50 bg-destructive/10 p-4">
           <div className="flex items-center gap-2">
             <AlertCircle className="h-4 w-4 text-destructive" />
             <p className="text-sm text-destructive">{result.error}</p>
@@ -135,7 +136,7 @@ export default function JwtDecoderClient() {
 
       {/* Result */}
       {result && !result.error && (
-        <div className="space-y-4">
+        <div className="space-y-4" aria-live="polite">
           {/* Expiration status */}
           {result.isExpired !== null && (
             <div className="flex items-center gap-2">

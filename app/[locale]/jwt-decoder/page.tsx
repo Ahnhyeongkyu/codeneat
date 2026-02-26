@@ -37,6 +37,16 @@ export default function JwtDecoderPage() {
       answer:
         "Yes. All decoding happens in your browser — your token is never sent to any server. However, never share JWT tokens publicly as they may contain sensitive claims.",
     },
+    {
+      question: "What are common JWT claims?",
+      answer:
+        "Standard claims include: iss (issuer), sub (subject), aud (audience), exp (expiration), iat (issued at), and nbf (not before). Custom claims can contain any application-specific data like user roles or permissions.",
+    },
+    {
+      question: "How do I check if a JWT is expired?",
+      answer:
+        "Paste your token and our decoder automatically checks the exp (expiration) claim against the current time. Expired tokens show a red badge, and valid tokens show a green badge with the expiration date.",
+    },
   ]);
 
   return (

@@ -71,7 +71,7 @@ export function testRegex(
 
     return { matches, error: null };
   } catch (e) {
-    return { matches: [], error: (e as Error).message };
+    return { matches: [], error: e instanceof Error ? e.message : String(e) };
   }
 }
 

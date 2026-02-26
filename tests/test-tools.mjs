@@ -55,7 +55,7 @@ const { formatJson, minifyJson, validateJson, buildJsonTree, jsonToYaml, yamlToJ
 const { encodeShareState, decodeShareState } = await import("../lib/share.ts");
 const { getAllPosts, getPostBySlug } = await import("../lib/blog.ts");
 const { testRegex } = await import("../lib/tools/regex.ts");
-const { computeDiff, computeLineDiff } = await import("../lib/tools/diff.ts");
+const { computeDiff, computeLineDiff, DIFF_SAMPLE } = await import("../lib/tools/diff.ts");
 const { formatSql, minifySql } = await import("../lib/tools/sql.ts");
 const { encodeUrl, decodeUrl, encodeFullUrl, decodeFullUrl } = await import("../lib/tools/url-encode.ts");
 const { encodeBase64, decodeBase64 } = await import("../lib/tools/base64.ts");
@@ -710,6 +710,16 @@ section("share.ts - encodeShareState / decodeShareState");
 
   const invalidResult = decodeShareState("!!!invalid!!!");
   assertEqual(invalidResult, null, "decodeShareState: invalid input returns null");
+
+  // Size limit: >8KB should return empty
+  const bigInput = "x".repeat(9000);
+  const bigEncoded = encodeShareState({ input: bigInput });
+  assertEqual(bigEncoded, "", "encodeShareState: >8KB returns empty string");
+
+  // Size check uses TextEncoder (not Blob)
+  const unicodeState = { input: "가".repeat(3000) }; // 3-byte chars = ~9KB
+  const unicodeEncoded = encodeShareState(unicodeState);
+  assertEqual(unicodeEncoded, "", "encodeShareState: multibyte chars counted correctly (TextEncoder)");
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -734,6 +744,91 @@ section("blog.ts - getAllPosts / getPostBySlug");
 
   const missing = getPostBySlug("nonexistent-post");
   assertEqual(missing, undefined, "getPostBySlug: nonexistent returns undefined");
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// en.json - i18n key completeness
+// ═══════════════════════════════════════════════════════════════════════════════
+
+section("en.json - FAQ completeness");
+{
+  const fs = await import("fs");
+  const enJson = JSON.parse(fs.readFileSync("messages/en.json", "utf8"));
+  const toolKeys = ["jsonFormatter", "base64", "urlEncode", "regexTester", "diffChecker", "jwtDecoder", "sqlFormatter", "hashGenerator"];
+
+  for (const key of toolKeys) {
+    const faq = enJson.tools[key]?.faq;
+    assert(faq !== undefined, `en.json: ${key} has faq object`);
+    for (const n of ["q1", "a1", "q2", "a2", "q3", "a3", "q4", "a4", "q5", "a5"]) {
+      assert(faq[n] !== undefined && faq[n].length > 0, `en.json: ${key}.faq.${n} exists`);
+    }
+  }
+
+  // shareTooLarge key exists
+  assert(enJson.common.shareTooLarge !== undefined, "en.json: common.shareTooLarge exists");
+  assert(enJson.common.shareTooLarge.length > 0, "en.json: common.shareTooLarge is non-empty");
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// Batch 3: Tab indent, DIFF_SAMPLE, debounce, accessibility, error handling
+// ═══════════════════════════════════════════════════════════════════════════════
+
+section("json.ts - Tab indent support");
+{
+  const r1 = formatJson('{"a":1,"b":2}', "\t");
+  assertEqual(r1.error, null, "formatJson with tab indent: no error");
+  assert(r1.output.includes("\t"), "formatJson with tab indent: output contains tab characters");
+  assert(!r1.output.includes("  "), "formatJson with tab indent: no space indentation");
+
+  const r2 = yamlToJson("name: test\ncount: 42\n", "\t");
+  assertEqual(r2.error, null, "yamlToJson with tab indent: no error");
+  assert(r2.output.includes("\t"), "yamlToJson with tab indent: output contains tab characters");
+
+  // Number indent still works
+  const r3 = formatJson('{"a":1}', 4);
+  assertEqual(r3.error, null, "formatJson with 4-space indent: no error");
+  assert(r3.output.includes("    "), "formatJson with 4-space indent: has 4-space indentation");
+}
+
+section("diff.ts - DIFF_SAMPLE export");
+{
+  assert(DIFF_SAMPLE !== undefined, "DIFF_SAMPLE: is exported");
+  assert(DIFF_SAMPLE.original.length > 0, "DIFF_SAMPLE: original is non-empty");
+  assert(DIFF_SAMPLE.modified.length > 0, "DIFF_SAMPLE: modified is non-empty");
+  assert(DIFF_SAMPLE.original !== DIFF_SAMPLE.modified, "DIFF_SAMPLE: original and modified differ");
+
+  // Can compute diff with sample
+  const result = computeDiff(DIFF_SAMPLE.original, DIFF_SAMPLE.modified);
+  assert(result.stats.additions > 0 || result.stats.deletions > 0, "DIFF_SAMPLE: diff produces changes");
+
+  const lineDiffs = computeLineDiff(DIFF_SAMPLE.original, DIFF_SAMPLE.modified);
+  assert(lineDiffs.length > 0, "DIFF_SAMPLE: line diff produces rows");
+}
+
+section("regex.ts - error handling safety");
+{
+  // Invalid regex pattern should return error string, not throw
+  const r1 = testRegex("[invalid", "test", "g");
+  assert(r1.error !== null, "testRegex: invalid pattern returns error");
+  assert(typeof r1.error === "string", "testRegex: error is a string");
+  assertEqual(r1.matches.length, 0, "testRegex: invalid pattern returns no matches");
+}
+
+section("Accessibility: en.json i18n key completeness for new features");
+{
+  const fs = await import("fs");
+  const enJson = JSON.parse(fs.readFileSync("messages/en.json", "utf8"));
+
+  // Check required common keys exist
+  const commonKeys = ["copy", "copied", "share", "shareTooLarge", "clear", "download", "sample", "swap", "input", "output"];
+  for (const key of commonKeys) {
+    assert(enJson.common[key] !== undefined && enJson.common[key].length > 0, `en.json: common.${key} exists and non-empty`);
+  }
+
+  // Check indent keys
+  assert(enJson.common.indent?.twoSpaces, "en.json: common.indent.twoSpaces exists");
+  assert(enJson.common.indent?.fourSpaces, "en.json: common.indent.fourSpaces exists");
+  assert(enJson.common.indent?.tab, "en.json: common.indent.tab exists");
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════

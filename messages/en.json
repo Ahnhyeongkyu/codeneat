@@ -84,7 +84,11 @@
         "q2": "Can I validate JSON online?",
         "a2": "Yes. Our JSON formatter validates your JSON in real-time as you type, instantly showing syntax errors with line numbers.",
         "q3": "Is my JSON data sent to a server?",
-        "a3": "No. All JSON formatting, validation, and tree view processing happens entirely in your browser. Your data never leaves your device."
+        "a3": "No. All JSON formatting, validation, and tree view processing happens entirely in your browser. Your data never leaves your device.",
+        "q4": "Can I convert JSON to YAML or CSV?",
+        "a4": "Yes. Use the JSON → YAML or JSON → CSV buttons to convert your data. You can also convert YAML back to JSON with the YAML → JSON button.",
+        "q5": "What is the maximum file size I can format?",
+        "a5": "You can format JSON files up to 5 MB. You can also upload .json, .yaml, or .csv files directly using the Upload button."
       }
     },
     "base64": {
@@ -100,7 +104,11 @@
         "q2": "Does Base64 encoding encrypt my data?",
         "a2": "No. Base64 is an encoding, not encryption. It transforms data into a different format but does not protect it. Anyone can decode Base64 back to the original data.",
         "q3": "Does this tool support UTF-8?",
-        "a3": "Yes. Our Base64 tool fully supports UTF-8 encoded text, including special characters, emojis, and non-Latin scripts."
+        "a3": "Yes. Our Base64 tool fully supports UTF-8 encoded text, including special characters, emojis, and non-Latin scripts.",
+        "q4": "What is the difference between Base64 and Base64URL?",
+        "a4": "Standard Base64 uses + and / characters which are not URL-safe. Base64URL replaces them with - and _ to make the output safe for use in URLs and filenames.",
+        "q5": "Where is Base64 commonly used?",
+        "a5": "Base64 is used in data URIs (embedding images in CSS/HTML), email attachments (MIME), JWT tokens, API authentication headers, and storing binary data in JSON or XML."
       }
     },
     "urlEncode": {
@@ -116,7 +124,11 @@
         "q2": "When should I URL encode?",
         "a2": "You should URL encode query parameters, form data, and any text that contains special characters like spaces, ampersands, or non-ASCII characters before including them in a URL.",
         "q3": "What is the difference between encodeURI and encodeURIComponent?",
-        "a3": "encodeURI encodes a full URI but preserves characters like : / ? & =. encodeURIComponent encodes individual components more aggressively, converting those characters too. Our tool uses encodeURIComponent for maximum safety."
+        "a3": "encodeURI encodes a full URI but preserves characters like : / ? & =. encodeURIComponent encodes individual components more aggressively, converting those characters too. Our tool uses encodeURIComponent for maximum safety.",
+        "q4": "Why do spaces become %20 or +?",
+        "a4": "In URL encoding, spaces are represented as %20 (standard) or + (form encoding). Our Component mode uses %20, which is the RFC 3986 standard and works universally in URLs.",
+        "q5": "Can I encode entire URLs or just query parameters?",
+        "a5": "Use Component mode for query parameters and individual values. Use Full URL mode for encoding complete URLs while preserving the URL structure (protocol, host, path separators)."
       }
     },
     "regexTester": {
@@ -135,7 +147,11 @@
         "q2": "How do I use capture groups?",
         "a2": "Wrap part of your pattern in parentheses to create a capture group. For example, (\\d+)-(\\d+) captures two groups of digits separated by a dash. Named groups use the syntax (?<name>pattern).",
         "q3": "Is the regex tested in real-time?",
-        "a3": "Yes. Matches are highlighted instantly as you type both the pattern and test string. No button click needed for matching — results update automatically."
+        "a3": "Yes. Matches are highlighted instantly as you type both the pattern and test string. No button click needed for matching — results update automatically.",
+        "q4": "What regex engine does this tool use?",
+        "a4": "This tool uses the JavaScript RegExp engine built into your browser. It supports ES2024 features including named groups, lookbehind assertions, and Unicode property escapes.",
+        "q5": "How do I test a regex for email or URL validation?",
+        "a5": "Open the Cheat Sheet section for common patterns including email, URL, IP address, and phone number validation. Click any pattern to try it, then paste your test data to verify matches."
       }
     },
     "diffChecker": {
@@ -155,7 +171,11 @@
         "q2": "Can I compare code with this tool?",
         "a2": "Yes. You can compare any text including source code, configuration files, SQL queries, or plain text documents. The tool preserves formatting and whitespace.",
         "q3": "Is there a size limit?",
-        "a3": "There is no hard limit. Since all processing happens in your browser, performance depends on your device. Texts up to several megabytes work smoothly on modern devices."
+        "a3": "There is no hard limit. Since all processing happens in your browser, performance depends on your device. Texts up to several megabytes work smoothly on modern devices.",
+        "q4": "What is the difference between inline and side-by-side view?",
+        "a4": "Inline view shows changes within a single panel with additions and deletions marked inline. Side-by-side view shows the original and modified text in two columns with line numbers, similar to GitHub's diff view.",
+        "q5": "Can I compare JSON or SQL specifically?",
+        "a5": "Yes. For best results with JSON, format both texts first using our JSON Formatter, then compare. For SQL, use the SQL Formatter first. This makes structural differences much clearer."
       }
     },
     "jwtDecoder": {
@@ -175,7 +195,11 @@
         "q2": "Can this tool verify JWT signatures?",
         "a2": "This tool decodes and inspects JWT tokens, showing the header, payload, and expiration status. Signature verification requires the secret key, which we intentionally do not ask for to protect your security.",
         "q3": "Is it safe to paste my JWT here?",
-        "a3": "Yes. All decoding happens in your browser — your token is never sent to any server. However, never share JWT tokens publicly as they may contain sensitive claims."
+        "a3": "Yes. All decoding happens in your browser — your token is never sent to any server. However, never share JWT tokens publicly as they may contain sensitive claims.",
+        "q4": "What are common JWT claims?",
+        "a4": "Standard claims include: iss (issuer), sub (subject), aud (audience), exp (expiration), iat (issued at), and nbf (not before). Custom claims can contain any application-specific data like user roles or permissions.",
+        "q5": "How do I check if a JWT is expired?",
+        "a5": "Paste your token and our decoder automatically checks the exp (expiration) claim against the current time. Expired tokens show a red badge, and valid tokens show a green badge with the expiration date."
       }
     },
     "sqlFormatter": {
@@ -192,7 +216,11 @@
         "q2": "Does the formatter change my query logic?",
         "a2": "No. The formatter only changes whitespace, indentation, and keyword casing. Your query logic, table names, and values remain exactly the same.",
         "q3": "Can I minify SQL queries?",
-        "a3": "Yes. Use the Minify button to compress your SQL into a single line by removing unnecessary whitespace and comments. This is useful for embedding SQL in application code."
+        "a3": "Yes. Use the Minify button to compress your SQL into a single line by removing unnecessary whitespace and comments. This is useful for embedding SQL in application code.",
+        "q4": "Can I customize keyword casing?",
+        "a4": "Yes. Choose between UPPER (SELECT, FROM), lower (select, from), or Preserve (keep original casing) using the keyword case dropdown. UPPER is the most common SQL convention.",
+        "q5": "Does the formatter handle complex queries?",
+        "a5": "Yes. The formatter handles subqueries, CTEs (WITH clauses), JOINs, UNION, window functions, and other advanced SQL features. It properly indents nested structures for readability."
       }
     },
     "hashGenerator": {
@@ -209,7 +237,11 @@
         "q2": "Which algorithm should I use?",
         "a2": "SHA-256 is the most commonly recommended. SHA-1 is considered weak for security purposes. SHA-384 and SHA-512 provide longer hashes for higher security requirements.",
         "q3": "Does this tool support MD5?",
-        "a3": "Yes! We support MD5, SHA-1, SHA-256, SHA-384, and SHA-512. Note that MD5 is considered cryptographically broken — use SHA-256 or higher for security purposes."
+        "a3": "Yes! We support MD5, SHA-1, SHA-256, SHA-384, and SHA-512. Note that MD5 is considered cryptographically broken — use SHA-256 or higher for security purposes.",
+        "q4": "Can I generate all hashes at once?",
+        "a4": "Yes. Click the Generate All button to compute MD5, SHA-1, SHA-256, SHA-384, and SHA-512 hashes simultaneously. This is useful for comparing hash outputs across algorithms.",
+        "q5": "Is hashing the same as encryption?",
+        "a5": "No. Hashing is a one-way function — you cannot reverse a hash to get the original data. Encryption is two-way — encrypted data can be decrypted with the correct key. Hashing is used for verification, encryption for confidentiality."
       }
     }
   },
@@ -217,6 +249,7 @@
     "copy": "Copy",
     "copied": "Copied!",
     "share": "Share",
+    "shareTooLarge": "Too large to share",
     "clear": "Clear",
     "download": "Download",
     "upload": "Upload",

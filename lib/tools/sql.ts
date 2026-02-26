@@ -42,7 +42,7 @@ export function formatSql(
     });
     return { output, error: null };
   } catch (e) {
-    return { output: "", error: (e as Error).message };
+    return { output: "", error: e instanceof Error ? e.message : String(e) };
   }
 }
 
@@ -92,7 +92,7 @@ export function minifySql(input: string): SqlResult {
     const output = result.replace(/\s+/g, " ").trim();
     return { output, error: null };
   } catch (e) {
-    return { output: "", error: (e as Error).message };
+    return { output: "", error: e instanceof Error ? e.message : String(e) };
   }
 }
 

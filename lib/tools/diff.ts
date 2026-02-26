@@ -28,6 +28,29 @@ export function computeLineDiff(original: string, modified: string): LineDiff[] 
   const m = origLines.length;
   const n = modLines.length;
 
+  // Guard against O(m*n) memory explosion — fall back for large inputs
+  const MAX_LINES = 5000;
+  if (m > MAX_LINES || n > MAX_LINES) {
+    // Simple line-by-line comparison for large files
+    const maxLen = Math.max(m, n);
+    for (let k = 0; k < maxLen; k++) {
+      const origText = k < m ? origLines[k] : "";
+      const modText = k < n ? modLines[k] : "";
+      if (k < m && k < n && origText === modText) {
+        result.push({
+          left: { lineNo: k + 1, text: origText, type: "equal" },
+          right: { lineNo: k + 1, text: modText, type: "equal" },
+        });
+      } else {
+        result.push({
+          left: { lineNo: k < m ? k + 1 : null, text: k < m ? origText : "", type: k < m ? "delete" : "empty" },
+          right: { lineNo: k < n ? k + 1 : null, text: k < n ? modText : "", type: k < n ? "insert" : "empty" },
+        });
+      }
+    }
+    return result;
+  }
+
   // Build LCS table
   const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
   for (let i = 1; i <= m; i++) {
@@ -119,3 +142,24 @@ export function computeDiff(original: string, modified: string): DiffResult {
     };
   }
 }
+
+export const DIFF_SAMPLE = {
+  original: `function greet(name) {
+  console.log("Hello, " + name);
+  return true;
+}
+
+const result = greet("World");`,
+  modified: `function greet(name, greeting = "Hello") {
+  console.log(greeting + ", " + name + "!");
+  return true;
+}
+
+// Added farewell function
+function farewell(name) {
+  console.log("Goodbye, " + name);
+}
+
+const result = greet("World");
+farewell("World");`,
+};

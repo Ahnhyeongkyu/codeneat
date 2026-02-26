@@ -6,6 +6,7 @@ import { ToolLayout } from "@/components/tool-layout";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { CopyButton } from "@/components/copy-button";
+import { DownloadButton } from "@/components/download-button";
 import { encodeBase64, decodeBase64 } from "@/lib/tools/base64";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcut";
 
@@ -41,12 +42,20 @@ export default function Base64Client() {
     setError(null);
   }, []);
 
+  const BASE64_SAMPLE = "Hello, World! 🌍 This is a Base64 encoding test with UTF-8 characters: café, naïve, résumé.";
+  const handleSample = useCallback(() => {
+    setInput(BASE64_SAMPLE);
+    const result = encodeBase64(BASE64_SAMPLE);
+    setOutput(result.output);
+    setError(result.error);
+  }, []);
+
   const shortcuts = useMemo(() => ({
     "ctrl+enter": handleEncode,
   }), [handleEncode]);
   useKeyboardShortcuts(shortcuts);
 
-  const inputSize = new Blob([input]).size;
+  const inputSize = useMemo(() => new TextEncoder().encode(input).length, [input]);
   const isOversize = inputSize > MAX_INPUT_SIZE;
 
   return (
@@ -58,6 +67,9 @@ export default function Base64Client() {
           {t("tools.base64.decode")}
         </Button>
         <div className="flex-1" />
+        <Button variant="outline" size="sm" onClick={handleSample}>
+          {t("common.sample")}
+        </Button>
         {output && (
           <Button variant="outline" size="sm" onClick={handleSwap}>
             {t("common.swap")}
@@ -72,7 +84,7 @@ export default function Base64Client() {
       <div className="grid gap-4 lg:grid-cols-2">
         <div>
           <div className="mb-2 flex items-center justify-between">
-            <label className="text-sm font-medium">{t("common.input")}</label>
+            <label htmlFor="base64-input" className="text-sm font-medium">{t("common.input")}</label>
             {input && (
               <span className={`text-xs ${isOversize ? "text-destructive" : "text-muted-foreground"}`}>
                 {(inputSize / 1024).toFixed(1)} KB
@@ -80,6 +92,7 @@ export default function Base64Client() {
             )}
           </div>
           <Textarea
+            id="base64-input"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder={t("tools.base64.inputPlaceholder")}
@@ -87,13 +100,13 @@ export default function Base64Client() {
           />
         </div>
 
-        <div>
+        <div aria-live="polite">
           <div className="mb-2 flex items-center justify-between">
-            <label className="text-sm font-medium">{t("common.output")}</label>
-            {output && <CopyButton text={output} />}
+            <label htmlFor="base64-output" className="text-sm font-medium">{t("common.output")}</label>
+            {output && <div className="flex gap-1"><CopyButton text={output} /><DownloadButton text={output} filename="base64-output.txt" /></div>}
           </div>
           {error ? (
-            <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4">
+            <div role="alert" className="rounded-lg border border-destructive/50 bg-destructive/10 p-4">
               <p className="text-sm text-destructive">{error}</p>
             </div>
           ) : (

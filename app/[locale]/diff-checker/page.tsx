@@ -37,6 +37,16 @@ export default function DiffCheckerPage() {
       answer:
         "There is no hard limit. Since all processing happens in your browser, performance depends on your device. Texts up to several megabytes work smoothly on modern devices.",
     },
+    {
+      question: "What is the difference between inline and side-by-side view?",
+      answer:
+        "Inline view shows changes within a single panel with additions and deletions marked inline. Side-by-side view shows the original and modified text in two columns with line numbers, similar to GitHub's diff view.",
+    },
+    {
+      question: "Can I compare JSON or SQL specifically?",
+      answer:
+        "Yes. For best results with JSON, format both texts first using our JSON Formatter, then compare. For SQL, use the SQL Formatter first. This makes structural differences much clearer.",
+    },
   ]);
 
   return (

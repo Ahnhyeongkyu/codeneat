@@ -106,7 +106,7 @@ export async function generateHash(
     const hash = hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
     return { hash, error: null };
   } catch (e) {
-    return { hash: "", error: (e as Error).message };
+    return { hash: "", error: e instanceof Error ? e.message : String(e) };
   }
 }
 

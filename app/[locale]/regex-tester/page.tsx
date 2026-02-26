@@ -37,6 +37,16 @@ export default function RegexTesterPage() {
       answer:
         "Yes. Matches are highlighted instantly as you type both the pattern and test string. No button click needed for matching — results update automatically.",
     },
+    {
+      question: "What regex engine does this tool use?",
+      answer:
+        "This tool uses the JavaScript RegExp engine built into your browser. It supports ES2024 features including named groups, lookbehind assertions, and Unicode property escapes.",
+    },
+    {
+      question: "How do I test a regex for email or URL validation?",
+      answer:
+        "Open the Cheat Sheet section for common patterns including email, URL, IP address, and phone number validation. Paste your test data to verify matches in real-time.",
+    },
   ]);
 
   return (
