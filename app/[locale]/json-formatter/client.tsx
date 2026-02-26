@@ -20,10 +20,12 @@ import {
   yamlToJson,
   jsonToCsv,
   highlightJson,
+  queryJsonPath,
   JSON_SAMPLE,
   type JsonTreeNode,
   type HighlightToken,
 } from "@/lib/tools/json";
+import { Input } from "@/components/ui/input";
 import { AlertCircle, CheckCircle2, ChevronRight, ChevronDown, Upload } from "lucide-react";
 
 const MAX_INPUT_SIZE = 5 * 1024 * 1024; // 5MB
@@ -92,6 +94,7 @@ export default function JsonFormatterClient() {
   const [tree, setTree] = useState<JsonTreeNode | null>(null);
   const [indent, setIndent] = useState<number | string>(2);
   const [highlightTokens, setHighlightTokens] = useState<HighlightToken[]>([]);
+  const [jsonPath, setJsonPath] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Restore state from URL hash on mount
@@ -158,6 +161,13 @@ export default function JsonFormatterClient() {
     setError(result.error);
     setViewMode("raw");
   }, [input]);
+
+  const handleJsonPath = useCallback(() => {
+    const result = queryJsonPath(input, jsonPath);
+    setOutput(result.output);
+    setError(result.error);
+    setViewMode("raw");
+  }, [input, jsonPath]);
 
   const handleHighlight = useCallback(() => {
     const result = formatJson(input, indent);
@@ -262,7 +272,7 @@ export default function JsonFormatterClient() {
         </Button>
       </div>
 
-      {/* Action bar — row 2: conversions & upload */}
+      {/* Action bar — row 2: conversions & upload & JSON Path */}
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <Button variant="outline" size="sm" onClick={handleToYaml}>
           {t("tools.jsonFormatter.toYaml")}
@@ -273,6 +283,18 @@ export default function JsonFormatterClient() {
         <Button variant="outline" size="sm" onClick={handleToCsv}>
           {t("tools.jsonFormatter.toCsv")}
         </Button>
+        <div className="flex items-center gap-1">
+          <Input
+            value={jsonPath}
+            onChange={(e) => setJsonPath(e.target.value)}
+            placeholder={t("tools.jsonFormatter.jsonPathPlaceholder")}
+            className="h-8 w-48 font-mono text-sm"
+            aria-label="JSON Path"
+          />
+          <Button variant="outline" size="sm" onClick={handleJsonPath} disabled={!jsonPath}>
+            {t("tools.jsonFormatter.queryPath")}
+          </Button>
+        </div>
         <input
           ref={fileInputRef}
           type="file"

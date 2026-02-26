@@ -7,8 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { CopyButton } from "@/components/copy-button";
-import { decodeJwt, buildSampleJwt, type JwtParts } from "@/lib/tools/jwt";
-import { AlertCircle, CheckCircle2, Clock } from "lucide-react";
+import { decodeJwt, buildSampleJwt, verifyJwtHmac, type JwtParts } from "@/lib/tools/jwt";
+import { Input } from "@/components/ui/input";
+import { AlertCircle, CheckCircle2, Clock, ShieldCheck, ShieldX } from "lucide-react";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcut";
 
 const MAX_INPUT_SIZE = 5 * 1024 * 1024; // 5MB
@@ -33,6 +34,9 @@ export default function JwtDecoderClient() {
   const t = useTranslations();
   const [input, setInput] = useState("");
   const [result, setResult] = useState<JwtParts | null>(null);
+  const [secret, setSecret] = useState("");
+  const [signatureValid, setSignatureValid] = useState<boolean | null>(null);
+  const [verifyError, setVerifyError] = useState<string | null>(null);
 
   const handleDecode = useCallback(() => {
     setResult(decodeJwt(input));
@@ -44,9 +48,18 @@ export default function JwtDecoderClient() {
     setResult(decodeJwt(sample));
   }, []);
 
+  const handleVerify = useCallback(async () => {
+    const res = await verifyJwtHmac(input, secret);
+    setSignatureValid(res.valid);
+    setVerifyError(res.error);
+  }, [input, secret]);
+
   const handleClear = useCallback(() => {
     setInput("");
     setResult(null);
+    setSecret("");
+    setSignatureValid(null);
+    setVerifyError(null);
   }, []);
 
   const shortcuts = useMemo(() => ({
@@ -165,6 +178,42 @@ export default function JwtDecoderClient() {
             <p className="break-all font-mono text-sm text-muted-foreground">
               {result.signature}
             </p>
+          </div>
+
+          {/* Signature Verification */}
+          <div className="rounded-lg border p-4">
+            <h3 className="mb-2 text-sm font-semibold">{t("tools.jwtDecoder.verify")}</h3>
+            <div className="flex items-center gap-2">
+              <Input
+                id="jwt-secret"
+                type="password"
+                value={secret}
+                onChange={(e) => { setSecret(e.target.value); setSignatureValid(null); setVerifyError(null); }}
+                placeholder={t("tools.jwtDecoder.secretPlaceholder")}
+                className="font-mono flex-1"
+              />
+              <Button size="sm" onClick={handleVerify} disabled={!secret}>
+                {t("tools.jwtDecoder.verify")}
+              </Button>
+            </div>
+            {signatureValid !== null && (
+              <div className="mt-2">
+                {signatureValid ? (
+                  <Badge variant="secondary" className="gap-1 bg-primary/10 text-primary">
+                    <ShieldCheck className="h-4 w-4" />
+                    {t("tools.jwtDecoder.validSignature")}
+                  </Badge>
+                ) : (
+                  <Badge variant="destructive" className="gap-1">
+                    <ShieldX className="h-4 w-4" />
+                    {t("tools.jwtDecoder.invalidSignature")}
+                  </Badge>
+                )}
+              </div>
+            )}
+            {verifyError && (
+              <p className="mt-2 text-xs text-destructive">{verifyError}</p>
+            )}
           </div>
         </div>
       )}

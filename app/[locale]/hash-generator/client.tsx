@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { ToolLayout } from "@/components/tool-layout";
 import { Button } from "@/components/ui/button";
@@ -10,9 +10,12 @@ import { DownloadButton } from "@/components/download-button";
 import {
   generateHash,
   generateAllHashes,
+  generateHashFromFile,
+  generateAllHashesFromFile,
   HASH_ALGORITHMS,
   type HashAlgorithm,
 } from "@/lib/tools/hash";
+import { Upload } from "lucide-react";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcut";
 
 const MAX_INPUT_SIZE = 5 * 1024 * 1024; // 5MB
@@ -25,6 +28,9 @@ export default function HashGeneratorClient() {
   const [allHashes, setAllHashes] = useState<Record<string, string> | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [fileName, setFileName] = useState<string | null>(null);
+  const [fileSize, setFileSize] = useState<number>(0);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Auto-generate hash on input change (debounced)
   useEffect(() => {
@@ -64,11 +70,33 @@ export default function HashGeneratorClient() {
     setLoading(false);
   }, [input]);
 
+  const handleFileUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > MAX_INPUT_SIZE) {
+      setError(t("common.oversizeWarning"));
+      return;
+    }
+    setFileName(file.name);
+    setFileSize(file.size);
+    setInput("");
+    setLoading(true);
+    const buffer = await file.arrayBuffer();
+    const allResults = await generateAllHashesFromFile(buffer);
+    setAllHashes(allResults);
+    setSingleHash("");
+    setError(null);
+    setLoading(false);
+    e.target.value = "";
+  }, [t]);
+
   const handleClear = useCallback(() => {
     setInput("");
     setSingleHash("");
     setAllHashes(null);
     setError(null);
+    setFileName(null);
+    setFileSize(0);
   }, []);
 
   const HASH_SAMPLE = "Hello, World!";
@@ -109,6 +137,22 @@ export default function HashGeneratorClient() {
           ))}
         </select>
 
+        <input
+          ref={fileInputRef}
+          type="file"
+          onChange={handleFileUpload}
+          className="hidden"
+          aria-label="Upload file for hashing"
+        />
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => fileInputRef.current?.click()}
+        >
+          <Upload className="mr-1 h-4 w-4" />
+          {t("tools.hashGenerator.uploadFile")}
+        </Button>
+
         <div className="flex-1" />
         <Button variant="outline" size="sm" onClick={handleSample}>
           {t("common.sample")}
@@ -117,6 +161,14 @@ export default function HashGeneratorClient() {
           {t("common.clear")}
         </Button>
       </div>
+
+      {/* File info */}
+      {fileName && (
+        <div className="mb-4 flex items-center gap-4 rounded-lg border bg-card p-3 text-sm">
+          <span className="font-medium">{t("tools.hashGenerator.fileName")}: {fileName}</span>
+          <span className="text-muted-foreground">{t("tools.hashGenerator.fileSize")}: {(fileSize / 1024).toFixed(1)} KB</span>
+        </div>
+      )}
 
       {/* Input */}
       <div className="mb-6">

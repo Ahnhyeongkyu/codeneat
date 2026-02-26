@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { CopyButton } from "@/components/copy-button";
 import { DownloadButton } from "@/components/download-button";
-import { encodeBase64, decodeBase64 } from "@/lib/tools/base64";
+import { encodeBase64, decodeBase64, encodeBase64Url, decodeBase64Url } from "@/lib/tools/base64";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcut";
 
 const MAX_INPUT_SIZE = 5 * 1024 * 1024; // 5MB
@@ -17,18 +17,19 @@ export default function Base64Client() {
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [urlSafe, setUrlSafe] = useState(false);
 
   const handleEncode = useCallback(() => {
-    const result = encodeBase64(input);
+    const result = urlSafe ? encodeBase64Url(input) : encodeBase64(input);
     setOutput(result.output);
     setError(result.error);
-  }, [input]);
+  }, [input, urlSafe]);
 
   const handleDecode = useCallback(() => {
-    const result = decodeBase64(input);
+    const result = urlSafe ? decodeBase64Url(input) : decodeBase64(input);
     setOutput(result.output);
     setError(result.error);
-  }, [input]);
+  }, [input, urlSafe]);
 
   const handleSwap = useCallback(() => {
     setInput(output);
@@ -66,6 +67,22 @@ export default function Base64Client() {
         <Button variant="outline" onClick={handleDecode}>
           {t("tools.base64.decode")}
         </Button>
+        <div className="flex items-center gap-1 rounded-lg border p-1">
+          <Button
+            variant={!urlSafe ? "default" : "ghost"}
+            size="sm"
+            onClick={() => setUrlSafe(false)}
+          >
+            {t("tools.base64.standard")}
+          </Button>
+          <Button
+            variant={urlSafe ? "default" : "ghost"}
+            size="sm"
+            onClick={() => setUrlSafe(true)}
+          >
+            {t("tools.base64.urlSafe")}
+          </Button>
+        </div>
         <div className="flex-1" />
         <Button variant="outline" size="sm" onClick={handleSample}>
           {t("common.sample")}

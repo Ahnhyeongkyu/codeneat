@@ -51,14 +51,14 @@ function section(name) {
 
 // ─── Import all tool modules ─────────────────────────────────────────────────
 
-const { formatJson, minifyJson, validateJson, buildJsonTree, jsonToYaml, yamlToJson, jsonToCsv, highlightJson } = await import("../lib/tools/json.ts");
+const { formatJson, minifyJson, validateJson, buildJsonTree, jsonToYaml, yamlToJson, jsonToCsv, highlightJson, queryJsonPath } = await import("../lib/tools/json.ts");
 const { encodeShareState, decodeShareState } = await import("../lib/share.ts");
 const { getAllPosts, getPostBySlug } = await import("../lib/blog.ts");
-const { testRegex } = await import("../lib/tools/regex.ts");
+const { testRegex, replaceWithRegex } = await import("../lib/tools/regex.ts");
 const { computeDiff, computeLineDiff, DIFF_SAMPLE } = await import("../lib/tools/diff.ts");
 const { formatSql, minifySql } = await import("../lib/tools/sql.ts");
 const { encodeUrl, decodeUrl, encodeFullUrl, decodeFullUrl } = await import("../lib/tools/url-encode.ts");
-const { encodeBase64, decodeBase64 } = await import("../lib/tools/base64.ts");
+const { encodeBase64, decodeBase64, encodeBase64Url, decodeBase64Url } = await import("../lib/tools/base64.ts");
 const { decodeJwt, buildSampleJwt } = await import("../lib/tools/jwt.ts");
 const { generateHash, generateAllHashes } = await import("../lib/tools/hash.ts");
 
@@ -829,6 +829,157 @@ section("Accessibility: en.json i18n key completeness for new features");
   assert(enJson.common.indent?.twoSpaces, "en.json: common.indent.twoSpaces exists");
   assert(enJson.common.indent?.fourSpaces, "en.json: common.indent.fourSpaces exists");
   assert(enJson.common.indent?.tab, "en.json: common.indent.tab exists");
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// P2: replaceWithRegex
+// ═══════════════════════════════════════════════════════════════════════════════
+
+section("regex.ts - replaceWithRegex");
+{
+  // Basic replacement
+  const r1 = replaceWithRegex("world", "hello world", "g", "earth");
+  assertEqual(r1.error, null, "replaceWithRegex: basic has no error");
+  assertEqual(r1.output, "hello earth", "replaceWithRegex: basic output correct");
+  assertEqual(r1.count, 1, "replaceWithRegex: basic count is 1");
+
+  // Global replacement
+  const r2 = replaceWithRegex("o", "foo boo", "g", "0");
+  assertEqual(r2.output, "f00 b00", "replaceWithRegex: global replaces all");
+  assertEqual(r2.count, 4, "replaceWithRegex: global count is 4");
+
+  // Group reference ($1)
+  const r3 = replaceWithRegex("(\\w+)@(\\w+)", "user@host", "g", "$1 at $2");
+  assertEqual(r3.output, "user at host", "replaceWithRegex: group reference works");
+
+  // Empty pattern
+  const r4 = replaceWithRegex("", "hello", "g", "x");
+  assertEqual(r4.output, "", "replaceWithRegex: empty pattern returns empty");
+
+  // Invalid pattern
+  const r5 = replaceWithRegex("[invalid", "hello", "g", "x");
+  assert(r5.error !== null, "replaceWithRegex: invalid pattern returns error");
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// P2: encodeBase64Url / decodeBase64Url
+// ═══════════════════════════════════════════════════════════════════════════════
+
+section("base64.ts - Base64URL");
+{
+  // Encode
+  const r1 = encodeBase64Url("Hello, World!");
+  assertEqual(r1.error, null, "encodeBase64Url: no error");
+  assert(!r1.output.includes("+"), "encodeBase64Url: no + character");
+  assert(!r1.output.includes("/"), "encodeBase64Url: no / character");
+  assert(!r1.output.includes("="), "encodeBase64Url: no padding");
+
+  // Round-trip
+  const r2 = decodeBase64Url(r1.output);
+  assertEqual(r2.error, null, "decodeBase64Url: no error");
+  assertEqual(r2.output, "Hello, World!", "Base64URL: round-trip preserves data");
+
+  // UTF-8
+  const r3 = encodeBase64Url("café 🌍");
+  const r4 = decodeBase64Url(r3.output);
+  assertEqual(r4.output, "café 🌍", "Base64URL: round-trip UTF-8");
+
+  // Empty
+  const r5 = encodeBase64Url("");
+  assertEqual(r5.output, "", "encodeBase64Url: empty input returns empty");
+  const r6 = decodeBase64Url("");
+  assertEqual(r6.output, "", "decodeBase64Url: empty input returns empty");
+
+  // Standard vs URL-safe difference
+  const stdResult = encodeBase64("a>b?c");
+  const urlResult = encodeBase64Url("a>b?c");
+  assert(stdResult.output !== urlResult.output || !urlResult.output.includes("+"), "Base64URL: differs from standard or avoids unsafe chars");
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// P2: queryJsonPath
+// ═══════════════════════════════════════════════════════════════════════════════
+
+section("json.ts - queryJsonPath");
+{
+  const sample = '{"store":{"book":[{"title":"A","price":10},{"title":"B","price":20}],"name":"Shop"}}';
+
+  // Simple key
+  const r1 = queryJsonPath(sample, "$.store.name");
+  assertEqual(r1.error, null, "queryJsonPath: simple key no error");
+  assertEqual(r1.matches, ["Shop"], "queryJsonPath: simple key result");
+
+  // Array index
+  const r2 = queryJsonPath(sample, "$.store.book[0].title");
+  assertEqual(r2.error, null, "queryJsonPath: array index no error");
+  assertEqual(r2.matches, ["A"], "queryJsonPath: array index result");
+
+  // Second element
+  const r3 = queryJsonPath(sample, "$.store.book[1].price");
+  assertEqual(r3.matches, [20], "queryJsonPath: second element price");
+
+  // Wildcard
+  const r4 = queryJsonPath(sample, "$.store.book[*].title");
+  assertEqual(r4.matches, ["A", "B"], "queryJsonPath: wildcard returns all titles");
+
+  // Root only
+  const r5 = queryJsonPath(sample, "$");
+  assert(r5.matches.length === 1, "queryJsonPath: root returns single result");
+
+  // Non-existent path
+  const r6 = queryJsonPath(sample, "$.store.nonexistent");
+  assertEqual(r6.matches, [], "queryJsonPath: non-existent path returns empty");
+
+  // Empty input
+  const r7 = queryJsonPath("", "$.x");
+  assertEqual(r7.matches, [], "queryJsonPath: empty input returns empty");
+
+  // Invalid JSON
+  const r8 = queryJsonPath("not json", "$.x");
+  assert(r8.error !== null, "queryJsonPath: invalid JSON returns error");
+
+  // Bracket notation
+  const r9 = queryJsonPath(sample, "$['store']['name']");
+  assertEqual(r9.matches, ["Shop"], "queryJsonPath: bracket notation works");
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// P2: i18n keys for new features
+// ═══════════════════════════════════════════════════════════════════════════════
+
+section("en.json - P2 feature i18n keys");
+{
+  const fs = await import("fs");
+  const enJson = JSON.parse(fs.readFileSync("messages/en.json", "utf8"));
+
+  // Regex replace keys
+  assert(enJson.tools.regexTester.replace, "en.json: regexTester.replace exists");
+  assert(enJson.tools.regexTester.replacePlaceholder, "en.json: regexTester.replacePlaceholder exists");
+  assert(enJson.tools.regexTester.replaceResult, "en.json: regexTester.replaceResult exists");
+  assert(enJson.tools.regexTester.replacements, "en.json: regexTester.replacements exists");
+  assert(enJson.tools.regexTester.matchMode, "en.json: regexTester.matchMode exists");
+  assert(enJson.tools.regexTester.replaceMode, "en.json: regexTester.replaceMode exists");
+
+  // Base64 URL-safe keys
+  assert(enJson.tools.base64.standard, "en.json: base64.standard exists");
+  assert(enJson.tools.base64.urlSafe, "en.json: base64.urlSafe exists");
+
+  // JWT verify keys
+  assert(enJson.tools.jwtDecoder.secret, "en.json: jwtDecoder.secret exists");
+  assert(enJson.tools.jwtDecoder.secretPlaceholder, "en.json: jwtDecoder.secretPlaceholder exists");
+  assert(enJson.tools.jwtDecoder.verify, "en.json: jwtDecoder.verify exists");
+  assert(enJson.tools.jwtDecoder.validSignature, "en.json: jwtDecoder.validSignature exists");
+  assert(enJson.tools.jwtDecoder.invalidSignature, "en.json: jwtDecoder.invalidSignature exists");
+
+  // Hash file upload keys
+  assert(enJson.tools.hashGenerator.uploadFile, "en.json: hashGenerator.uploadFile exists");
+  assert(enJson.tools.hashGenerator.fileName, "en.json: hashGenerator.fileName exists");
+  assert(enJson.tools.hashGenerator.fileSize, "en.json: hashGenerator.fileSize exists");
+
+  // JSON Path keys
+  assert(enJson.tools.jsonFormatter.jsonPath, "en.json: jsonFormatter.jsonPath exists");
+  assert(enJson.tools.jsonFormatter.jsonPathPlaceholder, "en.json: jsonFormatter.jsonPathPlaceholder exists");
+  assert(enJson.tools.jsonFormatter.queryPath, "en.json: jsonFormatter.queryPath exists");
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════

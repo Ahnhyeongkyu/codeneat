@@ -235,6 +235,85 @@ export function highlightJson(json: string): HighlightToken[] {
   return tokens;
 }
 
+// --- JSON Path query ---
+
+export interface JsonPathResult {
+  output: string;
+  matches: unknown[];
+  error: string | null;
+}
+
+export function queryJsonPath(input: string, path: string): JsonPathResult {
+  try {
+    if (!input.trim() || !path.trim()) {
+      return { output: "", matches: [], error: null };
+    }
+
+    const parsed = JSON.parse(input);
+    const matches = evaluatePath(parsed, path.trim());
+    const output = JSON.stringify(matches.length === 1 ? matches[0] : matches, null, 2);
+    return { output, matches, error: null };
+  } catch (e) {
+    return { output: "", matches: [], error: e instanceof Error ? e.message : String(e) };
+  }
+}
+
+function evaluatePath(root: unknown, path: string): unknown[] {
+  // Remove leading $ or $.
+  let expr = path;
+  if (expr.startsWith("$.")) expr = expr.slice(2);
+  else if (expr.startsWith("$")) expr = expr.slice(1);
+
+  if (!expr) return [root];
+
+  // Tokenize: split by . and [] notation
+  const tokens: string[] = [];
+  let i = 0;
+  while (i < expr.length) {
+    if (expr[i] === ".") {
+      i++;
+    } else if (expr[i] === "[") {
+      const end = expr.indexOf("]", i);
+      if (end === -1) throw new Error("Unclosed bracket in path");
+      tokens.push(expr.slice(i + 1, end).replace(/['"]/g, ""));
+      i = end + 1;
+    } else {
+      let end = i;
+      while (end < expr.length && expr[end] !== "." && expr[end] !== "[") end++;
+      tokens.push(expr.slice(i, end));
+      i = end;
+    }
+  }
+
+  let current: unknown[] = [root];
+  for (const token of tokens) {
+    const next: unknown[] = [];
+    for (const item of current) {
+      if (token === "*") {
+        if (Array.isArray(item)) {
+          next.push(...item);
+        } else if (item !== null && typeof item === "object") {
+          next.push(...Object.values(item as Record<string, unknown>));
+        }
+      } else if (Array.isArray(item)) {
+        const idx = Number(token);
+        if (!isNaN(idx) && idx >= 0 && idx < item.length) {
+          next.push(item[idx]);
+        }
+      } else if (item !== null && typeof item === "object") {
+        const obj = item as Record<string, unknown>;
+        if (token in obj) {
+          next.push(obj[token]);
+        }
+      }
+    }
+    current = next;
+    if (current.length === 0) break;
+  }
+
+  return current;
+}
+
 export const JSON_SAMPLE = `{
   "name": "CodeNeat",
   "version": "1.0.0",

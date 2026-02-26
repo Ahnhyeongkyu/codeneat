@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { testRegex, REGEX_CHEAT_SHEET } from "@/lib/tools/regex";
+import { testRegex, replaceWithRegex, REGEX_CHEAT_SHEET } from "@/lib/tools/regex";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcut";
 import { CopyButton } from "@/components/copy-button";
 
@@ -26,10 +26,17 @@ export default function RegexTesterClient() {
   const [flags, setFlags] = useState("g");
   const [testString, setTestString] = useState("");
   const [showCheatSheet, setShowCheatSheet] = useState(false);
+  const [mode, setMode] = useState<"match" | "replace">("match");
+  const [replacement, setReplacement] = useState("");
 
   const result = useMemo(
     () => testRegex(pattern, testString, flags),
     [pattern, testString, flags]
+  );
+
+  const replaceResult = useMemo(
+    () => mode === "replace" && pattern && testString ? replaceWithRegex(pattern, testString, flags, replacement) : null,
+    [mode, pattern, testString, flags, replacement]
   );
 
   const highlightedText = useMemo(() => {
@@ -80,6 +87,24 @@ export default function RegexTesterClient() {
 
   return (
     <ToolLayout toolKey="regexTester">
+      {/* Mode toggle */}
+      <div className="mb-4 flex items-center gap-1 rounded-lg border p-1 w-fit">
+        <Button
+          variant={mode === "match" ? "default" : "ghost"}
+          size="sm"
+          onClick={() => setMode("match")}
+        >
+          {t("tools.regexTester.matchMode")}
+        </Button>
+        <Button
+          variant={mode === "replace" ? "default" : "ghost"}
+          size="sm"
+          onClick={() => setMode("replace")}
+        >
+          {t("tools.regexTester.replaceMode")}
+        </Button>
+      </div>
+
       {/* Action bar */}
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <div className="flex-1">
@@ -111,6 +136,20 @@ export default function RegexTesterClient() {
           {t("common.sample")}
         </Button>
       </div>
+
+      {/* Replacement input (replace mode only) */}
+      {mode === "replace" && (
+        <div className="mb-4">
+          <label htmlFor="regex-replace" className="mb-2 block text-sm font-medium">{t("tools.regexTester.replace")}</label>
+          <Input
+            id="regex-replace"
+            value={replacement}
+            onChange={(e) => setReplacement(e.target.value)}
+            placeholder={t("tools.regexTester.replacePlaceholder")}
+            className="font-mono"
+          />
+        </div>
+      )}
 
       {/* Error */}
       {result.error && (
@@ -192,6 +231,25 @@ export default function RegexTesterClient() {
           )
         )}
       </div>
+
+      {/* Replace result */}
+      {mode === "replace" && replaceResult && !replaceResult.error && replaceResult.output && (
+        <div className="mb-4" aria-live="polite">
+          <div className="mb-2 flex items-center gap-2">
+            <label className="text-sm font-medium">{t("tools.regexTester.replaceResult")}</label>
+            <Badge variant="secondary">{t("tools.regexTester.replacements", { count: replaceResult.count })}</Badge>
+            <CopyButton text={replaceResult.output} />
+          </div>
+          <div className="rounded-lg border bg-card p-4">
+            <pre className="whitespace-pre-wrap font-mono text-sm">{replaceResult.output}</pre>
+          </div>
+        </div>
+      )}
+      {mode === "replace" && replaceResult?.error && (
+        <div role="alert" className="mb-4 rounded-lg border border-destructive/50 bg-destructive/10 p-4">
+          <p className="text-sm text-destructive">{replaceResult.error}</p>
+        </div>
+      )}
 
       {/* Cheat Sheet */}
       <div>

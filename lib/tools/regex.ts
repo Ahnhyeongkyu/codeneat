@@ -13,6 +13,39 @@ export interface RegexResult {
 const MAX_MATCHES = 1000;
 const MATCH_TIMEOUT_MS = 3000;
 
+export interface ReplaceResult {
+  output: string;
+  count: number;
+  error: string | null;
+}
+
+export function replaceWithRegex(
+  pattern: string,
+  testString: string,
+  flags: string,
+  replacement: string
+): ReplaceResult {
+  if (!pattern || !testString) {
+    return { output: "", count: 0, error: null };
+  }
+  try {
+    const regex = new RegExp(pattern, flags.includes("g") ? flags : flags + "g");
+    let count = 0;
+    const output = testString.replace(regex, (...args) => {
+      count++;
+      // Support $1, $2, named groups $<name> via native replace
+      return replacement.replace(/\$(\d+)/g, (_, n) => args[Number(n)] ?? "")
+        .replace(/\$<(\w+)>/g, (_, name) => {
+          const groups = args[args.length - 1];
+          return typeof groups === "object" && groups !== null ? (groups[name] ?? "") : "";
+        });
+    });
+    return { output, count, error: null };
+  } catch (e) {
+    return { output: "", count: 0, error: e instanceof Error ? e.message : String(e) };
+  }
+}
+
 export function testRegex(
   pattern: string,
   testString: string,
