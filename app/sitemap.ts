@@ -19,6 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     languages: {
       en: `${baseUrl}${path}`,
       ko: `${baseUrl}/ko${path}`,
+      ja: `${baseUrl}/ja${path}`,
     },
   });
 
@@ -32,6 +33,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${baseUrl}/ko/${tool}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/ja/${tool}`,
       lastModified: new Date(),
       changeFrequency: "weekly" as const,
       priority: 0.9,
@@ -52,6 +59,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
       priority: 0.7,
     },
+    {
+      url: `${baseUrl}/ja/blog/${post.slug}`,
+      lastModified: new Date(post.date),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    },
   ]);
 
   return [
@@ -68,6 +81,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "daily",
       priority: 1,
     },
+    {
+      url: `${baseUrl}/ja`,
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 1,
+    },
     ...toolPages,
     {
       url: `${baseUrl}/blog`,
@@ -78,6 +97,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${baseUrl}/ko/blog`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/ja/blog`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.8,

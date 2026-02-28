@@ -1022,6 +1022,45 @@ section("en.json - P2 feature i18n keys");
   assert(koJson.home?.hero?.subtitle?.length > 0, "ko.json: home.hero.subtitle exists");
 }
 
+// P3: ja.json key parity with en.json
+{
+  section("ja.json — key parity with en.json");
+  const fs2 = await import("fs");
+  const enJson2 = JSON.parse(fs2.readFileSync("messages/en.json", "utf8"));
+  const jaJson = JSON.parse(fs2.readFileSync("messages/ja.json", "utf8"));
+
+  function getLeafKeys2(obj, prefix = "") {
+    let keys = [];
+    for (const k of Object.keys(obj)) {
+      const path = prefix ? `${prefix}.${k}` : k;
+      if (typeof obj[k] === "object" && obj[k] !== null && !Array.isArray(obj[k])) {
+        keys = keys.concat(getLeafKeys2(obj[k], path));
+      } else {
+        keys.push(path);
+      }
+    }
+    return keys;
+  }
+
+  const enKeys2 = getLeafKeys2(enJson2);
+  const jaKeys = new Set(getLeafKeys2(jaJson));
+
+  const missingInJa = enKeys2.filter((k) => !jaKeys.has(k));
+  const extraInJa = [...jaKeys].filter((k) => !enKeys2.includes(k));
+
+  assert(missingInJa.length === 0, `ja.json has all EN keys (missing: ${missingInJa.length === 0 ? "none" : missingInJa.slice(0, 5).join(", ")})`);
+  assert(extraInJa.length === 0, `ja.json has no extra keys (extra: ${extraInJa.length === 0 ? "none" : extraInJa.slice(0, 5).join(", ")})`);
+  assertEqual(enKeys2.length, jaKeys.size, `ja.json key count matches en.json (${enKeys2.length})`);
+
+  // Spot-check critical JA translations
+  assert(jaJson.common?.copy?.length > 0, "ja.json: common.copy exists");
+  assert(jaJson.common?.clear?.length > 0, "ja.json: common.clear exists");
+  assert(jaJson.tools?.jsonFormatter?.title?.length > 0, "ja.json: jsonFormatter.title exists");
+  assert(jaJson.tools?.regexTester?.title?.length > 0, "ja.json: regexTester.title exists");
+  assert(jaJson.home?.hero?.title?.length > 0, "ja.json: home.hero.title exists");
+  assert(jaJson.home?.hero?.subtitle?.length > 0, "ja.json: home.hero.subtitle exists");
+}
+
 // ═══════════════════════════════════════════════════════════════════════════════
 // SUMMARY
 // ═══════════════════════════════════════════════════════════════════════════════
