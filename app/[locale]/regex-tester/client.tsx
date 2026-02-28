@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { testRegex, replaceWithRegex, REGEX_CHEAT_SHEET } from "@/lib/tools/regex";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcut";
 import { CopyButton } from "@/components/copy-button";
+import { AiExplainButton, AiExplainPanel } from "@/components/ai-explain";
 
 const MAX_INPUT_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -28,6 +29,7 @@ export default function RegexTesterClient() {
   const [showCheatSheet, setShowCheatSheet] = useState(false);
   const [mode, setMode] = useState<"match" | "replace">("match");
   const [replacement, setReplacement] = useState("");
+  const [showAiPanel, setShowAiPanel] = useState(false);
 
   const result = useMemo(
     () => testRegex(pattern, testString, flags),
@@ -132,6 +134,7 @@ export default function RegexTesterClient() {
             </Button>
           ))}
         </div>
+        <AiExplainButton onClick={() => setShowAiPanel(true)} disabled={!pattern.trim()} />
         <Button variant="outline" size="sm" onClick={handleSample}>
           {t("common.sample")}
         </Button>
@@ -286,6 +289,14 @@ export default function RegexTesterClient() {
           </div>
         )}
       </div>
+
+      {showAiPanel && (
+        <AiExplainPanel
+          tool="regexTester"
+          input={pattern}
+          onClose={() => setShowAiPanel(false)}
+        />
+      )}
     </ToolLayout>
   );
 }

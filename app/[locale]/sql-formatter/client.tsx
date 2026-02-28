@@ -15,6 +15,7 @@ import {
   type SqlDialect,
 } from "@/lib/tools/sql";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcut";
+import { AiExplainButton, AiExplainPanel } from "@/components/ai-explain";
 
 const MAX_INPUT_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -26,6 +27,7 @@ export default function SqlFormatterClient() {
   const [dialect, setDialect] = useState<SqlDialect>("sql");
   const [indent, setIndent] = useState<number>(2);
   const [keywordCase, setKeywordCase] = useState<"upper" | "lower" | "preserve">("upper");
+  const [showAiPanel, setShowAiPanel] = useState(false);
 
   const handleFormat = useCallback(() => {
     const result = formatSql(input, dialect, indent, keywordCase);
@@ -102,6 +104,7 @@ export default function SqlFormatterClient() {
           <option value="preserve">{t("common.keywordCase.preserve")}</option>
         </select>
 
+        <AiExplainButton onClick={() => setShowAiPanel(true)} disabled={!input.trim()} />
         <div className="flex-1" />
         <Button variant="outline" size="sm" onClick={handleSample}>
           {t("common.sample")}
@@ -150,6 +153,14 @@ export default function SqlFormatterClient() {
           )}
         </div>
       </div>
+
+      {showAiPanel && (
+        <AiExplainPanel
+          tool="sqlFormatter"
+          input={input}
+          onClose={() => setShowAiPanel(false)}
+        />
+      )}
     </ToolLayout>
   );
 }

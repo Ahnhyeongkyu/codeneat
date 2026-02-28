@@ -27,6 +27,7 @@ import {
 } from "@/lib/tools/json";
 import { Input } from "@/components/ui/input";
 import { DropZone } from "@/components/drop-zone";
+import { AiExplainButton, AiExplainPanel } from "@/components/ai-explain";
 import { AlertCircle, CheckCircle2, ChevronRight, ChevronDown, Upload } from "lucide-react";
 
 const MAX_INPUT_SIZE = 5 * 1024 * 1024; // 5MB
@@ -97,6 +98,7 @@ export default function JsonFormatterClient() {
   const [highlightTokens, setHighlightTokens] = useState<HighlightToken[]>([]);
   const [jsonPath, setJsonPath] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [showAiPanel, setShowAiPanel] = useState(false);
 
   // Restore state from URL hash on mount
   useEffect(() => {
@@ -281,6 +283,7 @@ export default function JsonFormatterClient() {
           <option value={4}>{t("common.indent.fourSpaces")}</option>
           <option value={"\t"}>{t("common.indent.tab")}</option>
         </select>
+        <AiExplainButton onClick={() => setShowAiPanel(true)} disabled={!input.trim()} />
         <div className="flex-1" />
         <Button variant="outline" size="sm" onClick={handleSample}>
           {t("common.sample")}
@@ -431,6 +434,14 @@ export default function JsonFormatterClient() {
           )}
         </div>
       </div>
+
+      {showAiPanel && (
+        <AiExplainPanel
+          tool="jsonFormatter"
+          input={input}
+          onClose={() => setShowAiPanel(false)}
+        />
+      )}
     </ToolLayout>
   );
 }

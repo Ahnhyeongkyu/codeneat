@@ -307,7 +307,14 @@
     "encodeMode": {
       "component": "Component",
       "fullUrl": "Full URL"
-    }
+    },
+    "aiExplain": "AI로 설명",
+    "aiExplaining": "분석 중...",
+    "aiError": "AI 분석 실패",
+    "aiRetry": "재시도",
+    "aiPrivacyNotice": "데이터가 AI 분석을 위해 전송됩니다. 저장되지 않습니다.",
+    "aiDailyLimit": "일일 한도 초과",
+    "aiClose": "AI 패널 닫기"
   },
   "footer": {
     "tools": "도구",

@@ -11,6 +11,7 @@ import { decodeJwt, buildSampleJwt, verifyJwtHmac, type JwtParts } from "@/lib/t
 import { Input } from "@/components/ui/input";
 import { AlertCircle, CheckCircle2, Clock, ShieldCheck, ShieldX } from "lucide-react";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcut";
+import { AiExplainButton, AiExplainPanel } from "@/components/ai-explain";
 
 const MAX_INPUT_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -37,6 +38,7 @@ export default function JwtDecoderClient() {
   const [secret, setSecret] = useState("");
   const [signatureValid, setSignatureValid] = useState<boolean | null>(null);
   const [verifyError, setVerifyError] = useState<string | null>(null);
+  const [showAiPanel, setShowAiPanel] = useState(false);
 
   const handleDecode = useCallback(() => {
     setResult(decodeJwt(input));
@@ -75,6 +77,7 @@ export default function JwtDecoderClient() {
       {/* Action bar */}
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <Button onClick={handleDecode}>{t("tools.jwtDecoder.decode")}</Button>
+        <AiExplainButton onClick={() => setShowAiPanel(true)} disabled={!result || !!result.error} />
         <div className="flex-1" />
         <Button variant="outline" size="sm" onClick={handleSample}>
           {t("common.sample")}
@@ -216,6 +219,14 @@ export default function JwtDecoderClient() {
             )}
           </div>
         </div>
+      )}
+
+      {showAiPanel && result?.payload && (
+        <AiExplainPanel
+          tool="jwtDecoder"
+          input={JSON.stringify(result.payload, null, 2)}
+          onClose={() => setShowAiPanel(false)}
+        />
       )}
     </ToolLayout>
   );

@@ -307,7 +307,14 @@
     "encodeMode": {
       "component": "Component",
       "fullUrl": "Full URL"
-    }
+    },
+    "aiExplain": "Explain with AI",
+    "aiExplaining": "Analyzing...",
+    "aiError": "AI analysis failed",
+    "aiRetry": "Retry",
+    "aiPrivacyNotice": "Your data is sent to AI for analysis. It is not stored.",
+    "aiDailyLimit": "Daily limit reached",
+    "aiClose": "Close AI panel"
   },
   "footer": {
     "tools": "Tools",

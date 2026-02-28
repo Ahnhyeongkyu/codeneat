@@ -307,7 +307,14 @@
     "encodeMode": {
       "component": "コンポーネント",
       "fullUrl": "完全URL"
-    }
+    },
+    "aiExplain": "AIで解説",
+    "aiExplaining": "分析中...",
+    "aiError": "AI分析に失敗しました",
+    "aiRetry": "再試行",
+    "aiPrivacyNotice": "データはAI分析のために送信されます。保存されません。",
+    "aiDailyLimit": "1日の制限に達しました",
+    "aiClose": "AIパネルを閉じる"
   },
   "footer": {
     "tools": "ツール",
