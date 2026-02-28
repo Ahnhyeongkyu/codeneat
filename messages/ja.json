@@ -49,6 +49,7 @@
         "description": "ダークモードとCtrl+Enterショートカットを備えた、直感的なインターフェース。"
       }
     },
+    "recentTools": "最近使ったツール",
     "faq": {
       "title": "よくある質問",
       "q1": "CodeNeatは本当に無料ですか？",

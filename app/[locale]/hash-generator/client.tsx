@@ -16,6 +16,7 @@ import {
   type HashAlgorithm,
 } from "@/lib/tools/hash";
 import { Upload } from "lucide-react";
+import { DropZone } from "@/components/drop-zone";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcut";
 
 const MAX_INPUT_SIZE = 5 * 1024 * 1024; // 5MB
@@ -88,6 +89,23 @@ export default function HashGeneratorClient() {
     setError(null);
     setLoading(false);
     e.target.value = "";
+  }, [t]);
+
+  const handleFileDrop = useCallback(async (file: File) => {
+    if (file.size > MAX_INPUT_SIZE) {
+      setError(t("common.oversizeWarning"));
+      return;
+    }
+    setFileName(file.name);
+    setFileSize(file.size);
+    setInput("");
+    setLoading(true);
+    const buffer = await file.arrayBuffer();
+    const allResults = await generateAllHashesFromFile(buffer);
+    setAllHashes(allResults);
+    setSingleHash("");
+    setError(null);
+    setLoading(false);
   }, [t]);
 
   const handleClear = useCallback(() => {
@@ -171,23 +189,25 @@ export default function HashGeneratorClient() {
       )}
 
       {/* Input */}
-      <div className="mb-6">
-        <div className="mb-2 flex items-center justify-between">
-          <label htmlFor="hash-input" className="text-sm font-medium">{t("common.input")}</label>
-          {input && (
-            <span className={`text-xs ${isOversize ? "text-destructive" : "text-muted-foreground"}`}>
-              {(inputSize / 1024).toFixed(1)} KB
-            </span>
-          )}
+      <DropZone onFile={handleFileDrop}>
+        <div className="mb-6">
+          <div className="mb-2 flex items-center justify-between">
+            <label htmlFor="hash-input" className="text-sm font-medium">{t("common.input")}</label>
+            {input && (
+              <span className={`text-xs ${isOversize ? "text-destructive" : "text-muted-foreground"}`}>
+                {(inputSize / 1024).toFixed(1)} KB
+              </span>
+            )}
+          </div>
+          <Textarea
+            id="hash-input"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder={t("tools.hashGenerator.inputPlaceholder")}
+            className="min-h-[200px] font-mono text-sm"
+          />
         </div>
-        <Textarea
-          id="hash-input"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder={t("tools.hashGenerator.inputPlaceholder")}
-          className="min-h-[200px] font-mono text-sm"
-        />
-      </div>
+      </DropZone>
 
       {/* Error */}
       {error && (

@@ -26,6 +26,7 @@ import {
   type HighlightToken,
 } from "@/lib/tools/json";
 import { Input } from "@/components/ui/input";
+import { DropZone } from "@/components/drop-zone";
 import { AlertCircle, CheckCircle2, ChevronRight, ChevronDown, Upload } from "lucide-react";
 
 const MAX_INPUT_SIZE = 5 * 1024 * 1024; // 5MB
@@ -204,6 +205,23 @@ export default function JsonFormatterClient() {
     e.target.value = "";
   }, [indent, t]);
 
+  const handleFileDrop = useCallback((file: File) => {
+    if (file.size > MAX_INPUT_SIZE) {
+      setError(t("common.oversizeWarning"));
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const text = event.target?.result as string;
+      setInput(text);
+      const result = formatJson(text, indent);
+      setOutput(result.output);
+      setError(result.error);
+      setViewMode("raw");
+    };
+    reader.readAsText(file);
+  }, [indent, t]);
+
   const handlePaste = useCallback((e: React.ClipboardEvent<HTMLTextAreaElement>) => {
     const pasted = e.clipboardData.getData("text");
     if (!pasted.trim()) return;
@@ -333,29 +351,31 @@ export default function JsonFormatterClient() {
       {/* Input / Output */}
       <div className="grid gap-4 lg:grid-cols-2">
         {/* Input */}
-        <div>
-          <div className="mb-2 flex items-center justify-between">
-            <label htmlFor="json-input" className="text-sm font-medium">{t("common.input")}</label>
-            {input && (
-              <span className={`text-xs ${isOversize ? "text-destructive" : "text-muted-foreground"}`}>
-                {(inputSize / 1024).toFixed(1)} KB
-              </span>
+        <DropZone onFile={handleFileDrop} accept=".json,.yaml,.yml,.csv,.txt">
+          <div>
+            <div className="mb-2 flex items-center justify-between">
+              <label htmlFor="json-input" className="text-sm font-medium">{t("common.input")}</label>
+              {input && (
+                <span className={`text-xs ${isOversize ? "text-destructive" : "text-muted-foreground"}`}>
+                  {(inputSize / 1024).toFixed(1)} KB
+                </span>
+              )}
+            </div>
+            {isOversize && (
+              <p className="mb-2 text-xs text-destructive">
+                {t("common.oversizeWarning")}
+              </p>
             )}
+            <Textarea
+              id="json-input"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onPaste={handlePaste}
+              placeholder={t("tools.jsonFormatter.inputPlaceholder")}
+              className="min-h-[400px] font-mono text-sm"
+            />
           </div>
-          {isOversize && (
-            <p className="mb-2 text-xs text-destructive">
-              {t("common.oversizeWarning")}
-            </p>
-          )}
-          <Textarea
-            id="json-input"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onPaste={handlePaste}
-            placeholder={t("tools.jsonFormatter.inputPlaceholder")}
-            className="min-h-[400px] font-mono text-sm"
-          />
-        </div>
+        </DropZone>
 
         {/* Output */}
         <div aria-live="polite">

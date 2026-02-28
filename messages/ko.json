@@ -49,6 +49,7 @@
         "description": "깔끔하고 직관적인 인터페이스. 다크 모드와 Ctrl+Enter 단축키 지원."
       }
     },
+    "recentTools": "최근 사용한 도구",
     "faq": {
       "title": "자주 묻는 질문",
       "q1": "CodeNeat은 정말 무료인가요?",

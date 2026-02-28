@@ -2,6 +2,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { RecentTools } from "@/components/recent-tools";
 import {
   Shield,
   Zap,
@@ -124,6 +125,9 @@ export default function HomePage() {
           </Button>
         </div>
       </section>
+
+      {/* Recent Tools */}
+      <RecentTools />
 
       {/* Tools Grid */}
       <section id="tools" className="py-16">

@@ -49,6 +49,7 @@
         "description": "Clean, intuitive interface with dark mode and Ctrl+Enter shortcuts."
       }
     },
+    "recentTools": "Recently Used",
     "faq": {
       "title": "Frequently Asked Questions",
       "q1": "Is CodeNeat really free?",

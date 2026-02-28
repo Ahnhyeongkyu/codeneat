@@ -4,6 +4,7 @@ import { ReactNode, useState, useEffect } from "react";
 import { PrivacyBadge } from "@/components/privacy-badge";
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
+import { recordToolUsage } from "@/lib/recent-tools";
 import {
   Braces,
   Binary,
@@ -60,6 +61,11 @@ function ShortcutHint() {
 
 export function ToolLayout({ toolKey, children }: ToolLayoutProps) {
   const t = useTranslations();
+
+  useEffect(() => {
+    recordToolUsage(toolKey);
+  }, [toolKey]);
+
   const relatedKeys = relatedToolMap[toolKey] ?? [];
   const relatedTools = relatedKeys
     .map((key) => allTools.find((tool) => tool.key === key))
