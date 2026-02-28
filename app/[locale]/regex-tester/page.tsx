@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { generateToolMetadata, buildBreadcrumbJsonLd, buildFaqJsonLd } from "@/lib/seo";
+import { generateToolMetadata, buildBreadcrumbJsonLd, buildFaqJsonLd, buildHowToJsonLd } from "@/lib/seo";
 import RegexTesterClient from "./client";
 
 export const metadata: Metadata = generateToolMetadata({
@@ -49,6 +49,16 @@ export default function RegexTesterPage() {
     },
   ]);
 
+  const howTo = buildHowToJsonLd({
+    name: "How to Test Regular Expressions",
+    description: "Test and debug regex patterns with real-time matching using CodeNeat's free regex tester.",
+    steps: [
+      { name: "Enter a pattern", text: "Type your regular expression pattern in the pattern field. Select flags like g, i, or m as needed." },
+      { name: "Add test text", text: "Paste or type the text you want to test against. Matches are highlighted in real-time." },
+      { name: "Review matches", text: "View highlighted matches, capture groups, and match indices below the test string." },
+    ],
+  });
+
   return (
     <>
       <script
@@ -58,6 +68,10 @@ export default function RegexTesterPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howTo) }}
       />
       <RegexTesterClient />
     </>

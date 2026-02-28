@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { generateToolMetadata, buildBreadcrumbJsonLd, buildFaqJsonLd } from "@/lib/seo";
+import { generateToolMetadata, buildBreadcrumbJsonLd, buildFaqJsonLd, buildHowToJsonLd } from "@/lib/seo";
 import DiffCheckerClient from "./client";
 
 export const metadata: Metadata = generateToolMetadata({
@@ -49,6 +49,16 @@ export default function DiffCheckerPage() {
     },
   ]);
 
+  const howTo = buildHowToJsonLd({
+    name: "How to Compare Two Texts",
+    description: "Find differences between two texts using CodeNeat's free online diff checker.",
+    steps: [
+      { name: "Paste original text", text: "Paste the original text in the left panel." },
+      { name: "Paste modified text", text: "Paste the modified version in the right panel." },
+      { name: "Click Compare", text: "Click Compare or press Ctrl+Enter to see differences highlighted in green (additions) and red (deletions)." },
+    ],
+  });
+
   return (
     <>
       <script
@@ -58,6 +68,10 @@ export default function DiffCheckerPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howTo) }}
       />
       <DiffCheckerClient />
     </>

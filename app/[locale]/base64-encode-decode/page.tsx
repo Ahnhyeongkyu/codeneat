@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { generateToolMetadata, buildBreadcrumbJsonLd, buildFaqJsonLd } from "@/lib/seo";
+import { generateToolMetadata, buildBreadcrumbJsonLd, buildFaqJsonLd, buildHowToJsonLd } from "@/lib/seo";
 import Base64Client from "./client";
 
 export const metadata: Metadata = generateToolMetadata({
@@ -48,6 +48,16 @@ export default function Base64Page() {
     },
   ]);
 
+  const howTo = buildHowToJsonLd({
+    name: "How to Encode or Decode Base64",
+    description: "Encode text to Base64 or decode Base64 strings using CodeNeat's free online tool.",
+    steps: [
+      { name: "Enter your text", text: "Paste or type the text you want to encode, or the Base64 string you want to decode." },
+      { name: "Choose the operation", text: "Click Encode to convert text to Base64, or Decode to convert Base64 back to text." },
+      { name: "Copy the result", text: "Use the Copy button to copy the result to your clipboard." },
+    ],
+  });
+
   return (
     <>
       <script
@@ -57,6 +67,10 @@ export default function Base64Page() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howTo) }}
       />
       <Base64Client />
     </>

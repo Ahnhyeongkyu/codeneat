@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { generateToolMetadata, buildBreadcrumbJsonLd, buildFaqJsonLd } from "@/lib/seo";
+import { generateToolMetadata, buildBreadcrumbJsonLd, buildFaqJsonLd, buildHowToJsonLd } from "@/lib/seo";
 import SqlFormatterClient from "./client";
 
 export const metadata: Metadata = generateToolMetadata({
@@ -49,6 +49,16 @@ export default function SqlFormatterPage() {
     },
   ]);
 
+  const howTo = buildHowToJsonLd({
+    name: "How to Format SQL Queries",
+    description: "Format and beautify SQL queries using CodeNeat's free online SQL formatter.",
+    steps: [
+      { name: "Paste your SQL", text: "Paste or type your SQL query into the input field." },
+      { name: "Choose options", text: "Select your SQL dialect (MySQL, PostgreSQL, etc.) and keyword casing preference (UPPER, lower, Preserve)." },
+      { name: "Click Format", text: "Click Format or press Ctrl+Enter to beautify your SQL with proper indentation and line breaks." },
+    ],
+  });
+
   return (
     <>
       <script
@@ -58,6 +68,10 @@ export default function SqlFormatterPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howTo) }}
       />
       <SqlFormatterClient />
     </>

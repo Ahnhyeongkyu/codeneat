@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { generateToolMetadata, buildBreadcrumbJsonLd, buildFaqJsonLd } from "@/lib/seo";
+import { generateToolMetadata, buildBreadcrumbJsonLd, buildFaqJsonLd, buildHowToJsonLd } from "@/lib/seo";
 import JsonFormatterClient from "./client";
 
 export const metadata: Metadata = generateToolMetadata({
@@ -49,6 +49,16 @@ export default function JsonFormatterPage() {
     },
   ]);
 
+  const howTo = buildHowToJsonLd({
+    name: "How to Format JSON Online",
+    description: "Format and beautify JSON data using CodeNeat's free online JSON formatter.",
+    steps: [
+      { name: "Paste your JSON", text: "Paste or type your JSON data into the input field. You can also drag and drop a .json file." },
+      { name: "Click Format", text: "Click the Format button or press Ctrl+Enter to beautify your JSON with proper indentation." },
+      { name: "Copy the result", text: "Copy the formatted output using the Copy button, or download it as a file." },
+    ],
+  });
+
   return (
     <>
       <script
@@ -58,6 +68,10 @@ export default function JsonFormatterPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howTo) }}
       />
       <JsonFormatterClient />
     </>

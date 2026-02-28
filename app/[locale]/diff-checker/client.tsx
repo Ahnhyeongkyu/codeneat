@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { ToolLayout } from "@/components/tool-layout";
 import { Button } from "@/components/ui/button";
@@ -20,10 +20,13 @@ export default function DiffCheckerClient() {
   const [result, setResult] = useState<DiffResult | null>(null);
   const [diffView, setDiffView] = useState<"inline" | "side">("inline");
   const [lineDiffs, setLineDiffs] = useState<LineDiff[]>([]);
+  const [isPending, startTransition] = useTransition();
 
   const handleCompare = useCallback(() => {
-    setResult(computeDiff(original, modified));
-    setLineDiffs(computeLineDiff(original, modified));
+    startTransition(() => {
+      setResult(computeDiff(original, modified));
+      setLineDiffs(computeLineDiff(original, modified));
+    });
   }, [original, modified]);
 
   const handleClear = useCallback(() => {
@@ -61,7 +64,9 @@ export default function DiffCheckerClient() {
     <ToolLayout toolKey="diffChecker">
       {/* Action bar */}
       <div className="mb-4 flex flex-wrap items-center gap-2">
-        <Button onClick={handleCompare}>{t("tools.diffChecker.compare")}</Button>
+        <Button onClick={handleCompare} disabled={isPending}>
+          {isPending ? t("common.loading") : t("tools.diffChecker.compare")}
+        </Button>
         <div className="flex gap-1">
           <Button
             variant={diffView === "inline" ? "default" : "outline"}

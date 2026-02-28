@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { generateToolMetadata, buildBreadcrumbJsonLd, buildFaqJsonLd } from "@/lib/seo";
+import { generateToolMetadata, buildBreadcrumbJsonLd, buildFaqJsonLd, buildHowToJsonLd } from "@/lib/seo";
 import UrlEncodeClient from "./client";
 
 export const metadata: Metadata = generateToolMetadata({
@@ -48,6 +48,16 @@ export default function UrlEncodePage() {
     },
   ]);
 
+  const howTo = buildHowToJsonLd({
+    name: "How to URL Encode or Decode Text",
+    description: "Encode or decode URL components using CodeNeat's free online URL encoder/decoder.",
+    steps: [
+      { name: "Enter your text", text: "Paste or type the text you want to encode, or the URL-encoded string you want to decode." },
+      { name: "Choose the operation", text: "Click Encode to convert text to URL-safe format, or Decode to convert percent-encoded text back to readable text." },
+      { name: "Copy the result", text: "Use the Copy button to copy the result to your clipboard." },
+    ],
+  });
+
   return (
     <>
       <script
@@ -57,6 +67,10 @@ export default function UrlEncodePage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howTo) }}
       />
       <UrlEncodeClient />
     </>

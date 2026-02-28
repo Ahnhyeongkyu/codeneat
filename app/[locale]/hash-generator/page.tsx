@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { generateToolMetadata, buildBreadcrumbJsonLd, buildFaqJsonLd } from "@/lib/seo";
+import { generateToolMetadata, buildBreadcrumbJsonLd, buildFaqJsonLd, buildHowToJsonLd } from "@/lib/seo";
 import HashGeneratorClient from "./client";
 
 export const metadata: Metadata = generateToolMetadata({
@@ -49,6 +49,16 @@ export default function HashGeneratorPage() {
     },
   ]);
 
+  const howTo = buildHowToJsonLd({
+    name: "How to Generate Hash Values",
+    description: "Generate SHA-256, SHA-512, and other hash values using CodeNeat's free online hash generator.",
+    steps: [
+      { name: "Enter your text", text: "Type or paste the text you want to hash into the input field. You can also upload a file using the Upload button." },
+      { name: "Select algorithm", text: "Choose a hash algorithm (SHA-1, SHA-256, SHA-384, SHA-512) or click Generate All for all algorithms at once." },
+      { name: "Copy the hash", text: "Click the Copy button next to any hash value to copy it to your clipboard." },
+    ],
+  });
+
   return (
     <>
       <script
@@ -58,6 +68,10 @@ export default function HashGeneratorPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howTo) }}
       />
       <HashGeneratorClient />
     </>

@@ -69,3 +69,22 @@ export function buildFaqJsonLd(faqs: { question: string; answer: string }[]) {
     })),
   };
 }
+
+export function buildHowToJsonLd(config: {
+  name: string;
+  description: string;
+  steps: { name: string; text: string }[];
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: config.name,
+    description: config.description,
+    step: config.steps.map((step, i) => ({
+      "@type": "HowToStep",
+      position: i + 1,
+      name: step.name,
+      text: step.text,
+    })),
+  };
+}

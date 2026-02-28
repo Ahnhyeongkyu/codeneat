@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { generateToolMetadata, buildBreadcrumbJsonLd, buildFaqJsonLd } from "@/lib/seo";
+import { generateToolMetadata, buildBreadcrumbJsonLd, buildFaqJsonLd, buildHowToJsonLd } from "@/lib/seo";
 import JwtDecoderClient from "./client";
 
 export const metadata: Metadata = generateToolMetadata({
@@ -49,6 +49,16 @@ export default function JwtDecoderPage() {
     },
   ]);
 
+  const howTo = buildHowToJsonLd({
+    name: "How to Decode a JWT Token",
+    description: "Decode and inspect JWT tokens using CodeNeat's free online JWT decoder.",
+    steps: [
+      { name: "Paste your JWT", text: "Paste the JWT token (eyJhbG...) into the input field." },
+      { name: "View decoded data", text: "The header and payload are decoded automatically, showing algorithm, claims, and expiration status." },
+      { name: "Verify signature (optional)", text: "Enter your HMAC secret key and click Verify to check the token's signature validity." },
+    ],
+  });
+
   return (
     <>
       <script
@@ -58,6 +68,10 @@ export default function JwtDecoderPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howTo) }}
       />
       <JwtDecoderClient />
     </>
