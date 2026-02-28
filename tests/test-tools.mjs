@@ -982,6 +982,46 @@ section("en.json - P2 feature i18n keys");
   assert(enJson.tools.jsonFormatter.queryPath, "en.json: jsonFormatter.queryPath exists");
 }
 
+// P3: ko.json key parity with en.json
+{
+  section("ko.json — key parity with en.json");
+  const fs = await import("fs");
+  const enJson = JSON.parse(fs.readFileSync("messages/en.json", "utf8"));
+  const koJson = JSON.parse(fs.readFileSync("messages/ko.json", "utf8"));
+
+  function getLeafKeys(obj, prefix = "") {
+    let keys = [];
+    for (const k of Object.keys(obj)) {
+      const path = prefix ? `${prefix}.${k}` : k;
+      if (typeof obj[k] === "object" && obj[k] !== null && !Array.isArray(obj[k])) {
+        keys = keys.concat(getLeafKeys(obj[k], path));
+      } else {
+        keys.push(path);
+      }
+    }
+    return keys;
+  }
+
+  const enKeys = getLeafKeys(enJson);
+  const koKeys = new Set(getLeafKeys(koJson));
+
+  const missingInKo = enKeys.filter((k) => !koKeys.has(k));
+  const extraInKo = [...koKeys].filter((k) => !enKeys.includes(k));
+
+  assert(missingInKo.length === 0, `ko.json has all EN keys (missing: ${missingInKo.length === 0 ? "none" : missingInKo.slice(0, 5).join(", ")})`);
+  assert(extraInKo.length === 0, `ko.json has no extra keys (extra: ${extraInKo.length === 0 ? "none" : extraInKo.slice(0, 5).join(", ")})`);
+  assertEqual(enKeys.length, koKeys.size, `ko.json key count matches en.json (${enKeys.length})`);
+
+  // Spot-check critical KO translations
+  assert(koJson.common?.copy?.length > 0, "ko.json: common.copy exists");
+  assert(koJson.common?.clear?.length > 0, "ko.json: common.clear exists");
+  assert(koJson.tools?.jsonFormatter?.title?.length > 0, "ko.json: jsonFormatter.title exists");
+  assert(koJson.tools?.regexTester?.title?.length > 0, "ko.json: regexTester.title exists");
+  assert(koJson.tools?.hashGenerator?.title?.length > 0, "ko.json: hashGenerator.title exists");
+  assert(koJson.home?.hero?.title?.length > 0, "ko.json: home.hero.title exists");
+  assert(koJson.home?.hero?.subtitle?.length > 0, "ko.json: home.hero.subtitle exists");
+}
+
 // ═══════════════════════════════════════════════════════════════════════════════
 // SUMMARY
 // ═══════════════════════════════════════════════════════════════════════════════

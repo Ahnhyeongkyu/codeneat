@@ -15,19 +15,44 @@ const tools = [
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://codeneat.dev";
 
-  const toolPages: MetadataRoute.Sitemap = tools.map((tool) => ({
-    url: `${baseUrl}/${tool}`,
-    lastModified: new Date(),
-    changeFrequency: "weekly",
-    priority: 0.9,
-  }));
+  const alternates = (path: string) => ({
+    languages: {
+      en: `${baseUrl}${path}`,
+      ko: `${baseUrl}/ko${path}`,
+    },
+  });
 
-  const blogPages: MetadataRoute.Sitemap = getAllPosts().map((post) => ({
-    url: `${baseUrl}/blog/${post.slug}`,
-    lastModified: new Date(post.date),
-    changeFrequency: "monthly",
-    priority: 0.7,
-  }));
+  const toolPages: MetadataRoute.Sitemap = tools.flatMap((tool) => [
+    {
+      url: `${baseUrl}/${tool}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.9,
+      alternates: alternates(`/${tool}`),
+    },
+    {
+      url: `${baseUrl}/ko/${tool}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.9,
+    },
+  ]);
+
+  const blogPages: MetadataRoute.Sitemap = getAllPosts().flatMap((post) => [
+    {
+      url: `${baseUrl}/blog/${post.slug}`,
+      lastModified: new Date(post.date),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+      alternates: alternates(`/blog/${post.slug}`),
+    },
+    {
+      url: `${baseUrl}/ko/blog/${post.slug}`,
+      lastModified: new Date(post.date),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    },
+  ]);
 
   return [
     {
@@ -35,10 +60,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       changeFrequency: "daily",
       priority: 1,
+      alternates: alternates(""),
+    },
+    {
+      url: `${baseUrl}/ko`,
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 1,
     },
     ...toolPages,
     {
       url: `${baseUrl}/blog`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.8,
+      alternates: alternates("/blog"),
+    },
+    {
+      url: `${baseUrl}/ko/blog`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.8,

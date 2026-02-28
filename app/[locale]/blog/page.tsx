@@ -2,18 +2,26 @@ import type { Metadata } from "next";
 import { Link } from "@/i18n/routing";
 import { getAllPosts } from "@/lib/blog";
 
+const blogDescription = "Developer tips, tutorials, and best practices for JSON formatting, regex, hashing, JWT tokens, and more.";
+const blogOgImage = "https://codeneat.dev/api/og?blog=index&title=CodeNeat%20Blog";
+
 export const metadata: Metadata = {
   title: "Blog | CodeNeat",
-  description:
-    "Developer tips, tutorials, and best practices for JSON formatting, regex, hashing, JWT tokens, and more.",
+  description: blogDescription,
   alternates: { canonical: "https://codeneat.dev/blog" },
   openGraph: {
     title: "Blog | CodeNeat",
-    description:
-      "Developer tips, tutorials, and best practices for JSON formatting, regex, hashing, JWT tokens, and more.",
+    description: blogDescription,
     url: "https://codeneat.dev/blog",
     type: "website",
     siteName: "CodeNeat",
+    images: [{ url: blogOgImage, width: 1200, height: 630, alt: "CodeNeat Blog" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Blog | CodeNeat",
+    description: blogDescription,
+    images: [blogOgImage],
   },
 };
 

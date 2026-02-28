@@ -17,8 +17,14 @@ const TOOL_TITLES: Record<string, string> = {
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const tool = searchParams.get("tool") || "";
-  const title = TOOL_TITLES[tool] || "Clean Up Your Code";
-  const isHome = !tool;
+  const blog = searchParams.get("blog") || "";
+  const blogTitle = searchParams.get("title") || "";
+
+  const isBlog = !!blog || !!blogTitle;
+  const title = isBlog
+    ? (blogTitle || "CodeNeat Blog")
+    : (TOOL_TITLES[tool] || "Clean Up Your Code");
+  const isHome = !tool && !isBlog;
 
   return new ImageResponse(
     (
@@ -85,7 +91,9 @@ export async function GET(request: NextRequest) {
         >
           {isHome
             ? "Free Online Developer Tools"
-            : "Free, Fast & Private — codeneat.dev"}
+            : isBlog
+              ? "Developer Blog — codeneat.dev"
+              : "Free, Fast & Private — codeneat.dev"}
         </p>
 
         <div

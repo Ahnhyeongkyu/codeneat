@@ -1,0 +1,323 @@
+{
+  "metadata": {
+    "title": "CodeNeat — 깔끔한 코드를 위한 도구",
+    "description": "무료 온라인 개발자 도구: JSON 포맷터, Base64 인코더, Regex 테스터, Diff 체커 등. 프라이버시 최우선 — 데이터가 브라우저를 떠나지 않습니다.",
+    "keywords": "json 포맷터, base64 인코딩 디코딩, 정규식 테스터, diff 비교, jwt 디코더, sql 포맷터, 해시 생성기, url 인코딩 디코딩, 개발자 도구, 온라인 도구"
+  },
+  "nav": {
+    "home": "홈",
+    "tools": "도구",
+    "jsonFormatter": "JSON 포맷터",
+    "base64": "Base64 인코딩/디코딩",
+    "urlEncode": "URL 인코딩/디코딩",
+    "regexTester": "Regex 테스터",
+    "diffChecker": "Diff 체커",
+    "jwtDecoder": "JWT 디코더",
+    "sqlFormatter": "SQL 포맷터",
+    "hashGenerator": "해시 생성기",
+    "allTools": "전체 도구",
+    "darkMode": "다크 모드",
+    "lightMode": "라이트 모드"
+  },
+  "home": {
+    "hero": {
+      "title": "깔끔한 코드를 위한 도구",
+      "subtitle": "무료, 빠르고, 프라이버시를 지키는 개발자 도구. 포맷, 인코딩, 디코딩, 검증 — 모두 브라우저에서.",
+      "badge": "데이터가 브라우저를 떠나지 않습니다",
+      "cta": "도구 둘러보기"
+    },
+    "tools": {
+      "title": "개발자 도구",
+      "subtitle": "필요한 모든 것이 브라우저 안에. 서버로 데이터를 보내지 않습니다."
+    },
+    "features": {
+      "title": "왜 CodeNeat인가?",
+      "privacy": {
+        "title": "프라이버시 최우선",
+        "description": "모든 처리가 브라우저에서 이루어집니다. 데이터가 서버에 닿지 않습니다."
+      },
+      "fast": {
+        "title": "빠른 속도",
+        "description": "서버 왕복 없이 즉각적인 결과. 오프라인에서도 작동합니다."
+      },
+      "free": {
+        "title": "100% 무료",
+        "description": "모든 도구를 무료로 사용할 수 있으며, 가입이 필요 없습니다."
+      },
+      "modern": {
+        "title": "모던 UI",
+        "description": "깔끔하고 직관적인 인터페이스. 다크 모드와 Ctrl+Enter 단축키 지원."
+      }
+    },
+    "faq": {
+      "title": "자주 묻는 질문",
+      "q1": "CodeNeat은 정말 무료인가요?",
+      "a1": "네! 모든 개발자 도구를 가입 없이 완전 무료로 사용할 수 있습니다.",
+      "q2": "내 데이터는 안전한가요?",
+      "a2": "네. 모든 데이터 처리가 브라우저에서만 이루어집니다. 코드나 데이터를 어떤 서버에도 보내지 않습니다.",
+      "q3": "오프라인에서도 작동하나요?",
+      "a3": "네, 한번 로드되면 대부분의 도구가 인터넷 연결 없이도 작동합니다.",
+      "q4": "어떤 도구를 사용할 수 있나요?",
+      "a4": "JSON 포맷터, Base64 인코더/디코더, URL 인코더/디코더, Regex 테스터, Diff 체커, JWT 디코더, SQL 포맷터, 해시 생성기를 제공하며 계속 추가 예정입니다."
+    }
+  },
+  "tools": {
+    "jsonFormatter": {
+      "title": "JSON 포맷터 & 뷰어",
+      "description": "JSON 데이터를 즉시 포맷, 검증, 정리합니다. 트리 뷰 또는 텍스트로 확인.",
+      "shortDescription": "JSON 포맷 & 검증",
+      "inputPlaceholder": "JSON을 여기에 붙여넣으세요...",
+      "format": "포맷",
+      "minify": "축소",
+      "treeView": "트리 뷰",
+      "rawView": "텍스트 뷰",
+      "toYaml": "JSON → YAML",
+      "toCsv": "JSON → CSV",
+      "fromYaml": "YAML → JSON",
+      "uploadFile": "파일 업로드",
+      "syntaxHighlight": "구문 강조",
+      "jsonPath": "JSON Path",
+      "jsonPathPlaceholder": "$.store.book[0].title",
+      "queryPath": "쿼리",
+      "yamlConvertError": "YAML 변환에 유효하지 않은 입력입니다",
+      "csvConvertError": "CSV 변환을 위해서는 JSON이 객체 배열이어야 합니다",
+      "faq": {
+        "q1": "JSON 포맷팅이란?",
+        "a1": "JSON 포맷팅은 압축된 JSON 데이터에 적절한 들여쓰기와 줄바꿈을 추가하여 읽기 쉽고 디버깅하기 편하게 만드는 것입니다.",
+        "q2": "온라인에서 JSON을 검증할 수 있나요?",
+        "a2": "네. JSON 포맷터가 입력하는 동안 실시간으로 JSON을 검증하며, 문법 오류를 줄 번호와 함께 즉시 표시합니다.",
+        "q3": "JSON 데이터가 서버로 전송되나요?",
+        "a3": "아닙니다. 모든 JSON 포맷팅, 검증, 트리 뷰 처리가 브라우저에서만 이루어집니다. 데이터가 기기를 떠나지 않습니다.",
+        "q4": "JSON을 YAML이나 CSV로 변환할 수 있나요?",
+        "a4": "네. JSON → YAML 또는 JSON → CSV 버튼으로 데이터를 변환할 수 있습니다. YAML → JSON 버튼으로 YAML을 다시 JSON으로 변환할 수도 있습니다.",
+        "q5": "최대 파일 크기는 얼마인가요?",
+        "a5": "5 MB 이하의 JSON 파일을 포맷할 수 있습니다. 업로드 버튼으로 .json, .yaml, .csv 파일을 직접 업로드할 수도 있습니다."
+      }
+    },
+    "base64": {
+      "title": "Base64 인코딩 / 디코딩",
+      "description": "텍스트를 Base64로 인코딩하거나 Base64를 텍스트로 디코딩합니다.",
+      "shortDescription": "Base64 인코딩 & 디코딩",
+      "inputPlaceholder": "인코딩할 텍스트 또는 디코딩할 Base64를 입력하세요...",
+      "encode": "인코딩",
+      "decode": "디코딩",
+      "standard": "Standard",
+      "urlSafe": "URL-safe",
+      "faq": {
+        "q1": "Base64 인코딩이란?",
+        "a1": "Base64는 바이너리 데이터를 ASCII 문자로 변환하는 인코딩 방식입니다. HTML에 이미지 포함, 이메일 첨부파일, URL 데이터 전송에 흔히 사용됩니다.",
+        "q2": "Base64 인코딩은 암호화인가요?",
+        "a2": "아닙니다. Base64는 인코딩이지 암호화가 아닙니다. 데이터를 다른 형식으로 변환할 뿐 보호하지 않습니다. 누구나 원래 데이터로 디코딩할 수 있습니다.",
+        "q3": "UTF-8을 지원하나요?",
+        "a3": "네. Base64 도구는 UTF-8 인코딩 텍스트를 완벽히 지원하며, 특수문자, 이모지, 비라틴 문자도 처리합니다.",
+        "q4": "Base64와 Base64URL의 차이는?",
+        "a4": "표준 Base64는 URL에 안전하지 않은 + 와 / 문자를 사용합니다. Base64URL은 이를 -와 _로 대체하여 URL과 파일명에서 안전하게 사용할 수 있습니다.",
+        "q5": "Base64는 어디에 사용되나요?",
+        "a5": "Data URI (CSS/HTML에 이미지 포함), 이메일 첨부 (MIME), JWT 토큰, API 인증 헤더, JSON/XML에 바이너리 데이터 저장 등에 사용됩니다."
+      }
+    },
+    "urlEncode": {
+      "title": "URL 인코딩 / 디코딩",
+      "description": "URL 컴포넌트를 인코딩 또는 디코딩합니다. 특수문자를 안전하게 처리.",
+      "shortDescription": "URL 인코딩 & 디코딩",
+      "inputPlaceholder": "인코딩/디코딩할 URL 또는 텍스트를 입력하세요...",
+      "encode": "인코딩",
+      "decode": "디코딩",
+      "faq": {
+        "q1": "URL 인코딩이란?",
+        "a1": "URL 인코딩(퍼센트 인코딩)은 URL의 특수문자를 퍼센트 기호(%)와 16진수 두 자리로 대체합니다. URL이 올바르게 전송되도록 보장합니다.",
+        "q2": "언제 URL 인코딩을 해야 하나요?",
+        "a2": "쿼리 파라미터, 폼 데이터, 공백/앰퍼샌드/비ASCII 문자가 포함된 텍스트를 URL에 포함하기 전에 URL 인코딩해야 합니다.",
+        "q3": "encodeURI와 encodeURIComponent의 차이는?",
+        "a3": "encodeURI는 전체 URI를 인코딩하되 : / ? & = 같은 문자를 보존합니다. encodeURIComponent는 개별 컴포넌트를 더 적극적으로 인코딩합니다. 이 도구는 최대 안전성을 위해 encodeURIComponent를 사용합니다.",
+        "q4": "공백이 %20이 되거나 +가 되는 이유는?",
+        "a4": "URL 인코딩에서 공백은 %20(표준) 또는 +(폼 인코딩)으로 표현됩니다. Component 모드는 RFC 3986 표준이며 URL에서 범용적으로 작동하는 %20을 사용합니다.",
+        "q5": "전체 URL을 인코딩할 수 있나요?",
+        "a5": "쿼리 파라미터와 개별 값에는 Component 모드를 사용하세요. URL 구조(프로토콜, 호스트, 경로 구분자)를 보존하면서 전체 URL을 인코딩하려면 Full URL 모드를 사용하세요."
+      }
+    },
+    "regexTester": {
+      "title": "Regex 테스터",
+      "description": "실시간 매칭, 그룹 하이라이팅, 치트시트와 함께 정규식을 테스트합니다.",
+      "shortDescription": "정규식 테스트 & 디버그",
+      "patternPlaceholder": "정규식 패턴을 입력하세요...",
+      "testStringPlaceholder": "테스트 문자열을 입력하세요...",
+      "flags": "플래그",
+      "matches": "매치",
+      "noMatch": "매치 없음",
+      "replace": "치환",
+      "replacePlaceholder": "치환 문자열 ($1, $2, $<name> 지원)...",
+      "replaceResult": "치환 결과",
+      "replacements": "{count}개 치환",
+      "matchMode": "매치",
+      "replaceMode": "치환",
+      "cheatSheet": "치트시트",
+      "faq": {
+        "q1": "정규식 플래그란?",
+        "a1": "정규식 플래그는 패턴 매칭 방식을 변경합니다. 주요 플래그: g(전역 - 모든 매치 검색), i(대소문자 무시), m(멀티라인 - ^와 $가 줄 경계 매칭), s(dotAll - .이 줄바꿈 매칭).",
+        "q2": "캡처 그룹 사용법은?",
+        "a2": "패턴의 일부를 괄호로 감싸면 캡처 그룹이 됩니다. 예: (\\d+)-(\\d+)는 대시로 구분된 두 숫자 그룹을 캡처합니다. 이름 있는 그룹은 (?<name>pattern) 문법을 사용합니다.",
+        "q3": "실시간으로 테스트되나요?",
+        "a3": "네. 패턴과 테스트 문자열을 입력하면 매치가 즉시 하이라이트됩니다. 버튼 클릭 없이 결과가 자동으로 업데이트됩니다.",
+        "q4": "어떤 정규식 엔진을 사용하나요?",
+        "a4": "브라우저에 내장된 JavaScript RegExp 엔진을 사용합니다. ES2024 기능인 이름 있는 그룹, 후방 탐색, Unicode 속성 이스케이프를 지원합니다.",
+        "q5": "이메일이나 URL 검증 정규식을 테스트하려면?",
+        "a5": "치트시트 섹션에서 이메일, URL, IP 주소, 전화번호 검증용 일반 패턴을 확인하세요. 패턴을 클릭하여 시도하고, 테스트 데이터를 붙여넣어 매치를 확인하세요."
+      }
+    },
+    "diffChecker": {
+      "title": "Diff 체커",
+      "description": "두 텍스트를 비교하고 차이점을 나란히 하이라이트합니다.",
+      "shortDescription": "텍스트 차이 비교",
+      "original": "원본",
+      "modified": "수정본",
+      "originalPlaceholder": "원본 텍스트를 붙여넣으세요...",
+      "modifiedPlaceholder": "수정된 텍스트를 붙여넣으세요...",
+      "compare": "비교",
+      "sideBySide": "나란히 보기",
+      "inline": "인라인",
+      "faq": {
+        "q1": "Diff 체커는 어떻게 작동하나요?",
+        "a1": "diff-match-patch 알고리즘을 사용하여 두 텍스트 사이의 최소 변경점을 찾습니다. 추가된 부분은 녹색, 삭제된 부분은 빨간색, 변경 없는 텍스트는 그대로 표시됩니다.",
+        "q2": "코드를 비교할 수 있나요?",
+        "a2": "네. 소스 코드, 설정 파일, SQL 쿼리, 일반 텍스트 등 모든 텍스트를 비교할 수 있습니다. 포맷과 공백이 보존됩니다.",
+        "q3": "크기 제한이 있나요?",
+        "a3": "하드 제한은 없습니다. 모든 처리가 브라우저에서 이루어지므로 성능은 기기에 따라 다릅니다. 수 MB까지의 텍스트가 원활하게 작동합니다.",
+        "q4": "인라인과 나란히 보기의 차이는?",
+        "a4": "인라인 뷰는 단일 패널에서 추가/삭제를 인라인으로 표시합니다. 나란히 뷰는 GitHub의 diff 뷰처럼 원본과 수정본을 줄 번호와 함께 두 열로 표시합니다.",
+        "q5": "JSON이나 SQL을 구체적으로 비교할 수 있나요?",
+        "a5": "네. JSON은 먼저 JSON 포맷터로 포맷한 후 비교하면 좋습니다. SQL도 SQL 포맷터로 먼저 포맷하세요. 구조적 차이가 훨씬 명확해집니다."
+      }
+    },
+    "jwtDecoder": {
+      "title": "JWT 디코더",
+      "description": "JWT 토큰을 디코딩하고 검사합니다. 헤더, 페이로드 확인 및 만료 검증.",
+      "shortDescription": "JWT 토큰 디코딩",
+      "inputPlaceholder": "JWT 토큰을 여기에 붙여넣으세요...",
+      "decode": "디코딩",
+      "header": "헤더",
+      "payload": "페이로드",
+      "signature": "서명",
+      "expired": "만료됨",
+      "valid": "유효",
+      "secret": "시크릿",
+      "secretPlaceholder": "서명 검증을 위해 HMAC 시크릿을 입력하세요...",
+      "verify": "서명 검증",
+      "validSignature": "유효한 서명",
+      "invalidSignature": "유효하지 않은 서명",
+      "faq": {
+        "q1": "JWT 토큰이란?",
+        "a1": "JWT(JSON Web Token)는 인증 및 정보 교환에 사용되는 컴팩트하고 URL-safe한 토큰 형식입니다. 헤더(알고리즘 정보), 페이로드(클레임/데이터), 서명의 세 부분으로 구성됩니다.",
+        "q2": "JWT 서명을 검증할 수 있나요?",
+        "a2": "네. HMAC 시크릿 키를 입력하면 서명을 검증할 수 있습니다. 모든 처리가 브라우저에서 이루어지므로 시크릿 키가 서버로 전송되지 않습니다.",
+        "q3": "JWT를 여기에 붙여넣어도 안전한가요?",
+        "a3": "네. 모든 디코딩이 브라우저에서 이루어지며 토큰이 서버로 전송되지 않습니다. 다만 JWT 토큰에는 민감한 클레임이 포함될 수 있으므로 공개적으로 공유하지 마세요.",
+        "q4": "주요 JWT 클레임은?",
+        "a4": "표준 클레임: iss(발행자), sub(주체), aud(대상), exp(만료), iat(발행 시간), nbf(유효 시작). 사용자 역할이나 권한 같은 애플리케이션 특정 데이터를 커스텀 클레임에 포함할 수 있습니다.",
+        "q5": "JWT가 만료되었는지 어떻게 확인하나요?",
+        "a5": "토큰을 붙여넣으면 디코더가 자동으로 exp(만료) 클레임을 현재 시간과 비교합니다. 만료된 토큰은 빨간 뱃지, 유효한 토큰은 녹색 뱃지와 만료 날짜를 표시합니다."
+      }
+    },
+    "sqlFormatter": {
+      "title": "SQL 포맷터",
+      "description": "SQL 쿼리를 포맷하고 정리합니다. MySQL, PostgreSQL, SQLite 등 지원.",
+      "shortDescription": "SQL 쿼리 포맷",
+      "inputPlaceholder": "SQL 쿼리를 여기에 붙여넣으세요...",
+      "dialect": "방언",
+      "format": "포맷",
+      "minify": "축소",
+      "faq": {
+        "q1": "어떤 SQL 방언을 지원하나요?",
+        "a1": "Standard SQL, MySQL, PostgreSQL, SQLite, SQL Server (T-SQL), PL/SQL, MariaDB를 지원합니다. 최적 포맷을 위해 드롭다운에서 방언을 선택하세요.",
+        "q2": "포맷터가 쿼리 로직을 변경하나요?",
+        "a2": "아닙니다. 포맷터는 공백, 들여쓰기, 키워드 대소문자만 변경합니다. 쿼리 로직, 테이블 이름, 값은 그대로 유지됩니다.",
+        "q3": "SQL 쿼리를 축소할 수 있나요?",
+        "a3": "네. 축소 버튼으로 불필요한 공백과 주석을 제거하여 SQL을 한 줄로 압축합니다. 애플리케이션 코드에 SQL을 포함할 때 유용합니다.",
+        "q4": "키워드 대소문자를 커스텀할 수 있나요?",
+        "a4": "네. 키워드 대소문자 드롭다운에서 UPPER (SELECT, FROM), lower (select, from), Preserve (원본 유지) 중 선택할 수 있습니다. UPPER가 가장 일반적인 SQL 관례입니다.",
+        "q5": "복잡한 쿼리도 처리하나요?",
+        "a5": "네. 서브쿼리, CTE (WITH 절), JOIN, UNION, 윈도우 함수 등 고급 SQL 기능을 처리합니다. 중첩 구조를 적절히 들여쓰기합니다."
+      }
+    },
+    "hashGenerator": {
+      "title": "해시 생성기",
+      "description": "모든 텍스트에서 MD5, SHA-1, SHA-256, SHA-384, SHA-512 해시를 생성합니다.",
+      "shortDescription": "MD5 & SHA 해시 생성",
+      "inputPlaceholder": "해시할 텍스트를 입력하세요...",
+      "algorithm": "알고리즘",
+      "generate": "생성",
+      "result": "해시 결과",
+      "uploadFile": "파일 해시",
+      "fileHash": "파일 해시",
+      "fileName": "파일",
+      "fileSize": "크기",
+      "faq": {
+        "q1": "해시 함수란?",
+        "a1": "해시 함수는 임의 크기의 입력 데이터를 고정 크기의 문자열로 변환합니다. 같은 입력은 항상 같은 해시를 생성하지만, 해시에서 원본 데이터를 역추적할 수 없습니다.",
+        "q2": "어떤 알고리즘을 사용해야 하나요?",
+        "a2": "SHA-256이 가장 일반적으로 권장됩니다. SHA-1은 보안 목적으로는 취약합니다. SHA-384와 SHA-512는 더 높은 보안 요구사항에 더 긴 해시를 제공합니다.",
+        "q3": "MD5를 지원하나요?",
+        "a3": "네! MD5, SHA-1, SHA-256, SHA-384, SHA-512를 지원합니다. MD5는 암호학적으로 깨진 것으로 간주되므로 보안 목적에는 SHA-256 이상을 사용하세요.",
+        "q4": "모든 해시를 한번에 생성할 수 있나요?",
+        "a4": "네. 전체 생성 버튼으로 MD5, SHA-1, SHA-256, SHA-384, SHA-512 해시를 동시에 계산할 수 있습니다. 알고리즘 간 해시 출력을 비교할 때 유용합니다.",
+        "q5": "해싱과 암호화는 같은 건가요?",
+        "a5": "아닙니다. 해싱은 단방향 함수로 해시에서 원본 데이터를 복원할 수 없습니다. 암호화는 양방향으로 올바른 키로 복호화할 수 있습니다. 해싱은 검증에, 암호화는 기밀성에 사용됩니다."
+      }
+    }
+  },
+  "common": {
+    "copy": "복사",
+    "copied": "복사됨!",
+    "share": "공유",
+    "shareTooLarge": "공유하기엔 너무 큽니다",
+    "clear": "초기화",
+    "download": "다운로드",
+    "upload": "업로드",
+    "paste": "붙여넣기",
+    "sample": "샘플 로드",
+    "swap": "스왑",
+    "input": "입력",
+    "output": "출력",
+    "error": "오류",
+    "validJson": "유효한 JSON",
+    "testString": "테스트 문자열",
+    "highlighted": "하이라이트",
+    "index": "인덱스",
+    "generateAll": "전체 생성",
+    "added": "{count}개 추가",
+    "removed": "{count}개 삭제",
+    "unchanged": "{count}개 변경 없음",
+    "privacyBadge": "데이터가 브라우저를 떠나지 않습니다",
+    "relatedTools": "관련 도구",
+    "faq": "자주 묻는 질문",
+    "madeWith": "Made with",
+    "loading": "처리 중...",
+    "oversizeWarning": "입력이 5 MB를 초과합니다. 성능에 영향을 줄 수 있습니다.",
+    "indent": {
+      "twoSpaces": "2칸",
+      "fourSpaces": "4칸",
+      "tab": "탭"
+    },
+    "keywordCase": {
+      "upper": "UPPER",
+      "lower": "lower",
+      "preserve": "유지"
+    },
+    "encodeMode": {
+      "component": "Component",
+      "fullUrl": "Full URL"
+    }
+  },
+  "footer": {
+    "tools": "도구",
+    "product": "제품",
+    "legal": "법적 고지",
+    "privacy": "개인정보처리방침",
+    "terms": "이용약관",
+    "about": "소개",
+    "blog": "블로그",
+    "github": "GitHub",
+    "tagline": "깔끔한 코드를 위한 도구",
+    "copyright": "© {year} CodeNeat. All rights reserved."
+  }
+}
