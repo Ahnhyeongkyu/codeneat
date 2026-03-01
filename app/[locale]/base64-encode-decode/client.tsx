@@ -9,6 +9,7 @@ import { CopyButton } from "@/components/copy-button";
 import { DownloadButton } from "@/components/download-button";
 import { encodeBase64, decodeBase64, encodeBase64Url, decodeBase64Url } from "@/lib/tools/base64";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcut";
+import { AiExplainButton, AiExplainPanel } from "@/components/ai-explain";
 
 const MAX_INPUT_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -18,6 +19,7 @@ export default function Base64Client() {
   const [output, setOutput] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [urlSafe, setUrlSafe] = useState(false);
+  const [showAiPanel, setShowAiPanel] = useState(false);
 
   const handleEncode = useCallback(() => {
     const result = urlSafe ? encodeBase64Url(input) : encodeBase64(input);
@@ -83,6 +85,7 @@ export default function Base64Client() {
             {t("tools.base64.urlSafe")}
           </Button>
         </div>
+        <AiExplainButton onClick={() => setShowAiPanel(true)} disabled={!input.trim()} />
         <div className="flex-1" />
         <Button variant="outline" size="sm" onClick={handleSample}>
           {t("common.sample")}
@@ -136,6 +139,14 @@ export default function Base64Client() {
           )}
         </div>
       </div>
+
+      {showAiPanel && (
+        <AiExplainPanel
+          tool="base64Encoder"
+          input={output ? `Input: ${input}\n\nDecoded/Encoded output: ${output}` : input}
+          onClose={() => setShowAiPanel(false)}
+        />
+      )}
     </ToolLayout>
   );
 }

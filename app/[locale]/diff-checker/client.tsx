@@ -10,6 +10,7 @@ import { DownloadButton } from "@/components/download-button";
 import { Badge } from "@/components/ui/badge";
 import { computeDiff, computeLineDiff, DIFF_SAMPLE, type DiffResult, type LineDiff } from "@/lib/tools/diff";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcut";
+import { AiExplainButton, AiExplainPanel } from "@/components/ai-explain";
 
 const MAX_INPUT_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -21,6 +22,7 @@ export default function DiffCheckerClient() {
   const [diffView, setDiffView] = useState<"inline" | "side">("inline");
   const [lineDiffs, setLineDiffs] = useState<LineDiff[]>([]);
   const [isPending, startTransition] = useTransition();
+  const [showAiPanel, setShowAiPanel] = useState(false);
 
   const handleCompare = useCallback(() => {
     startTransition(() => {
@@ -83,6 +85,7 @@ export default function DiffCheckerClient() {
             {t("tools.diffChecker.sideBySide")}
           </Button>
         </div>
+        <AiExplainButton onClick={() => setShowAiPanel(true)} disabled={!original.trim() || !modified.trim()} />
         <div className="flex-1" />
         {(original || modified) && (
           <Button variant="outline" size="sm" onClick={handleSwap}>
@@ -246,6 +249,14 @@ export default function DiffCheckerClient() {
             </div>
           )}
         </div>
+      )}
+
+      {showAiPanel && (
+        <AiExplainPanel
+          tool="diffChecker"
+          input={`Original:\n${original}\n\nModified:\n${modified}`}
+          onClose={() => setShowAiPanel(false)}
+        />
       )}
     </ToolLayout>
   );

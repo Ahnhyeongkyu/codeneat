@@ -9,6 +9,7 @@ import { CopyButton } from "@/components/copy-button";
 import { DownloadButton } from "@/components/download-button";
 import { encodeUrl, decodeUrl, encodeFullUrl, decodeFullUrl } from "@/lib/tools/url-encode";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcut";
+import { AiExplainButton, AiExplainPanel } from "@/components/ai-explain";
 
 const MAX_INPUT_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -18,6 +19,7 @@ export default function UrlEncodeClient() {
   const [output, setOutput] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [mode, setMode] = useState<"component" | "full">("component");
+  const [showAiPanel, setShowAiPanel] = useState(false);
 
   const handleEncode = useCallback(() => {
     const fn = mode === "component" ? encodeUrl : encodeFullUrl;
@@ -78,6 +80,7 @@ export default function UrlEncodeClient() {
           <option value="component">{t("common.encodeMode.component")}</option>
           <option value="full">{t("common.encodeMode.fullUrl")}</option>
         </select>
+        <AiExplainButton onClick={() => setShowAiPanel(true)} disabled={!input.trim()} />
         <div className="flex-1" />
         <Button variant="outline" size="sm" onClick={handleSample}>
           {t("common.sample")}
@@ -130,6 +133,14 @@ export default function UrlEncodeClient() {
           )}
         </div>
       </div>
+
+      {showAiPanel && (
+        <AiExplainPanel
+          tool="urlEncoder"
+          input={input}
+          onClose={() => setShowAiPanel(false)}
+        />
+      )}
     </ToolLayout>
   );
 }

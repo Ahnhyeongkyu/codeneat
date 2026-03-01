@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, X, RotateCcw, AlertCircle } from "lucide-react";
@@ -37,6 +37,7 @@ export function AiExplainButton({
 
 export function AiExplainPanel({ tool, input, onClose }: AiExplainPanelProps) {
   const t = useTranslations("common");
+  const locale = useLocale();
   const [response, setResponse] = useState("");
   const [status, setStatus] = useState<"loading" | "done" | "error">("loading");
   const [errorMessage, setErrorMessage] = useState("");
@@ -55,7 +56,7 @@ export function AiExplainPanel({ tool, input, onClose }: AiExplainPanelProps) {
       const res = await fetch("/api/ai", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tool, input }),
+        body: JSON.stringify({ tool, input, locale }),
         signal: controller.signal,
       });
 
@@ -84,7 +85,7 @@ export function AiExplainPanel({ tool, input, onClose }: AiExplainPanelProps) {
       setErrorMessage(err instanceof Error ? err.message : String(err));
       setStatus("error");
     }
-  }, [tool, input]);
+  }, [tool, input, locale]);
 
   useEffect(() => {
     fetchExplanation();

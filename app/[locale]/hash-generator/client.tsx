@@ -18,6 +18,7 @@ import {
 import { Upload } from "lucide-react";
 import { DropZone } from "@/components/drop-zone";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcut";
+import { AiExplainButton, AiExplainPanel } from "@/components/ai-explain";
 
 const MAX_INPUT_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -29,6 +30,7 @@ export default function HashGeneratorClient() {
   const [allHashes, setAllHashes] = useState<Record<string, string> | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showAiPanel, setShowAiPanel] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
   const [fileSize, setFileSize] = useState<number>(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -171,6 +173,7 @@ export default function HashGeneratorClient() {
           {t("tools.hashGenerator.uploadFile")}
         </Button>
 
+        <AiExplainButton onClick={() => setShowAiPanel(true)} disabled={!singleHash && !allHashes} />
         <div className="flex-1" />
         <Button variant="outline" size="sm" onClick={handleSample}>
           {t("common.sample")}
@@ -246,6 +249,14 @@ export default function HashGeneratorClient() {
             </div>
           ))}
         </div>
+      )}
+
+      {showAiPanel && (
+        <AiExplainPanel
+          tool="hashGenerator"
+          input={`Algorithm: ${algorithm}\nInput: ${input || fileName || ""}\nHash: ${singleHash || (allHashes ? Object.entries(allHashes).map(([k, v]) => `${k}: ${v}`).join("\n") : "")}`}
+          onClose={() => setShowAiPanel(false)}
+        />
       )}
     </ToolLayout>
   );
