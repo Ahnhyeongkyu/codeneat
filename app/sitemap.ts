@@ -89,6 +89,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
     ...blogPages,
     {
+      url: `${baseUrl}/pro`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.6,
+      alternates: alternates("/pro"),
+    },
+    ...nonDefaultLocales.map((locale) => ({
+      url: `${baseUrl}/${locale}/pro`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+    {
       url: `${baseUrl}/privacy`,
       lastModified: new Date(),
       changeFrequency: "yearly",

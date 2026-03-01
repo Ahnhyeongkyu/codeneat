@@ -77,6 +77,14 @@ export function Footer() {
             </h3>
             <ul className="space-y-2">
               <li>
+                <Link
+                  href="/pro"
+                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {t("pro.proPlan")}
+                </Link>
+              </li>
+              <li>
                 <a
                   href="https://github.com/Ahnhyeongkyu/codeneat"
                   target="_blank"

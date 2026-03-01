@@ -1,12 +1,14 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest } from "next/server";
+import { checkRateLimit } from "@/lib/rate-limit";
+import { getRedis } from "@/lib/redis";
+import { sha256 } from "@/lib/crypto";
 
 // ---------------------------------------------------------------------------
-// Rate limiting (in-memory, resets on cold start — acceptable for MVP)
+// Constants
 // ---------------------------------------------------------------------------
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-const DAILY_LIMIT = 10;
 const MAX_INPUT_CHARS = 5000;
+const CACHE_TTL = 3600; // 1 hour
 
 function getClientIp(req: NextRequest): string {
   return (
@@ -14,23 +16,6 @@ function getClientIp(req: NextRequest): string {
     req.headers.get("x-real-ip") ||
     "unknown"
   );
-}
-
-function checkRateLimit(ip: string): { allowed: boolean; remaining: number } {
-  const now = Date.now();
-  const entry = rateLimitMap.get(ip);
-
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(ip, { count: 1, resetAt: now + 24 * 60 * 60 * 1000 });
-    return { allowed: true, remaining: DAILY_LIMIT - 1 };
-  }
-
-  if (entry.count >= DAILY_LIMIT) {
-    return { allowed: false, remaining: 0 };
-  }
-
-  entry.count++;
-  return { allowed: true, remaining: DAILY_LIMIT - entry.count };
 }
 
 // ---------------------------------------------------------------------------
@@ -186,8 +171,11 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: "Input is required" }, { status: 400 });
   }
 
+  // Check Pro status from middleware-injected header
+  const isPro = req.headers.get("x-codeneat-pro") === "true";
+
   const ip = getClientIp(req);
-  const { allowed, remaining } = checkRateLimit(ip);
+  const { allowed, remaining } = await checkRateLimit(ip, isPro);
   if (!allowed) {
     return Response.json(
       { error: "Daily limit reached. Upgrade to Pro for unlimited access." },
@@ -200,10 +188,30 @@ export async function POST(req: NextRequest) {
       ? input.slice(0, MAX_INPUT_CHARS) + "\n\n[... truncated to 5000 characters]"
       : input;
 
-  const anthropic = new Anthropic({ apiKey });
+  // --- Cache check ---
+  const redis = getRedis();
+  const lang = locale || "en";
+  let cacheKey = "";
 
-  // Build locale-aware system prompt
-  const localeInstruction = LOCALE_INSTRUCTIONS[locale || "en"] || LOCALE_INSTRUCTIONS.en;
+  if (redis) {
+    const inputHash = await sha256(truncatedInput + lang);
+    cacheKey = `cache:ai:${tool}:${inputHash}`;
+
+    const cached = await redis.get<string>(cacheKey);
+    if (cached) {
+      return new Response(cached, {
+        headers: {
+          "Content-Type": "text/plain; charset=utf-8",
+          "X-RateLimit-Remaining": String(remaining),
+          "X-Cache": "HIT",
+        },
+      });
+    }
+  }
+
+  // --- Stream from Claude ---
+  const anthropic = new Anthropic({ apiKey });
+  const localeInstruction = LOCALE_INSTRUCTIONS[lang] || LOCALE_INSTRUCTIONS.en;
   const systemPrompt = SYSTEM_PROMPTS[tool].replace("Respond in English.", localeInstruction);
 
   try {
@@ -216,6 +224,8 @@ export async function POST(req: NextRequest) {
       ],
     });
 
+    let accumulated = "";
+
     const readableStream = new ReadableStream({
       async start(controller) {
         try {
@@ -224,10 +234,16 @@ export async function POST(req: NextRequest) {
               event.type === "content_block_delta" &&
               event.delta.type === "text_delta"
             ) {
+              accumulated += event.delta.text;
               controller.enqueue(new TextEncoder().encode(event.delta.text));
             }
           }
           controller.close();
+
+          // Cache the complete response
+          if (redis && cacheKey && accumulated) {
+            await redis.set(cacheKey, accumulated, { ex: CACHE_TTL }).catch(() => {});
+          }
         } catch (err) {
           controller.error(err);
         }
@@ -239,6 +255,7 @@ export async function POST(req: NextRequest) {
         "Content-Type": "text/plain; charset=utf-8",
         "Transfer-Encoding": "chunked",
         "X-RateLimit-Remaining": String(remaining),
+        "X-Cache": "MISS",
       },
     });
   } catch (err) {

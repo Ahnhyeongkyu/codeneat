@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const ADSENSE_ID = process.env.NEXT_PUBLIC_ADSENSE_ID;
 
@@ -11,10 +11,34 @@ interface AdSlotProps {
 }
 
 export function AdSlot({ slot, format = "auto", className = "" }: AdSlotProps) {
-  const adRef = useRef<HTMLModElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+  const pushed = useRef(false);
 
+  // IntersectionObserver lazy loading
   useEffect(() => {
-    if (!ADSENSE_ID || !adRef.current) return;
+    const el = containerRef.current;
+    if (!el || !ADSENSE_ID) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "200px" },
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  // Push ad when visible
+  useEffect(() => {
+    if (!visible || pushed.current || !ADSENSE_ID) return;
+    pushed.current = true;
+
     try {
       const adsbygoogle = (window as unknown as { adsbygoogle: unknown[] })
         .adsbygoogle;
@@ -24,21 +48,22 @@ export function AdSlot({ slot, format = "auto", className = "" }: AdSlotProps) {
     } catch {
       // AdSense not loaded or blocked
     }
-  }, []);
+  }, [visible]);
 
   if (!ADSENSE_ID) return null;
 
   return (
-    <div className={`my-6 text-center ${className}`}>
-      <ins
-        ref={adRef}
-        className="adsbygoogle"
-        style={{ display: "block" }}
-        data-ad-client={ADSENSE_ID}
-        data-ad-slot={slot}
-        data-ad-format={format}
-        data-full-width-responsive="true"
-      />
+    <div ref={containerRef} className={`my-6 min-h-[90px] text-center ${className}`}>
+      {visible && (
+        <ins
+          className="adsbygoogle"
+          style={{ display: "block" }}
+          data-ad-client={ADSENSE_ID}
+          data-ad-slot={slot}
+          data-ad-format={format}
+          data-full-width-responsive="true"
+        />
+      )}
     </div>
   );
 }

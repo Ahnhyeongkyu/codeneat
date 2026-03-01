@@ -2,6 +2,8 @@
 
 import { ReactNode, useState, useEffect } from "react";
 import { PrivacyBadge } from "@/components/privacy-badge";
+import { AdWrapper } from "@/components/ad-wrapper";
+import { AdSlot } from "@/components/ad-slot";
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { recordToolUsage } from "@/lib/recent-tools";
@@ -103,6 +105,11 @@ export function ToolLayout({ toolKey, children }: ToolLayoutProps) {
       {/* Tool Content */}
       <div className="mb-12">{children}</div>
 
+      {/* Ad slot — below tool content (free users only) */}
+      <AdWrapper>
+        <AdSlot slot="tool-bottom" format="horizontal" />
+      </AdWrapper>
+
       {/* FAQ */}
       <section className="mb-12">
         <h2 className="mb-6 text-2xl font-semibold">
@@ -121,6 +128,11 @@ export function ToolLayout({ toolKey, children }: ToolLayoutProps) {
           ))}
         </div>
       </section>
+
+      {/* Ad slot — below FAQ (free users only) */}
+      <AdWrapper>
+        <AdSlot slot="faq-bottom" format="auto" />
+      </AdWrapper>
 
       {/* Related Tools */}
       <section className="mb-8">

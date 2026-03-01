@@ -3,6 +3,7 @@ import { Link } from "@/i18n/routing";
 import { Code2 } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
 import { MobileNav } from "./mobile-nav";
+import { LicenseDialog } from "@/components/license-dialog";
 
 const toolLinks = [
   { href: "/json-formatter", key: "jsonFormatter" },
@@ -47,6 +48,7 @@ export function Header() {
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
+          <LicenseDialog />
           <ThemeToggle />
         </div>
       </div>

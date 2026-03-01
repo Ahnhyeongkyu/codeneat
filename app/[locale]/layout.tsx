@@ -4,6 +4,7 @@ import { routing } from "@/i18n/routing";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ProProvider } from "@/lib/pro-context";
 
 type Props = {
   children: React.ReactNode;
@@ -21,13 +22,15 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
-      <TooltipProvider>
-        <div className="flex min-h-screen flex-col">
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </div>
-      </TooltipProvider>
+      <ProProvider>
+        <TooltipProvider>
+          <div className="flex min-h-screen flex-col">
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </div>
+        </TooltipProvider>
+      </ProProvider>
     </NextIntlClientProvider>
   );
 }

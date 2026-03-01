@@ -4,7 +4,8 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, X, RotateCcw, AlertCircle } from "lucide-react";
+import { Sparkles, X, RotateCcw, AlertCircle, Crown } from "lucide-react";
+import { useProStatus } from "@/lib/pro-context";
 
 interface AiExplainPanelProps {
   tool: string;
@@ -37,9 +38,11 @@ export function AiExplainButton({
 
 export function AiExplainPanel({ tool, input, onClose }: AiExplainPanelProps) {
   const t = useTranslations("common");
+  const tPro = useTranslations("pro");
   const locale = useLocale();
+  const { isPro } = useProStatus();
   const [response, setResponse] = useState("");
-  const [status, setStatus] = useState<"loading" | "done" | "error">("loading");
+  const [status, setStatus] = useState<"loading" | "done" | "error" | "rate-limited">("loading");
   const [errorMessage, setErrorMessage] = useState("");
   const abortRef = useRef<AbortController | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -62,6 +65,11 @@ export function AiExplainPanel({ tool, input, onClose }: AiExplainPanelProps) {
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({ error: "Unknown error" }));
+        if (res.status === 429) {
+          setErrorMessage(data.error || t("aiDailyLimit"));
+          setStatus("rate-limited");
+          return;
+        }
         throw new Error(data.error || `HTTP ${res.status}`);
       }
 
@@ -117,6 +125,11 @@ export function AiExplainPanel({ tool, input, onClose }: AiExplainPanelProps) {
               {t("aiExplaining")}
             </Badge>
           )}
+          {isPro && status !== "loading" && (
+            <Badge variant="secondary" className="text-xs text-emerald-600 dark:text-emerald-400">
+              Pro
+            </Badge>
+          )}
         </div>
         <Button
           variant="ghost"
@@ -133,7 +146,15 @@ export function AiExplainPanel({ tool, input, onClose }: AiExplainPanelProps) {
       </div>
 
       {/* Content */}
-      {status === "error" ? (
+      {status === "rate-limited" && !isPro ? (
+        <div className="flex items-start gap-2">
+          <Crown className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+          <div>
+            <p className="text-sm font-medium">{t("aiDailyLimit")}</p>
+            <p className="mt-1 text-xs text-muted-foreground">{tPro("upgradeHint")}</p>
+          </div>
+        </div>
+      ) : status === "error" || status === "rate-limited" ? (
         <div className="flex items-start gap-2">
           <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
           <div>
