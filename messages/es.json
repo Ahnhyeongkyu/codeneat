@@ -1,0 +1,331 @@
+{
+  "metadata": {
+    "title": "CodeNeat — Limpia Tu Código",
+    "description": "Herramientas gratuitas para desarrolladores: Formateador JSON, Codificador Base64, Probador de Regex, Comparador de textos y más. Privacidad primero — tus datos nunca salen de tu navegador.",
+    "keywords": "formateador json, base64 codificar decodificar, probador regex, comparador de textos, decodificador jwt, formateador sql, generador de hash, url codificar decodificar, herramientas para desarrolladores, herramientas online, json formatter, base64 encode decode, regex tester, diff checker"
+  },
+  "nav": {
+    "home": "Inicio",
+    "tools": "Herramientas",
+    "jsonFormatter": "Formateador JSON",
+    "base64": "Base64 Codificar/Decodificar",
+    "urlEncode": "URL Codificar/Decodificar",
+    "regexTester": "Probador de Regex",
+    "diffChecker": "Comparador de Textos",
+    "jwtDecoder": "Decodificador JWT",
+    "sqlFormatter": "Formateador SQL",
+    "hashGenerator": "Generador de Hash",
+    "allTools": "Todas las Herramientas",
+    "darkMode": "Modo Oscuro",
+    "lightMode": "Modo Claro"
+  },
+  "home": {
+    "hero": {
+      "title": "Limpia Tu Código",
+      "subtitle": "Herramientas para desarrolladores: gratuitas, rápidas y privadas. Formatea, codifica, decodifica y valida — todo en tu navegador.",
+      "badge": "Tus datos nunca salen de tu navegador",
+      "cta": "Explorar Herramientas"
+    },
+    "tools": {
+      "title": "Herramientas para Desarrolladores",
+      "subtitle": "Todo lo que necesitas, directamente en tu navegador. Sin envío de datos a ningún servidor."
+    },
+    "features": {
+      "title": "¿Por qué CodeNeat?",
+      "privacy": {
+        "title": "Privacidad Primero",
+        "description": "Todo el procesamiento ocurre en tu navegador. Tus datos nunca tocan nuestros servidores."
+      },
+      "fast": {
+        "title": "Ultrarrápido",
+        "description": "Resultados instantáneos sin viajes al servidor. También funciona sin conexión."
+      },
+      "free": {
+        "title": "100% Gratuito",
+        "description": "Todas las herramientas son gratuitas, sin necesidad de registro ni límites."
+      },
+      "modern": {
+        "title": "Interfaz Moderna",
+        "description": "Interfaz limpia e intuitiva con modo oscuro y atajos Ctrl+Enter."
+      }
+    },
+    "recentTools": "Usadas Recientemente",
+    "faq": {
+      "title": "Preguntas Frecuentes",
+      "q1": "¿CodeNeat es realmente gratuito?",
+      "a1": "¡Sí! Todas las herramientas para desarrolladores son completamente gratuitas y no requieren registro.",
+      "q2": "¿Mis datos están seguros?",
+      "a2": "Absolutamente. Todo el procesamiento de datos ocurre completamente en tu navegador. Nunca enviamos tu código ni tus datos a ningún servidor.",
+      "q3": "¿Funciona sin conexión?",
+      "a3": "Sí, una vez cargada la página, la mayoría de las herramientas funcionan sin conexión a internet, ya que todo el procesamiento se realiza en el lado del cliente.",
+      "q4": "¿Qué herramientas están disponibles?",
+      "a4": "Ofrecemos Formateador JSON, Codificador/Decodificador Base64, Codificador/Decodificador de URL, Probador de Regex, Comparador de Textos, Decodificador JWT, Formateador SQL y Generador de Hash — con más herramientas próximamente."
+    }
+  },
+  "tools": {
+    "jsonFormatter": {
+      "title": "Formateador y Visor JSON",
+      "description": "Formatea, valida y embellece datos JSON al instante. Visualiza como árbol o texto sin formato.",
+      "shortDescription": "Formatea y valida JSON",
+      "inputPlaceholder": "Pega tu JSON aquí...",
+      "format": "Formatear",
+      "minify": "Minificar",
+      "treeView": "Vista de Árbol",
+      "rawView": "Vista Sin Formato",
+      "toYaml": "JSON → YAML",
+      "toCsv": "JSON → CSV",
+      "fromYaml": "YAML → JSON",
+      "uploadFile": "Subir Archivo",
+      "syntaxHighlight": "Resaltado",
+      "jsonPath": "JSON Path",
+      "jsonPathPlaceholder": "$.store.book[0].title",
+      "queryPath": "Consultar",
+      "yamlConvertError": "Entrada no válida para la conversión a YAML",
+      "csvConvertError": "El JSON debe ser un arreglo de objetos para la conversión a CSV",
+      "faq": {
+        "q1": "¿Qué es el formateo de JSON?",
+        "a1": "El formateo de JSON (o embellecimiento) agrega la indentación y los saltos de línea adecuados a datos JSON comprimidos, haciéndolos más fáciles de leer y depurar.",
+        "q2": "¿Puedo validar JSON en línea?",
+        "a2": "Sí. Nuestro formateador JSON valida tu JSON en tiempo real mientras escribes, mostrando instantáneamente los errores de sintaxis con números de línea.",
+        "q3": "¿Mis datos JSON se envían a un servidor?",
+        "a3": "No. Todo el formateo, validación y procesamiento de vista de árbol de JSON ocurre completamente en tu navegador. Tus datos nunca salen de tu dispositivo.",
+        "q4": "¿Puedo convertir JSON a YAML o CSV?",
+        "a4": "Sí. Usa los botones JSON → YAML o JSON → CSV para convertir tus datos. También puedes convertir YAML de vuelta a JSON con el botón YAML → JSON.",
+        "q5": "¿Cuál es el tamaño máximo de archivo que puedo formatear?",
+        "a5": "Puedes formatear archivos JSON de hasta 5 MB. También puedes subir archivos .json, .yaml o .csv directamente usando el botón de subir."
+      }
+    },
+    "base64": {
+      "title": "Base64 Codificar / Decodificar",
+      "description": "Codifica texto a Base64 o decodifica Base64 a texto al instante.",
+      "shortDescription": "Codifica y decodifica Base64",
+      "inputPlaceholder": "Ingresa texto para codificar o Base64 para decodificar...",
+      "encode": "Codificar",
+      "decode": "Decodificar",
+      "standard": "Estándar",
+      "urlSafe": "URL-seguro",
+      "faq": {
+        "q1": "¿Qué es la codificación Base64?",
+        "a1": "Base64 es un esquema de codificación de binario a texto que convierte datos binarios en caracteres ASCII. Se usa comúnmente para incrustar imágenes en HTML, codificar archivos adjuntos de correo y transmitir datos en URLs.",
+        "q2": "¿La codificación Base64 cifra mis datos?",
+        "a2": "No. Base64 es una codificación, no un cifrado. Transforma los datos a un formato diferente pero no los protege. Cualquier persona puede decodificar Base64 para obtener los datos originales.",
+        "q3": "¿Esta herramienta soporta UTF-8?",
+        "a3": "Sí. Nuestra herramienta Base64 soporta completamente texto codificado en UTF-8, incluyendo caracteres especiales, emojis y escrituras no latinas.",
+        "q4": "¿Cuál es la diferencia entre Base64 y Base64URL?",
+        "a4": "El Base64 estándar usa los caracteres + y / que no son seguros para URLs. Base64URL los reemplaza con - y _ para que la salida sea segura para uso en URLs y nombres de archivo.",
+        "q5": "¿Dónde se usa comúnmente Base64?",
+        "a5": "Base64 se usa en URIs de datos (incrustar imágenes en CSS/HTML), archivos adjuntos de correo (MIME), tokens JWT, encabezados de autenticación de API y almacenamiento de datos binarios en JSON o XML."
+      }
+    },
+    "urlEncode": {
+      "title": "URL Codificar / Decodificar",
+      "description": "Codifica o decodifica componentes de URL. Maneja caracteres especiales de forma segura.",
+      "shortDescription": "Codifica y decodifica URLs",
+      "inputPlaceholder": "Ingresa URL o texto para codificar/decodificar...",
+      "encode": "Codificar",
+      "decode": "Decodificar",
+      "faq": {
+        "q1": "¿Qué es la codificación de URL?",
+        "a1": "La codificación de URL (también llamada codificación porcentual) reemplaza los caracteres especiales en una URL con un signo de porcentaje (%) seguido de dos dígitos hexadecimales, asegurando que las URLs se transmitan correctamente.",
+        "q2": "¿Cuándo debo codificar una URL?",
+        "a2": "Debes codificar los parámetros de consulta, datos de formulario y cualquier texto que contenga caracteres especiales como espacios, ampersands o caracteres no ASCII antes de incluirlos en una URL.",
+        "q3": "¿Cuál es la diferencia entre encodeURI y encodeURIComponent?",
+        "a3": "encodeURI codifica una URI completa pero preserva caracteres como : / ? & =. encodeURIComponent codifica componentes individuales de forma más agresiva, convirtiendo también esos caracteres. Nuestra herramienta usa encodeURIComponent para máxima seguridad.",
+        "q4": "¿Por qué los espacios se convierten en %20 o +?",
+        "a4": "En la codificación de URL, los espacios se representan como %20 (estándar) o + (codificación de formulario). Nuestro modo Component usa %20, que es el estándar RFC 3986 y funciona universalmente en URLs.",
+        "q5": "¿Puedo codificar URLs completas o solo parámetros de consulta?",
+        "a5": "Usa el modo Component para parámetros de consulta y valores individuales. Usa el modo Full URL para codificar URLs completas preservando la estructura de la URL (protocolo, host, separadores de ruta)."
+      }
+    },
+    "regexTester": {
+      "title": "Probador de Regex",
+      "description": "Prueba expresiones regulares con coincidencias en tiempo real, resaltado de grupos y hoja de referencia.",
+      "shortDescription": "Prueba y depura regex",
+      "patternPlaceholder": "Ingresa el patrón regex...",
+      "testStringPlaceholder": "Ingresa la cadena de prueba...",
+      "flags": "Banderas",
+      "matches": "Coincidencias",
+      "noMatch": "No se encontraron coincidencias",
+      "replace": "Reemplazar",
+      "replacePlaceholder": "Cadena de reemplazo (soporta $1, $2, $<name>)...",
+      "replaceResult": "Resultado del Reemplazo",
+      "replacements": "{count} reemplazos",
+      "matchMode": "Coincidir",
+      "replaceMode": "Reemplazar",
+      "cheatSheet": "Hoja de Referencia",
+      "faq": {
+        "q1": "¿Qué son las banderas de regex?",
+        "a1": "Las banderas de regex modifican cómo se realiza la coincidencia de un patrón. Las banderas comunes incluyen: g (global - encontrar todas las coincidencias), i (no distingue mayúsculas), m (multilínea - ^ y $ coinciden con límites de línea) y s (dotAll - el punto coincide con saltos de línea).",
+        "q2": "¿Cómo uso los grupos de captura?",
+        "a2": "Envuelve parte de tu patrón entre paréntesis para crear un grupo de captura. Por ejemplo, (\\d+)-(\\d+) captura dos grupos de dígitos separados por un guion. Los grupos con nombre usan la sintaxis (?<name>pattern).",
+        "q3": "¿Las regex se prueban en tiempo real?",
+        "a3": "Sí. Las coincidencias se resaltan instantáneamente mientras escribes tanto el patrón como la cadena de prueba. No es necesario hacer clic en ningún botón: los resultados se actualizan automáticamente.",
+        "q4": "¿Qué motor de regex usa esta herramienta?",
+        "a4": "Esta herramienta usa el motor JavaScript RegExp integrado en tu navegador. Soporta características de ES2024 incluyendo grupos con nombre, aserciones lookbehind y escapes de propiedades Unicode.",
+        "q5": "¿Cómo pruebo una regex para validar emails o URLs?",
+        "a5": "Abre la sección de Hoja de Referencia para ver patrones comunes incluyendo validación de email, URL, dirección IP y número de teléfono. Haz clic en cualquier patrón para probarlo y luego pega tus datos de prueba para verificar las coincidencias."
+      }
+    },
+    "diffChecker": {
+      "title": "Comparador de Textos",
+      "description": "Compara dos textos y visualiza las diferencias resaltadas lado a lado.",
+      "shortDescription": "Compara diferencias de texto",
+      "original": "Original",
+      "modified": "Modificado",
+      "originalPlaceholder": "Pega el texto original...",
+      "modifiedPlaceholder": "Pega el texto modificado...",
+      "compare": "Comparar",
+      "sideBySide": "Lado a Lado",
+      "inline": "En Línea",
+      "faq": {
+        "q1": "¿Cómo funciona el comparador de textos?",
+        "a1": "Nuestro comparador usa el algoritmo diff-match-patch para encontrar el conjunto mínimo de cambios entre dos textos. Las adiciones se resaltan en verde, las eliminaciones en rojo y el texto sin cambios se muestra normalmente.",
+        "q2": "¿Puedo comparar código con esta herramienta?",
+        "a2": "Sí. Puedes comparar cualquier texto incluyendo código fuente, archivos de configuración, consultas SQL o documentos de texto plano. La herramienta preserva el formato y los espacios en blanco.",
+        "q3": "¿Hay un límite de tamaño?",
+        "a3": "No hay un límite estricto. Como todo el procesamiento ocurre en tu navegador, el rendimiento depende de tu dispositivo. Textos de varios megabytes funcionan sin problemas en dispositivos modernos.",
+        "q4": "¿Cuál es la diferencia entre la vista en línea y lado a lado?",
+        "a4": "La vista en línea muestra los cambios dentro de un solo panel con adiciones y eliminaciones marcadas en línea. La vista lado a lado muestra el texto original y modificado en dos columnas con números de línea, similar a la vista de diferencias de GitHub.",
+        "q5": "¿Puedo comparar JSON o SQL específicamente?",
+        "a5": "Sí. Para mejores resultados con JSON, formatea ambos textos primero usando nuestro Formateador JSON y luego compara. Para SQL, usa el Formateador SQL primero. Esto hace que las diferencias estructurales sean mucho más claras."
+      }
+    },
+    "jwtDecoder": {
+      "title": "Decodificador JWT",
+      "description": "Decodifica e inspecciona tokens JWT. Visualiza encabezado, payload y verifica expiración.",
+      "shortDescription": "Decodifica tokens JWT",
+      "inputPlaceholder": "Pega tu token JWT aquí...",
+      "decode": "Decodificar",
+      "header": "Encabezado",
+      "payload": "Payload",
+      "signature": "Firma",
+      "expired": "Expirado",
+      "valid": "Válido",
+      "secret": "Secreto",
+      "secretPlaceholder": "Ingresa el secreto HMAC para verificar la firma...",
+      "verify": "Verificar Firma",
+      "validSignature": "Firma Válida",
+      "invalidSignature": "Firma Inválida",
+      "faq": {
+        "q1": "¿Qué es un token JWT?",
+        "a1": "Un JSON Web Token (JWT) es un formato de token compacto y seguro para URLs, usado para autenticación e intercambio de información. Consiste en tres partes: un encabezado (información del algoritmo), payload (claims/datos) y firma.",
+        "q2": "¿Esta herramienta puede verificar firmas JWT?",
+        "a2": "Esta herramienta decodifica e inspecciona tokens JWT, mostrando el encabezado, payload y estado de expiración. La verificación de firma requiere la clave secreta, la cual intencionalmente no solicitamos para proteger tu seguridad.",
+        "q3": "¿Es seguro pegar mi JWT aquí?",
+        "a3": "Sí. Toda la decodificación ocurre en tu navegador — tu token nunca se envía a ningún servidor. Sin embargo, nunca compartas tokens JWT públicamente ya que pueden contener claims sensibles.",
+        "q4": "¿Cuáles son los claims comunes de JWT?",
+        "a4": "Los claims estándar incluyen: iss (emisor), sub (sujeto), aud (audiencia), exp (expiración), iat (emitido en) y nbf (no antes de). Los claims personalizados pueden contener cualquier dato específico de la aplicación como roles de usuario o permisos.",
+        "q5": "¿Cómo verifico si un JWT ha expirado?",
+        "a5": "Pega tu token y nuestro decodificador verifica automáticamente el claim exp (expiración) contra la hora actual. Los tokens expirados muestran una etiqueta roja, y los tokens válidos muestran una etiqueta verde con la fecha de expiración."
+      }
+    },
+    "sqlFormatter": {
+      "title": "Formateador SQL",
+      "description": "Formatea y embellece consultas SQL. Soporta MySQL, PostgreSQL, SQLite y más.",
+      "shortDescription": "Formatea consultas SQL",
+      "inputPlaceholder": "Pega tu consulta SQL aquí...",
+      "dialect": "Dialecto",
+      "format": "Formatear",
+      "minify": "Minificar",
+      "faq": {
+        "q1": "¿Qué dialectos SQL son compatibles?",
+        "a1": "Soportamos SQL Estándar, MySQL, PostgreSQL, SQLite, SQL Server (T-SQL), PL/SQL y MariaDB. Selecciona tu dialecto del menú desplegable para un formateo óptimo.",
+        "q2": "¿El formateador cambia la lógica de mi consulta?",
+        "a2": "No. El formateador solo cambia los espacios en blanco, la indentación y las mayúsculas de las palabras clave. La lógica de tu consulta, nombres de tablas y valores permanecen exactamente iguales.",
+        "q3": "¿Puedo minificar consultas SQL?",
+        "a3": "Sí. Usa el botón Minificar para comprimir tu SQL en una sola línea eliminando espacios en blanco y comentarios innecesarios. Esto es útil para incrustar SQL en código de aplicación.",
+        "q4": "¿Puedo personalizar las mayúsculas de las palabras clave?",
+        "a4": "Sí. Elige entre UPPER (SELECT, FROM), lower (select, from) o Preserve (mantener original) usando el menú desplegable. UPPER es la convención SQL más común.",
+        "q5": "¿El formateador maneja consultas complejas?",
+        "a5": "Sí. El formateador maneja subconsultas, CTEs (cláusulas WITH), JOINs, UNION, funciones de ventana y otras características avanzadas de SQL. Indenta correctamente las estructuras anidadas para mejorar la legibilidad."
+      }
+    },
+    "hashGenerator": {
+      "title": "Generador de Hash",
+      "description": "Genera hashes MD5, SHA-1, SHA-256, SHA-384 y SHA-512 a partir de cualquier texto.",
+      "shortDescription": "Genera hashes MD5 y SHA",
+      "inputPlaceholder": "Ingresa texto para generar hash...",
+      "algorithm": "Algoritmo",
+      "generate": "Generar",
+      "result": "Resultado del Hash",
+      "uploadFile": "Hash de Archivo",
+      "fileHash": "Hash de Archivo",
+      "fileName": "Archivo",
+      "fileSize": "Tamaño",
+      "faq": {
+        "q1": "¿Qué es una función hash?",
+        "a1": "Una función hash convierte datos de entrada de cualquier tamaño en una cadena de caracteres de tamaño fijo. La misma entrada siempre produce el mismo hash, pero no se puede revertir un hash para obtener los datos originales.",
+        "q2": "¿Qué algoritmo debo usar?",
+        "a2": "SHA-256 es el más recomendado. SHA-1 se considera débil para propósitos de seguridad. SHA-384 y SHA-512 proporcionan hashes más largos para requisitos de mayor seguridad.",
+        "q3": "¿Esta herramienta soporta MD5?",
+        "a3": "¡Sí! Soportamos MD5, SHA-1, SHA-256, SHA-384 y SHA-512. Ten en cuenta que MD5 se considera criptográficamente roto — usa SHA-256 o superior para propósitos de seguridad.",
+        "q4": "¿Puedo generar todos los hashes a la vez?",
+        "a4": "Sí. Haz clic en el botón Generar Todos para calcular los hashes MD5, SHA-1, SHA-256, SHA-384 y SHA-512 simultáneamente. Esto es útil para comparar las salidas entre algoritmos.",
+        "q5": "¿Es lo mismo hash que cifrado?",
+        "a5": "No. El hash es una función unidireccional — no puedes revertir un hash para obtener los datos originales. El cifrado es bidireccional — los datos cifrados se pueden descifrar con la clave correcta. El hash se usa para verificación, el cifrado para confidencialidad."
+      }
+    }
+  },
+  "common": {
+    "copy": "Copiar",
+    "copied": "¡Copiado!",
+    "share": "Compartir",
+    "shareTooLarge": "Demasiado grande para compartir",
+    "clear": "Limpiar",
+    "download": "Descargar",
+    "upload": "Subir",
+    "paste": "Pegar",
+    "sample": "Cargar Ejemplo",
+    "swap": "Intercambiar",
+    "input": "Entrada",
+    "output": "Salida",
+    "error": "Error",
+    "validJson": "JSON Válido",
+    "testString": "Cadena de Prueba",
+    "highlighted": "Resaltado",
+    "index": "Índice",
+    "generateAll": "Generar Todos",
+    "added": "{count} añadidos",
+    "removed": "{count} eliminados",
+    "unchanged": "{count} sin cambios",
+    "privacyBadge": "Tus datos nunca salen de tu navegador",
+    "relatedTools": "Herramientas Relacionadas",
+    "faq": "Preguntas Frecuentes",
+    "madeWith": "Hecho con",
+    "loading": "Procesando...",
+    "oversizeWarning": "La entrada supera los 5 MB. El rendimiento puede verse afectado.",
+    "indent": {
+      "twoSpaces": "2 espacios",
+      "fourSpaces": "4 espacios",
+      "tab": "Tabulación"
+    },
+    "keywordCase": {
+      "upper": "MAYÚSCULAS",
+      "lower": "minúsculas",
+      "preserve": "Preservar"
+    },
+    "encodeMode": {
+      "component": "Componente",
+      "fullUrl": "URL Completa"
+    },
+    "aiExplain": "Explicar con IA",
+    "aiExplaining": "Analizando...",
+    "aiError": "El análisis de IA falló",
+    "aiRetry": "Reintentar",
+    "aiPrivacyNotice": "Tus datos se envían a la IA para análisis. No se almacenan.",
+    "aiDailyLimit": "Límite diario alcanzado",
+    "aiClose": "Cerrar panel de IA"
+  },
+  "footer": {
+    "tools": "Herramientas",
+    "product": "Producto",
+    "legal": "Legal",
+    "privacy": "Política de Privacidad",
+    "terms": "Términos de Servicio",
+    "about": "Acerca de",
+    "blog": "Blog",
+    "github": "GitHub",
+    "tagline": "Limpia Tu Código",
+    "copyright": "© {year} CodeNeat. Todos los derechos reservados."
+  }
+}

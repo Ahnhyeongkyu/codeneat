@@ -20,8 +20,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       en: `${baseUrl}${path}`,
       ko: `${baseUrl}/ko${path}`,
       ja: `${baseUrl}/ja${path}`,
+      zh: `${baseUrl}/zh${path}`,
+      es: `${baseUrl}/es${path}`,
     },
   });
+
+  const nonDefaultLocales = ["ko", "ja", "zh", "es"];
 
   const toolPages: MetadataRoute.Sitemap = tools.flatMap((tool) => [
     {
@@ -31,18 +35,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
       alternates: alternates(`/${tool}`),
     },
-    {
-      url: `${baseUrl}/ko/${tool}`,
+    ...nonDefaultLocales.map((locale) => ({
+      url: `${baseUrl}/${locale}/${tool}`,
       lastModified: new Date(),
       changeFrequency: "weekly" as const,
       priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/ja/${tool}`,
-      lastModified: new Date(),
-      changeFrequency: "weekly" as const,
-      priority: 0.9,
-    },
+    })),
   ]);
 
   const blogPages: MetadataRoute.Sitemap = getAllPosts().flatMap((post) => [
@@ -53,18 +51,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
       alternates: alternates(`/blog/${post.slug}`),
     },
-    {
-      url: `${baseUrl}/ko/blog/${post.slug}`,
+    ...nonDefaultLocales.map((locale) => ({
+      url: `${baseUrl}/${locale}/blog/${post.slug}`,
       lastModified: new Date(post.date),
       changeFrequency: "monthly" as const,
       priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/ja/blog/${post.slug}`,
-      lastModified: new Date(post.date),
-      changeFrequency: "monthly" as const,
-      priority: 0.7,
-    },
+    })),
   ]);
 
   return [
@@ -75,18 +67,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
       alternates: alternates(""),
     },
-    {
-      url: `${baseUrl}/ko`,
+    ...nonDefaultLocales.map((locale) => ({
+      url: `${baseUrl}/${locale}`,
       lastModified: new Date(),
-      changeFrequency: "daily",
+      changeFrequency: "daily" as const,
       priority: 1,
-    },
-    {
-      url: `${baseUrl}/ja`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 1,
-    },
+    })),
     ...toolPages,
     {
       url: `${baseUrl}/blog`,
@@ -95,18 +81,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
       alternates: alternates("/blog"),
     },
-    {
-      url: `${baseUrl}/ko/blog`,
+    ...nonDefaultLocales.map((locale) => ({
+      url: `${baseUrl}/${locale}/blog`,
       lastModified: new Date(),
-      changeFrequency: "weekly",
+      changeFrequency: "weekly" as const,
       priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/ja/blog`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.8,
-    },
+    })),
     ...blogPages,
     {
       url: `${baseUrl}/privacy`,
