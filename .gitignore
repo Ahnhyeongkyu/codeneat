@@ -47,3 +47,11 @@ ENV_TEMPLATE.md
 next-env.d.ts
 
 .vercel
+
+# test artifacts
+/test-results/
+/playwright-report/
+
+# screenshots (temp)
+*.png
+!public/**/*.png
