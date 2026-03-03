@@ -24,7 +24,7 @@ export const BLOG_POSTS: BlogPost[] = [
 <p>In this comprehensive guide, we'll cover everything from basic formatting conventions to advanced techniques like JSON Path queries and schema validation — all the knowledge you need to work with JSON like a pro.</p>
 
 <h2>Why Formatting Matters</h2>
-<p>Minified JSON is great for network transfer — it reduces payload size by removing whitespace. A 100KB formatted JSON file might shrink to 60KB when minified. But when you need to read or debug it, proper formatting is crucial. A well-formatted JSON document with consistent indentation makes it easy to:</p>
+<p>Minified JSON is great for network transfer — it reduces payload size by removing whitespace. A 100KB formatted JSON file might shrink to 60KB when minified (see our deep dive on <a href="/blog/json-minify-vs-beautify-when-to-use">JSON minify vs beautify</a> for detailed size comparisons). But when you need to read or debug it, proper formatting is crucial. A well-formatted JSON document with consistent indentation makes it easy to:</p>
 <ul>
 <li>Spot missing brackets, braces, or commas at a glance</li>
 <li>Navigate deeply nested structures without getting lost</li>
@@ -33,7 +33,7 @@ export const BLOG_POSTS: BlogPost[] = [
 <li>Identify data types and structure patterns quickly</li>
 </ul>
 
-<p>Many production bugs trace back to malformed JSON — a missing comma, an extra bracket, or an unquoted key. Good formatting habits prevent these issues before they reach production.</p>
+<p>Many production bugs trace back to malformed JSON — a missing comma, an extra bracket, or an unquoted key. Good formatting habits prevent these issues before they reach production. If you're dealing with a specific parse error, check out our guide on <a href="/blog/fix-unexpected-token-json-parse-error">fixing the "Unexpected token" JSON.parse error</a>.</p>
 
 <h2>Indentation: 2 Spaces vs 4 Spaces vs Tabs</h2>
 <p>The three most common indentation styles each have their advocates:</p>
@@ -122,7 +122,7 @@ export const BLOG_POSTS: BlogPost[] = [
 </ul>
 
 <h2>JSON Schema Validation</h2>
-<p>For production applications, validating JSON structure against a schema prevents runtime errors. JSON Schema defines the expected structure, types, required fields, and constraints. Tools like <code>ajv</code> (JavaScript) or <code>jsonschema</code> (Python) can validate at runtime, while IDE extensions provide inline feedback during development.</p>
+<p>For production applications, <a href="/blog/json-validator-how-to-check-json-syntax">validating JSON syntax</a> and structure against a schema prevents runtime errors. JSON Schema defines the expected structure, types, required fields, and constraints. Tools like <code>ajv</code> (JavaScript) or <code>jsonschema</code> (Python) can validate at runtime, while IDE extensions provide inline feedback during development.</p>
 
 <p>Key schema features include type checking, required field validation, enum constraints, pattern matching for strings, and conditional schemas. Investing in schema validation pays off quickly — it catches malformed data at system boundaries before it causes downstream issues.</p>
 
@@ -215,7 +215,7 @@ export const BLOG_POSTS: BlogPost[] = [
 <p>This pattern matches dates like "2026-02-18" and lets you access the parts by name in your code.</p>
 
 <h2>Lookaheads and Lookbehinds</h2>
-<p>Lookarounds assert that a pattern exists ahead of or behind the current position without including it in the match:</p>
+<p>Lookarounds assert that a pattern exists ahead of or behind the current position without including it in the match. For a deeper exploration with more examples, see our dedicated guide on <a href="/blog/regex-lookahead-lookbehind-examples">regex lookahead and lookbehind patterns</a>.</p>
 <ul>
 <li><code>(?=abc)</code> — Positive lookahead: next characters must be "abc"</li>
 <li><code>(?!abc)</code> — Negative lookahead: next characters must NOT be "abc"</li>
@@ -286,7 +286,7 @@ export const BLOG_POSTS: BlogPost[] = [
 </ul>
 
 <h2>Debugging Regular Expressions</h2>
-<p>When a regex doesn't behave as expected, break it down step by step. Start with the simplest version that matches part of your target, then add complexity incrementally. Testing with multiple inputs — including edge cases like empty strings, special characters, and extremely long strings — reveals issues early.</p>
+<p>When a regex doesn't behave as expected, break it down step by step. Start with the simplest version that matches part of your target, then add complexity incrementally. Testing with multiple inputs — including edge cases like empty strings, special characters, and extremely long strings — reveals issues early. If you're hitting compile-time errors, our guide on <a href="/blog/fix-invalid-regular-expression-error">fixing "Invalid regular expression" errors</a> covers all the common causes.</p>
 
 <p>Visual regex testers that highlight matches in real-time are invaluable for this iterative debugging process.</p>
 
@@ -313,7 +313,7 @@ export const BLOG_POSTS: BlogPost[] = [
 <h3>Header</h3>
 <p>The header specifies the signing algorithm and token type:</p>
 <p><code>{"alg": "HS256", "typ": "JWT"}</code></p>
-<p>Common algorithms include HS256 (HMAC with SHA-256), RS256 (RSA with SHA-256), and ES256 (ECDSA with P-256). The choice of algorithm has significant security implications — more on this below.</p>
+<p>Common algorithms include HS256 (HMAC with SHA-256), RS256 (RSA with SHA-256), and ES256 (ECDSA with P-256). The choice of algorithm has significant security implications — more on this below. Note that each part of a JWT is <a href="/blog/base64-encoding-explained">Base64URL-encoded</a>, which is a URL-safe variant of standard Base64.</p>
 
 <h3>Payload (Claims)</h3>
 <p>The payload contains claims — statements about the user and metadata. Claims are categorized into three types:</p>
@@ -455,7 +455,7 @@ export const BLOG_POSTS: BlogPost[] = [
 <h2>Debugging JWT Issues</h2>
 <p>When authentication fails, these are the most common causes:</p>
 <ul>
-<li><strong>Expired token:</strong> Check the <code>exp</code> claim against the current time. Clock skew between servers can cause false negatives — allow a small leeway (30-60 seconds).</li>
+<li><strong>Expired token:</strong> Check the <code>exp</code> claim against the current time. Clock skew between servers can cause false negatives — allow a small leeway (30-60 seconds). For a comprehensive guide on handling this, see <a href="/blog/jwt-expired-token-error-handling">JWT expired token error handling</a>.</li>
 <li><strong>Wrong audience:</strong> The token was issued for a different service. Check the <code>aud</code> claim.</li>
 <li><strong>Signature mismatch:</strong> The secret or key used for verification doesn't match the one used for signing. Common when rotating keys.</li>
 <li><strong>Malformed token:</strong> The token doesn't have exactly three dot-separated parts, or the parts aren't valid Base64URL.</li>
@@ -511,7 +511,7 @@ export const BLOG_POSTS: BlogPost[] = [
 <li><strong>2012:</strong> The Flame malware exploited MD5 collisions to fake Windows Update signatures</li>
 </ul>
 
-<p>Today, generating MD5 collisions takes seconds on a modern laptop. This means an attacker can create a malicious file with the same MD5 hash as a legitimate one — making MD5 worthless for security verification.</p>
+<p>Today, generating MD5 collisions takes seconds on a modern laptop. This means an attacker can create a malicious file with the same MD5 hash as a legitimate one — making MD5 worthless for security verification. For a deeper look at MD5's internals and where it's still useful, see our <a href="/blog/md5-hash-generator-complete-guide">complete guide to MD5 hashing</a>.</p>
 
 <p>However, MD5 is still acceptable for non-adversarial checksums — detecting accidental data corruption during file transfers, for example. If nobody is actively trying to exploit the collision vulnerability, MD5's speed makes it practical for this purpose.</p>
 
@@ -526,7 +526,7 @@ export const BLOG_POSTS: BlogPost[] = [
 <p>Major browsers stopped accepting SHA-1 SSL certificates in 2017. Git originally used SHA-1 for commit hashes and has been transitioning to SHA-256. If you're still using SHA-1 in any security context, migrate to SHA-256 immediately.</p>
 
 <h2>SHA-256: The Current Standard</h2>
-<p>SHA-256 is part of the SHA-2 family, designed by the NSA and published in 2001. It produces a 256-bit (32-byte) hash, represented as 64 hexadecimal characters. No practical attacks against SHA-256 have been demonstrated, and it's considered secure for all current applications.</p>
+<p>SHA-256 is part of the SHA-2 family, designed by the NSA and published in 2001. It produces a 256-bit (32-byte) hash, represented as 64 hexadecimal characters. No practical attacks against SHA-256 have been demonstrated, and it's considered secure for all current applications. Learn more in our <a href="/blog/sha256-hash-explained-with-examples">SHA-256 deep dive with practical examples</a>.</p>
 
 <p>SHA-256 is used in:</p>
 <ul>
@@ -704,6 +704,7 @@ export const BLOG_POSTS: BlogPost[] = [
 <p>For example, a small PNG icon can be embedded directly in an <code>&lt;img&gt;</code> tag or as a CSS background-image. This eliminates an HTTP round trip, which can improve performance for very small assets.</p>
 
 <h3>When Data URIs Make Sense</h3>
+<p>For a practical walkthrough on encoding images and files with Base64, including code examples for JavaScript and Node.js, see our guide on <a href="/blog/base64-encode-decode-images-files">Base64 encoding images and files</a>.</p>
 <ul>
 <li><strong>Small icons and logos</strong> under 2-3 KB — the Base64 overhead is negligible and you save an HTTP request</li>
 <li><strong>CSS sprites replacement</strong> — embed small UI elements directly in your stylesheet</li>
@@ -728,7 +729,7 @@ export const BLOG_POSTS: BlogPost[] = [
 <h2>URL-Safe Base64</h2>
 <p>Standard Base64 uses <code>+</code> and <code>/</code> as part of its alphabet, but these characters have special meaning in URLs. The <code>+</code> character is interpreted as a space in URL query parameters, and <code>/</code> is a path separator. The <code>=</code> padding character also causes issues in query strings.</p>
 
-<p>URL-safe Base64 (defined in RFC 4648 Section 5) addresses this by making two substitutions:</p>
+<p>URL-safe Base64 (defined in RFC 4648 Section 5) addresses this by making two substitutions (for more on why certain characters need special handling in URLs, see our <a href="/blog/url-encoding-complete-guide">complete guide to URL encoding</a>):</p>
 <ul>
 <li><code>+</code> is replaced with <code>-</code> (hyphen)</li>
 <li><code>/</code> is replaced with <code>_</code> (underscore)</li>
@@ -796,7 +797,7 @@ export const BLOG_POSTS: BlogPost[] = [
 
 <p>For example, a space character (ASCII 32, hex 0x20) becomes <code>%20</code>. An ampersand (<code>&amp;</code>, ASCII 38, hex 0x26) becomes <code>%26</code>. A forward slash (<code>/</code>, ASCII 47, hex 0x2F) becomes <code>%2F</code>.</p>
 
-<p>This encoding ensures that every URI contains only ASCII characters from a safe subset, regardless of the original data. Without percent-encoding, characters like <code>?</code>, <code>&amp;</code>, and <code>=</code> in user data would be confused with URL structure delimiters.</p>
+<p>This encoding ensures that every URI contains only ASCII characters from a safe subset, regardless of the original data. Without percent-encoding, characters like <code>?</code>, <code>&amp;</code>, and <code>=</code> in user data would be confused with URL structure delimiters. Note that percent-encoding is different from <a href="/blog/base64-encoding-explained">Base64 encoding</a>, which converts binary data to text for an entirely different purpose.</p>
 
 <h2>Reserved vs Unreserved Characters</h2>
 <p>RFC 3986 divides ASCII characters into two categories that determine whether encoding is required:</p>
@@ -1082,7 +1083,7 @@ export const BLOG_POSTS: BlogPost[] = [
 
 <ul>
 <li><strong>Debugging:</strong> When a query returns unexpected results, properly formatted SQL lets you trace the logic clause by clause. A 30-line query squashed into 3 lines hides logical errors.</li>
-<li><strong>Code review:</strong> Reviewers can spot issues like missing JOIN conditions, incorrect aggregations, and filter logic errors much faster in well-formatted SQL.</li>
+<li><strong>Code review:</strong> Reviewers can spot issues like missing JOIN conditions, incorrect aggregations, and filter logic errors much faster in well-formatted SQL. Many of the <a href="/blog/sql-syntax-error-near-common-fixes">most common SQL syntax errors</a> become obvious once a query is properly formatted.</li>
 <li><strong>Maintenance:</strong> Queries evolve over time. Adding a new column, an additional filter, or a JOIN is straightforward when the existing query has a clear, consistent structure.</li>
 <li><strong>Onboarding:</strong> New team members can understand existing queries faster when they follow a consistent, predictable format.</li>
 <li><strong>Version control:</strong> Well-formatted SQL produces cleaner diffs. When each clause is on its own line, changes are isolated and easy to review.</li>
@@ -1269,7 +1270,7 @@ export const BLOG_POSTS: BlogPost[] = [
 }</code></pre>
 
 <h2>Error #1: Trailing Commas</h2>
-<p>The trailing comma is the single most common JSON syntax error. JavaScript and many other languages allow trailing commas in arrays and objects, so developers naturally carry this habit into JSON — but the JSON specification forbids them.</p>
+<p>The trailing comma is the single most common JSON syntax error. JavaScript and many other languages allow trailing commas in arrays and objects, so developers naturally carry this habit into JSON — but the JSON specification forbids them. This is also one of the top causes of the <a href="/blog/fix-unexpected-token-json-parse-error">"Unexpected token" JSON.parse error</a> in JavaScript.</p>
 <p><strong>Invalid JSON:</strong></p>
 <pre><code>{
   "name": "Alice",
@@ -1362,6 +1363,8 @@ export const BLOG_POSTS: BlogPost[] = [
 <li><strong>Test with an online validator</strong> when debugging API responses or config files</li>
 </ol>
 
+<p>For a comprehensive reference on formatting conventions and advanced techniques like JSON Path, see our guide on <a href="/blog/json-formatting-best-practices">JSON formatting best practices</a>.</p>
+
 <h2>Try It Yourself</h2>
 <p>Paste your JSON into our <a href="/json-formatter">JSON Formatter & Validator</a> to instantly check for syntax errors. The tool highlights exactly where problems occur, shows clear error messages, and formats your JSON with proper indentation — all processed locally in your browser with no data sent to any server.</p>
 `,
@@ -1423,6 +1426,7 @@ export const BLOG_POSTS: BlogPost[] = [
 <li><strong>Documentation</strong> — JSON examples in docs, READMEs, and tutorials should be formatted with clear indentation</li>
 <li><strong>Version control</strong> — formatted JSON produces meaningful line-by-line diffs in Git, making changes easy to track</li>
 </ul>
+<p>For a deep dive on indentation choices, JSON Path queries, and other formatting conventions, see our <a href="/blog/json-formatting-best-practices">JSON formatting best practices</a> guide.</p>
 
 <h2>Performance Impact Beyond File Size</h2>
 <p>File size isn't the only consideration. Here are other performance factors:</p>
@@ -1524,12 +1528,13 @@ const cacheKey = md5("https://api.example.com/users?page=2&limit=50");
 <li>Certificate verification — modern TLS requires SHA-256 minimum</li>
 <li>Any context where an attacker might craft malicious inputs</li>
 </ul>
+<p>For a detailed comparison of all major hash algorithms and guidance on choosing the right one, see our <a href="/blog/hash-algorithms-compared">MD5 vs SHA-1 vs SHA-256 comparison</a>.</p>
 
 <h2>MD5 vs Other Hash Functions</h2>
 <ul>
 <li><strong>MD5 (128-bit)</strong> — fastest, but cryptographically broken. Fine for checksums and cache keys</li>
 <li><strong>SHA-1 (160-bit)</strong> — also broken for collision resistance (SHAttered attack, 2017). Being phased out</li>
-<li><strong>SHA-256 (256-bit)</strong> — current standard for security applications. Used in TLS, Bitcoin, and code signing</li>
+<li><strong>SHA-256 (256-bit)</strong> — current standard for security applications. Used in TLS, Bitcoin, and code signing (see our <a href="/blog/sha256-hash-explained-with-examples">SHA-256 explained with examples</a>)</li>
 <li><strong>SHA-3 (variable)</strong> — newest standard (Keccak algorithm). Different internal design provides diversity from SHA-2</li>
 <li><strong>BLAKE3 (256-bit)</strong> — extremely fast, modern design. Great for checksums where speed matters</li>
 </ul>
@@ -1604,7 +1609,7 @@ while (true) {
 <p>Before 2017, many certificates used SHA-1 signatures. After researchers demonstrated SHA-1 collisions (the SHAttered attack), browsers began rejecting SHA-1 certificates, and the industry migrated entirely to SHA-256.</p>
 
 <h2>HMAC-SHA256 for API Authentication</h2>
-<p>HMAC (Hash-based Message Authentication Code) combines SHA-256 with a secret key to create authenticated message digests. This is the standard for API authentication in systems like AWS, Stripe, and GitHub webhooks:</p>
+<p>HMAC (Hash-based Message Authentication Code) combines SHA-256 with a secret key to create authenticated message digests. This is the standard for API authentication in systems like AWS, Stripe, and GitHub webhooks. For a broader look at how different hash algorithms compare for HMAC and other applications, see our <a href="/blog/hash-algorithms-compared">hash algorithms comparison</a>.</p>
 <pre><code>// Node.js: Verify a webhook signature
 const crypto = require('crypto');
 
@@ -1624,7 +1629,7 @@ function verifyWebhook(payload, signature, secret) {
 <h2>SHA-256 vs MD5 vs SHA-1</h2>
 <p>Here's how SHA-256 compares with older hash functions:</p>
 <ul>
-<li><strong>MD5 (128-bit)</strong> — broken since 2004. Collisions can be generated in seconds. Only suitable for non-security purposes like checksums and cache keys</li>
+<li><strong>MD5 (128-bit)</strong> — broken since 2004. Collisions can be generated in seconds. Only suitable for non-security purposes like checksums and cache keys (see our <a href="/blog/md5-hash-generator-complete-guide">MD5 complete guide</a> for valid use cases)</li>
 <li><strong>SHA-1 (160-bit)</strong> — broken since 2017 (SHAttered). Still seen in legacy systems but should not be used for new applications</li>
 <li><strong>SHA-256 (256-bit)</strong> — no known practical attacks. Current industry standard for cryptographic hashing</li>
 <li><strong>SHA-512 (512-bit)</strong> — same family as SHA-256 but with a larger output. Often faster than SHA-256 on 64-bit systems due to using 64-bit operations internally</li>
@@ -1700,7 +1705,7 @@ echo -n "Hello" | sha256sum</code></pre>
 <p>This guide covers how Base64 works for images and files, the practical use cases, the size overhead trade-off, and when you should (and shouldn't) use Base64 encoding.</p>
 
 <h2>How Base64 Encoding Works</h2>
-<p>Base64 encodes binary data by mapping every 3 bytes (24 bits) of input to 4 characters from a 64-character alphabet (A-Z, a-z, 0-9, +, /). If the input length isn't divisible by 3, padding characters (<code>=</code>) are added.</p>
+<p>Base64 encodes binary data by mapping every 3 bytes (24 bits) of input to 4 characters from a 64-character alphabet (A-Z, a-z, 0-9, +, /). If the input length isn't divisible by 3, padding characters (<code>=</code>) are added. For a detailed walkthrough of the encoding algorithm and its variants (standard, URL-safe, MIME), see our <a href="/blog/base64-encoding-explained">Base64 encoding explained</a> guide.</p>
 <pre><code>Binary input (3 bytes):  01001000 01100101 01101100
 Split into 6-bit groups:  010010 000110 010101 101100
 Base64 characters:        S      G      V      s
@@ -1825,7 +1830,7 @@ fs.writeFileSync('output.png', buffer);</code></pre>
     content: `
 <p>Lookahead and lookbehind assertions are among the most powerful features in regular expressions. They let you match patterns based on what comes before or after a position, without including those surrounding characters in the match result. Once you master them, patterns that seemed impossible become straightforward.</p>
 
-<p>This guide explains all four types of lookaround assertions with clear syntax breakdowns and practical examples you can use in real projects.</p>
+<p>This guide explains all four types of lookaround assertions with clear syntax breakdowns and practical examples you can use in real projects. If you need a refresher on regex basics first, start with our <a href="/blog/regex-cheat-sheet-2026">regex cheat sheet</a>.</p>
 
 <h2>What Are Lookaround Assertions?</h2>
 <p>Lookaround assertions check for a pattern at a position in the string without consuming characters. They're "zero-width" — they assert that something exists (or doesn't exist) at a position but don't include it in the match.</p>
@@ -1952,7 +1957,7 @@ const pattern = /[\w.+-]+(?=@[\w.-]+\.\w{2,})/g;
 <li><strong>Java</strong> — supports limited-width lookbehind (finite-length alternation is okay)</li>
 <li><strong>.NET</strong> — full variable-length lookbehind support (the most permissive engine)</li>
 </ul>
-<p>If you need to support older browsers, avoid lookbehind and use capturing groups as an alternative.</p>
+<p>If you need to support older browsers, avoid lookbehind and use capturing groups as an alternative. For a catalog of common errors caused by unsupported features, see <a href="/blog/fix-invalid-regular-expression-error">fixing "Invalid regular expression" errors</a>.</p>
 
 <h2>Performance Considerations</h2>
 <p>Lookarounds can impact regex performance if used carelessly:</p>
@@ -2133,6 +2138,7 @@ line two"}'
 <li>Use a safe parse wrapper with a fallback value for user-facing code</li>
 <li>Add JSON validation to your CI/CD pipeline for config files</li>
 </ul>
+<p>For a complete list of JSON syntax rules and all the ways JSON can be invalid, see our <a href="/blog/json-validator-how-to-check-json-syntax">guide to validating JSON syntax</a>.</p>
 
 <h2>Try It Yourself</h2>
 <p>Debug your JSON parse errors instantly with our <a href="/json-formatter">JSON Formatter & Validator</a>. Paste any JSON string and get precise error messages showing exactly what's wrong and where — with clear suggestions for fixing the issue. All processing happens locally in your browser.</p>
@@ -2149,7 +2155,7 @@ line two"}'
     content: `
 <p>The "Invalid regular expression" error appears when a regex pattern contains syntax that the regex engine can't parse. Unlike runtime errors that occur during matching, this error happens at pattern compilation time — before any matching even begins.</p>
 
-<p>This guide covers the most common causes of invalid regex errors, explains why they happen across different languages and engines, and shows you exactly how to fix each one.</p>
+<p>This guide covers the most common causes of invalid regex errors, explains why they happen across different languages and engines, and shows you exactly how to fix each one. For a general regex reference covering syntax, flags, and common patterns, see our <a href="/blog/regex-cheat-sheet-2026">regex cheat sheet</a>.</p>
 
 <h2>Understanding the Error</h2>
 <p>The error messages vary by language but follow a similar pattern:</p>
@@ -2245,7 +2251,7 @@ const good = /[-az]/;   // Hyphen at start is literal
 const good = /[az-]/;   // Hyphen at end is literal</code></pre>
 
 <h2>Mistake #5: Lookbehind in Unsupported Engines</h2>
-<p>Lookbehind assertions (<code>(?&lt;=...)</code> and <code>(?&lt;!...)</code>) are not supported in all environments:</p>
+<p>Lookbehind assertions (<code>(?&lt;=...)</code> and <code>(?&lt;!...)</code>) are not supported in all environments. For detailed examples of how to use lookaheads and lookbehinds correctly, see our <a href="/blog/regex-lookahead-lookbehind-examples">lookahead and lookbehind patterns guide</a>.</p>
 <pre><code>// Works in Chrome, Firefox 78+, Safari 16.4+, Node.js 10+
 const pattern = /(?&lt;=\$)\d+/;
 
@@ -2317,7 +2323,7 @@ pattern = '\bword\b'    # Wrong! \b = backspace</code></pre>
     content: `
 <p>Every developer who works with JWT (JSON Web Token) authentication will eventually encounter the dreaded "jwt expired" or "TokenExpiredError" message. Token expiration is a security feature, not a bug — but handling it properly is essential for a smooth user experience.</p>
 
-<p>This guide explains how JWT expiration works, walks you through implementing robust token refresh flows, and covers best practices for preventing expiration-related issues in production.</p>
+<p>This guide explains how JWT expiration works, walks you through implementing robust token refresh flows, and covers best practices for preventing expiration-related issues in production. If you're new to JWTs, start with our <a href="/blog/understanding-jwt-tokens">comprehensive guide to JWT tokens</a> for the full picture on structure, claims, and security.</p>
 
 <h2>Understanding JWT Expiration: The exp Claim</h2>
 <p>The <code>exp</code> (expiration time) claim is a standard JWT claim defined in RFC 7519. It contains a Unix timestamp (seconds since January 1, 1970) indicating when the token becomes invalid:</p>
@@ -2692,7 +2698,7 @@ FROM (SELECT id, name FROM users) AS subquery;</code></pre>
 <li><strong>Simplify the query</strong> — remove clauses one at a time until the error disappears, then re-add them</li>
 <li><strong>Check for reserved words</strong> — look up your column names in your database's reserved word list</li>
 <li><strong>Count parentheses</strong> — mismatched parentheses in subqueries and function calls cause confusing errors</li>
-<li><strong>Format your SQL</strong> — a well-formatted query makes structural errors visible. One clause per line, one column per line</li>
+<li><strong>Format your SQL</strong> — a well-formatted query makes structural errors visible. One clause per line, one column per line. See our <a href="/blog/sql-formatting-best-practices">SQL formatting best practices</a> for a complete style guide</li>
 <li><strong>Use parameterized queries</strong> — eliminates quoting and escaping issues entirely</li>
 </ol>
 
