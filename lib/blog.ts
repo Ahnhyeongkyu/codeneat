@@ -1237,6 +1237,1469 @@ export const BLOG_POSTS: BlogPost[] = [
 <p>Format your SQL queries instantly with our <a href="/sql-formatter">SQL Formatter</a> — paste any SQL statement and get clean, consistently formatted output with proper indentation, keyword casing, and clause separation. Supports multiple SQL dialects, all processed locally in your browser.</p>
 `,
   },
+  {
+    slug: "json-validator-how-to-check-json-syntax",
+    title: "How to Validate JSON Online — Common Syntax Errors & Fixes",
+    description: "Learn how to validate JSON and fix common syntax errors like trailing commas, single quotes, unquoted keys, and missing brackets. Includes examples and quick fixes.",
+    date: "2026-03-03",
+    readTime: "10 min",
+    tags: ["JSON", "validation", "syntax-errors", "debugging"],
+    relatedTool: "jsonFormatter",
+    content: `
+<p>Working with JSON is an everyday task for developers, but even experienced programmers encounter syntax errors that break their applications. Whether you're building REST APIs, configuring cloud infrastructure, or parsing data files, knowing how to validate JSON and quickly identify syntax problems saves hours of debugging time.</p>
+
+<p>This guide walks you through the most common JSON syntax errors, explains why they happen, and shows you exactly how to fix each one. By the end, you'll be able to check JSON syntax like a pro and avoid these pitfalls in your own code.</p>
+
+<h2>What Makes JSON Valid?</h2>
+<p>Before diving into errors, let's establish what valid JSON looks like. The JSON specification (RFC 8259) defines strict rules:</p>
+<ul>
+<li>Data is represented as key-value pairs enclosed in curly braces <code>{}</code></li>
+<li>Keys must be <strong>double-quoted strings</strong></li>
+<li>Values can be strings, numbers, booleans (<code>true</code>/<code>false</code>), <code>null</code>, objects, or arrays</li>
+<li>Strings must use double quotes — single quotes are not allowed</li>
+<li>No trailing commas after the last element</li>
+<li>No comments of any kind</li>
+</ul>
+<p>Here's a minimal valid JSON document:</p>
+<pre><code>{
+  "name": "CodeNeat",
+  "version": 1,
+  "active": true,
+  "tags": ["tools", "developer"]
+}</code></pre>
+
+<h2>Error #1: Trailing Commas</h2>
+<p>The trailing comma is the single most common JSON syntax error. JavaScript and many other languages allow trailing commas in arrays and objects, so developers naturally carry this habit into JSON — but the JSON specification forbids them.</p>
+<p><strong>Invalid JSON:</strong></p>
+<pre><code>{
+  "name": "Alice",
+  "age": 30,
+  "city": "Seoul",   // &lt;-- trailing comma!
+}</code></pre>
+<p><strong>Valid JSON:</strong></p>
+<pre><code>{
+  "name": "Alice",
+  "age": 30,
+  "city": "Seoul"
+}</code></pre>
+<p>The fix is simple: remove the comma after the last property or array element. Most JSON validators will point to the exact line where the trailing comma appears.</p>
+
+<h2>Error #2: Single Quotes Instead of Double Quotes</h2>
+<p>Python developers frequently encounter this issue because Python dictionaries use single quotes by default when printed. JSON requires double quotes for both keys and string values — no exceptions.</p>
+<p><strong>Invalid JSON:</strong></p>
+<pre><code>{
+  'name': 'Bob',
+  'items': ['one', 'two']
+}</code></pre>
+<p><strong>Valid JSON:</strong></p>
+<pre><code>{
+  "name": "Bob",
+  "items": ["one", "two"]
+}</code></pre>
+<p>If you're converting Python dictionaries to JSON, use <code>json.dumps()</code> instead of <code>str()</code>. The <code>json</code> module always produces valid JSON with double quotes.</p>
+
+<h2>Error #3: Unquoted Keys</h2>
+<p>In JavaScript, object keys don't need quotes when they're valid identifiers. JSON is stricter — every key must be a double-quoted string, regardless of its content.</p>
+<p><strong>Invalid JSON:</strong></p>
+<pre><code>{
+  name: "Charlie",
+  age: 25
+}</code></pre>
+<p><strong>Valid JSON:</strong></p>
+<pre><code>{
+  "name": "Charlie",
+  "age": 25
+}</code></pre>
+<p>This error commonly appears when developers copy JavaScript object literals directly and assume they're valid JSON.</p>
+
+<h2>Error #4: Missing or Extra Brackets</h2>
+<p>Mismatched brackets and braces become increasingly common as JSON documents grow larger. A missing closing bracket somewhere in a deeply nested structure can produce confusing error messages that point to the wrong location.</p>
+<p><strong>Invalid JSON (missing closing bracket):</strong></p>
+<pre><code>{
+  "users": [
+    {"name": "Dave", "roles": ["admin", "user"]},
+    {"name": "Eve", "roles": ["user"]}
+}</code></pre>
+<p>The array <code>users</code> is opened with <code>[</code> but never closed with <code>]</code>. The fix:</p>
+<pre><code>{
+  "users": [
+    {"name": "Dave", "roles": ["admin", "user"]},
+    {"name": "Eve", "roles": ["user"]}
+  ]
+}</code></pre>
+<p>When dealing with deeply nested JSON, a formatter with bracket matching makes these errors much easier to spot.</p>
+
+<h2>Error #5: Comments in JSON</h2>
+<p>JSON does not support comments — not <code>//</code> single-line comments, not <code>/* */</code> block comments, not <code>#</code> hash comments. This surprises many developers who work with JSON configuration files.</p>
+<p><strong>Invalid JSON:</strong></p>
+<pre><code>{
+  // Database configuration
+  "host": "localhost",
+  "port": 5432  /* default PostgreSQL port */
+}</code></pre>
+<p>If you need comments in configuration files, consider using JSONC (JSON with Comments) supported by editors like VS Code, or switch to YAML or TOML for configuration.</p>
+
+<h2>Error #6: Special Values and Types</h2>
+<p>Several JavaScript values have no JSON equivalent:</p>
+<ul>
+<li><code>undefined</code> — not valid in JSON (use <code>null</code> instead)</li>
+<li><code>NaN</code> and <code>Infinity</code> — not valid JSON numbers</li>
+<li><code>new Date()</code> — must be serialized as a string (ISO 8601 format recommended)</li>
+<li>Functions — cannot be represented in JSON</li>
+</ul>
+<pre><code>// JavaScript object (valid JS, invalid JSON):
+{ "value": undefined, "count": NaN }
+
+// Valid JSON equivalent:
+{ "value": null, "count": 0 }</code></pre>
+
+<h2>Tips for Avoiding JSON Syntax Errors</h2>
+<ol>
+<li><strong>Always use <code>JSON.stringify()</code></strong> when generating JSON from JavaScript — never manually construct JSON strings</li>
+<li><strong>Use a linter</strong> in your editor that highlights JSON errors in real time</li>
+<li><strong>Validate before sending</strong> — run JSON through a validator in your CI/CD pipeline</li>
+<li><strong>Use schema validation</strong> with JSON Schema for complex data structures</li>
+<li><strong>Test with an online validator</strong> when debugging API responses or config files</li>
+</ol>
+
+<h2>Try It Yourself</h2>
+<p>Paste your JSON into our <a href="/json-formatter">JSON Formatter & Validator</a> to instantly check for syntax errors. The tool highlights exactly where problems occur, shows clear error messages, and formats your JSON with proper indentation — all processed locally in your browser with no data sent to any server.</p>
+`,
+  },
+  {
+    slug: "json-minify-vs-beautify-when-to-use",
+    title: "JSON Minify vs Beautify — When to Use Each and Why It Matters",
+    description: "Compare JSON minification and beautification: when to use each, file size savings, performance impact, and practical tips for production vs development workflows.",
+    date: "2026-03-03",
+    readTime: "9 min",
+    tags: ["JSON", "minification", "performance", "optimization"],
+    relatedTool: "jsonFormatter",
+    content: `
+<p>Every developer who works with JSON faces a basic but important choice: should your JSON be minified (compact, no whitespace) or beautified (formatted with indentation and line breaks)? The answer depends on where and how the JSON is being used.</p>
+
+<p>This guide explains the differences between minified and beautified JSON, quantifies the real-world impact on file size and performance, and gives you clear guidelines for when to use each format in your workflow.</p>
+
+<h2>What Is JSON Minification?</h2>
+<p>JSON minification removes all unnecessary whitespace from a JSON document — spaces, tabs, and line breaks that exist solely for human readability. The data itself remains completely unchanged; only formatting is stripped away.</p>
+<p><strong>Beautified JSON (136 bytes):</strong></p>
+<pre><code>{
+  "user": {
+    "name": "Alice",
+    "age": 30,
+    "email": "alice@example.com"
+  },
+  "active": true
+}</code></pre>
+<p><strong>Minified JSON (79 bytes):</strong></p>
+<pre><code>{"user":{"name":"Alice","age":30,"email":"alice@example.com"},"active":true}</code></pre>
+<p>In this small example, minification reduces the size by 42%. For larger JSON files with deep nesting, savings of 20-40% are typical.</p>
+
+<h2>Real-World File Size Comparisons</h2>
+<p>To illustrate the impact, here are file size comparisons for common JSON payloads:</p>
+<ul>
+<li><strong>Small API response</strong> (10 fields): 450B beautified → 320B minified (29% savings)</li>
+<li><strong>Medium config file</strong> (100 fields, 3 levels deep): 8.2KB → 5.1KB (38% savings)</li>
+<li><strong>Large dataset</strong> (1,000 records): 285KB → 195KB (32% savings)</li>
+<li><strong>Package-lock.json</strong> (typical Node project): 1.8MB → 1.2MB (33% savings)</li>
+</ul>
+<p>The savings are consistent: minification typically removes 25-40% of file size by eliminating whitespace. When combined with HTTP compression (gzip or Brotli), the final transfer size difference narrows, but minification still provides a meaningful reduction.</p>
+
+<h2>When to Use Minified JSON</h2>
+<p>Minified JSON is the right choice when the data is consumed by machines, not humans:</p>
+<ul>
+<li><strong>API responses</strong> — every byte saved reduces bandwidth costs and improves response time. For high-traffic APIs serving millions of requests, the cumulative savings are substantial</li>
+<li><strong>LocalStorage and cookies</strong> — browser storage has strict size limits (5MB for localStorage, 4KB per cookie). Minified JSON maximizes what you can store</li>
+<li><strong>Message queues</strong> — smaller messages mean higher throughput in Kafka, RabbitMQ, and similar systems</li>
+<li><strong>Database storage</strong> — when storing JSON in columns (PostgreSQL JSONB, MongoDB), minified format reduces disk usage</li>
+<li><strong>Bundled configuration</strong> — JSON embedded in JavaScript bundles should always be minified to reduce bundle size</li>
+</ul>
+
+<h2>When to Use Beautified JSON</h2>
+<p>Beautified JSON is essential when humans need to read, edit, or review the data:</p>
+<ul>
+<li><strong>Configuration files</strong> — <code>package.json</code>, <code>tsconfig.json</code>, and similar configs should always be formatted for easy editing</li>
+<li><strong>Debugging</strong> — when inspecting API responses or data transformations, formatted JSON is vastly easier to scan</li>
+<li><strong>Code review</strong> — diffs of formatted JSON are readable; diffs of minified JSON are nearly impossible to review</li>
+<li><strong>Documentation</strong> — JSON examples in docs, READMEs, and tutorials should be formatted with clear indentation</li>
+<li><strong>Version control</strong> — formatted JSON produces meaningful line-by-line diffs in Git, making changes easy to track</li>
+</ul>
+
+<h2>Performance Impact Beyond File Size</h2>
+<p>File size isn't the only consideration. Here are other performance factors:</p>
+<p><strong>Parse time:</strong> Minified JSON is slightly faster to parse because the parser processes fewer characters. In benchmarks, the difference is typically 5-15% for large files. For most applications, this difference is negligible.</p>
+<p><strong>Network transfer with compression:</strong> Modern servers use gzip or Brotli compression, which dramatically narrows the size gap between minified and beautified JSON. A 100KB beautified file (65KB minified) might compress to 12KB beautified vs 10KB minified over the wire.</p>
+<p><strong>Memory usage:</strong> Both formats produce the same parsed object in memory. The format only matters for the raw string representation.</p>
+
+<h2>Indentation Style: Tabs vs Spaces</h2>
+<p>When beautifying JSON, you need to choose an indentation style. The two main options:</p>
+<ul>
+<li><strong>2 spaces</strong> — the most common convention for JSON, used by npm, ESLint configs, and most JavaScript tools. Compact while still readable</li>
+<li><strong>4 spaces</strong> — preferred in Python ecosystems and some configuration files. More visually distinct nesting levels</li>
+<li><strong>Tabs</strong> — less common for JSON but allows each developer to set their preferred visual width</li>
+</ul>
+<p>For consistency, pick one style for your project and enforce it with automated formatting. The <code>JSON.stringify()</code> method accepts a space parameter: <code>JSON.stringify(data, null, 2)</code> for 2-space indentation.</p>
+
+<h2>Automating the Right Format</h2>
+<p>Don't rely on developers to manually minify or beautify — automate it:</p>
+<ul>
+<li><strong>Git hooks</strong> — use pre-commit hooks to ensure JSON configs are always formatted consistently</li>
+<li><strong>Build pipeline</strong> — minify JSON assets during the build step (webpack, esbuild, and similar tools handle this)</li>
+<li><strong>API middleware</strong> — strip whitespace from JSON responses in production; optionally add <code>?pretty=true</code> for debugging</li>
+<li><strong>Editor settings</strong> — configure your editor to format JSON on save using consistent rules</li>
+</ul>
+
+<h2>Try It Yourself</h2>
+<p>Switch between minified and beautified JSON instantly with our <a href="/json-formatter">JSON Formatter</a>. Paste any JSON, choose your indentation style, and toggle between compact and formatted views — all processed locally in your browser with zero data transmission.</p>
+`,
+  },
+  {
+    slug: "md5-hash-generator-complete-guide",
+    title: "MD5 Hash Generator — How MD5 Works and When to Use It",
+    description: "Understand MD5 hashing: how it works, common use cases like checksums and cache keys, why it's unsuitable for passwords, and how to generate MD5 hashes online.",
+    date: "2026-03-03",
+    readTime: "11 min",
+    tags: ["MD5", "hashing", "security", "checksums"],
+    relatedTool: "hashGenerator",
+    content: `
+<p>MD5 (Message-Digest Algorithm 5) is one of the most widely recognized hash functions in computing. Despite being considered cryptographically broken since 2004, MD5 remains in active use for non-security purposes. Understanding what MD5 does well — and where it falls short — is essential knowledge for every developer.</p>
+
+<p>This guide explains how MD5 works at a high level, covers its legitimate use cases, clarifies why you should never use it for passwords or security, and shows you how to generate MD5 hashes for your own data.</p>
+
+<h2>How MD5 Works (High-Level Overview)</h2>
+<p>MD5 takes an input of any length and produces a fixed 128-bit (16-byte) hash value, typically displayed as a 32-character hexadecimal string. For example:</p>
+<pre><code>Input:  "Hello, World!"
+MD5:    65a8e27d8879283831b664bd8b7f0ad4</code></pre>
+<p>The algorithm works through these steps:</p>
+<ol>
+<li><strong>Padding</strong> — the input message is padded so its length is 64 bits short of a multiple of 512 bits</li>
+<li><strong>Length appending</strong> — the original message length (before padding) is appended as a 64-bit value</li>
+<li><strong>Initialization</strong> — four 32-bit state variables (A, B, C, D) are set to specific initial values</li>
+<li><strong>Processing</strong> — the padded message is broken into 512-bit blocks, each processed through 64 rounds of bitwise operations, additions, and rotations</li>
+<li><strong>Output</strong> — the final values of A, B, C, D are concatenated to form the 128-bit hash</li>
+</ol>
+<p>Key properties of MD5:</p>
+<ul>
+<li><strong>Deterministic</strong> — the same input always produces the same hash</li>
+<li><strong>Fast</strong> — designed for speed, can hash gigabytes per second on modern hardware</li>
+<li><strong>Fixed output</strong> — always 128 bits regardless of input size</li>
+<li><strong>Avalanche effect</strong> — a tiny change in input produces a completely different hash</li>
+</ul>
+
+<h2>Legitimate Use Cases for MD5</h2>
+<p>Despite its cryptographic weaknesses, MD5 is perfectly suitable for many non-security applications:</p>
+
+<h3>File Integrity Verification (Checksums)</h3>
+<p>MD5 checksums verify that a file wasn't corrupted during download or transfer. When a software project publishes an MD5 hash alongside a download, you can hash the downloaded file and compare:</p>
+<pre><code># Linux/Mac
+md5sum downloaded-file.zip
+
+# Compare with published hash
+echo "d41d8cd98f00b204e9800998ecf8427e  downloaded-file.zip" | md5sum -c</code></pre>
+<p>For this purpose, MD5 is fine because you're guarding against accidental corruption, not malicious tampering.</p>
+
+<h3>Cache Keys and Deduplication</h3>
+<p>MD5 makes excellent cache keys. Given any input (a URL, a query string, a file path), MD5 produces a uniform, fixed-length identifier:</p>
+<pre><code>// Generate cache key from URL
+const cacheKey = md5("https://api.example.com/users?page=2&limit=50");
+// Result: "a1b2c3d4e5f6..." — perfect as a cache key</code></pre>
+<p>Content-addressable storage systems use MD5 (or similar hashes) to detect duplicate files without comparing file contents byte by byte.</p>
+
+<h3>Data Partitioning</h3>
+<p>Distributed systems use MD5 to evenly distribute data across partitions. Hashing a record's key with MD5 and taking a modulo determines which partition stores that record. The uniform distribution of MD5 output makes it ideal for this purpose.</p>
+
+<h3>Non-Critical Fingerprinting</h3>
+<p>ETags in HTTP responses, build artifact identifiers, and similar non-security fingerprints commonly use MD5. It's fast, widely supported, and the collision risk for these use cases is negligible.</p>
+
+<h2>Why MD5 Is Not Suitable for Security</h2>
+<p>MD5 was designed as a cryptographic hash function, but researchers have demonstrated practical attacks that make it unsuitable for any security application:</p>
+<ul>
+<li><strong>Collision attacks (2004)</strong> — researchers showed they could generate two different inputs producing the same MD5 hash in minutes. By 2006, collision generation took seconds</li>
+<li><strong>Chosen-prefix collisions (2009)</strong> — attackers can create two documents with different content but identical MD5 hashes, even if the documents must start with specific prefixes. This was demonstrated by forging a rogue CA certificate</li>
+<li><strong>Speed is a weakness for passwords</strong> — MD5's speed (billions of hashes per second on GPUs) makes brute-force and rainbow table attacks trivially fast for password cracking</li>
+</ul>
+<p><strong>Never use MD5 for:</strong></p>
+<ul>
+<li>Password hashing — use bcrypt, scrypt, or Argon2 instead</li>
+<li>Digital signatures — use SHA-256 or SHA-3</li>
+<li>Certificate verification — modern TLS requires SHA-256 minimum</li>
+<li>Any context where an attacker might craft malicious inputs</li>
+</ul>
+
+<h2>MD5 vs Other Hash Functions</h2>
+<ul>
+<li><strong>MD5 (128-bit)</strong> — fastest, but cryptographically broken. Fine for checksums and cache keys</li>
+<li><strong>SHA-1 (160-bit)</strong> — also broken for collision resistance (SHAttered attack, 2017). Being phased out</li>
+<li><strong>SHA-256 (256-bit)</strong> — current standard for security applications. Used in TLS, Bitcoin, and code signing</li>
+<li><strong>SHA-3 (variable)</strong> — newest standard (Keccak algorithm). Different internal design provides diversity from SHA-2</li>
+<li><strong>BLAKE3 (256-bit)</strong> — extremely fast, modern design. Great for checksums where speed matters</li>
+</ul>
+
+<h2>Generating MD5 Hashes in Code</h2>
+<p>Most languages have built-in or standard library support for MD5:</p>
+<pre><code>// JavaScript (Web Crypto API)
+const encoder = new TextEncoder();
+const data = encoder.encode("Hello, World!");
+const hashBuffer = await crypto.subtle.digest("MD5", data);
+
+// Node.js
+const crypto = require('crypto');
+const hash = crypto.createHash('md5')
+  .update('Hello, World!')
+  .digest('hex');
+
+// Python
+import hashlib
+hash = hashlib.md5(b"Hello, World!").hexdigest()</code></pre>
+
+<h2>Try It Yourself</h2>
+<p>Generate MD5 hashes instantly with our <a href="/hash-generator">Hash Generator</a>. Enter any text and get the MD5 hash immediately — along with SHA-1, SHA-256, and SHA-512 hashes for comparison. All processing happens locally in your browser; your data is never sent to a server.</p>
+`,
+  },
+  {
+    slug: "sha256-hash-explained-with-examples",
+    title: "SHA-256 Hash Explained — Security, Examples, and Online Generator",
+    description: "Learn how SHA-256 hashing works, its role in Bitcoin, TLS certificates, and HMAC. Includes practical examples, comparisons with MD5/SHA-1, and an online generator.",
+    date: "2026-03-03",
+    readTime: "12 min",
+    tags: ["SHA-256", "hashing", "cryptography", "security"],
+    relatedTool: "hashGenerator",
+    content: `
+<p>SHA-256 (Secure Hash Algorithm 256-bit) is the backbone of modern digital security. From Bitcoin mining to TLS certificates, from code signing to password verification, SHA-256 is the hash function that developers and security professionals trust for cryptographic integrity.</p>
+
+<p>This guide explains how SHA-256 works, why it's more secure than MD5 and SHA-1, where it's used in the real world, and how to generate SHA-256 hashes for your own data.</p>
+
+<h2>What Is SHA-256?</h2>
+<p>SHA-256 is a member of the SHA-2 family of hash functions, designed by the NSA and published by NIST in 2001. It takes any input and produces a fixed 256-bit (32-byte) hash, displayed as a 64-character hexadecimal string:</p>
+<pre><code>Input:  "Hello, World!"
+SHA-256: dffd6021bb2bd5b0af676290809ec3a53191dd81c7f70a4b28688a362182986f</code></pre>
+<p>Key characteristics of SHA-256:</p>
+<ul>
+<li><strong>256-bit output</strong> — provides 2^128 collision resistance (finding any two inputs with the same hash requires roughly 2^128 operations)</li>
+<li><strong>Deterministic</strong> — the same input always yields the same hash</li>
+<li><strong>Avalanche effect</strong> — changing a single bit in the input changes approximately 50% of the output bits</li>
+<li><strong>Pre-image resistance</strong> — given a hash, it's computationally infeasible to find the original input</li>
+<li><strong>One-way</strong> — you cannot reverse a SHA-256 hash to recover the original data</li>
+</ul>
+
+<h2>SHA-256 in Bitcoin and Blockchain</h2>
+<p>SHA-256 is the foundation of Bitcoin's proof-of-work consensus mechanism. Bitcoin mining involves finding a nonce that, when combined with the block header and hashed twice with SHA-256, produces a hash below a target threshold:</p>
+<pre><code>// Simplified Bitcoin mining concept
+while (true) {
+  const hash = sha256(sha256(blockHeader + nonce));
+  if (hash &lt; targetDifficulty) {
+    // Block mined successfully!
+    break;
+  }
+  nonce++;
+}</code></pre>
+<p>Bitcoin uses double SHA-256 (hashing the hash) throughout its protocol — for block hashes, transaction IDs, and Merkle tree construction. This design choice provides an extra layer of protection against length-extension attacks.</p>
+
+<h2>SHA-256 in TLS/SSL Certificates</h2>
+<p>Every HTTPS connection you make relies on SHA-256. When a certificate authority (CA) issues an SSL certificate, it signs the certificate using SHA-256:</p>
+<ol>
+<li>The CA creates a hash of the certificate's contents using SHA-256</li>
+<li>The CA encrypts this hash with its private key (creating the digital signature)</li>
+<li>Your browser verifies the signature by decrypting it with the CA's public key and comparing the hash</li>
+</ol>
+<p>Before 2017, many certificates used SHA-1 signatures. After researchers demonstrated SHA-1 collisions (the SHAttered attack), browsers began rejecting SHA-1 certificates, and the industry migrated entirely to SHA-256.</p>
+
+<h2>HMAC-SHA256 for API Authentication</h2>
+<p>HMAC (Hash-based Message Authentication Code) combines SHA-256 with a secret key to create authenticated message digests. This is the standard for API authentication in systems like AWS, Stripe, and GitHub webhooks:</p>
+<pre><code>// Node.js: Verify a webhook signature
+const crypto = require('crypto');
+
+function verifyWebhook(payload, signature, secret) {
+  const expected = crypto
+    .createHmac('sha256', secret)
+    .update(payload)
+    .digest('hex');
+
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expected)
+  );
+}</code></pre>
+<p>HMAC-SHA256 ensures both integrity (the message wasn't tampered with) and authenticity (the message came from someone who knows the secret key).</p>
+
+<h2>SHA-256 vs MD5 vs SHA-1</h2>
+<p>Here's how SHA-256 compares with older hash functions:</p>
+<ul>
+<li><strong>MD5 (128-bit)</strong> — broken since 2004. Collisions can be generated in seconds. Only suitable for non-security purposes like checksums and cache keys</li>
+<li><strong>SHA-1 (160-bit)</strong> — broken since 2017 (SHAttered). Still seen in legacy systems but should not be used for new applications</li>
+<li><strong>SHA-256 (256-bit)</strong> — no known practical attacks. Current industry standard for cryptographic hashing</li>
+<li><strong>SHA-512 (512-bit)</strong> — same family as SHA-256 but with a larger output. Often faster than SHA-256 on 64-bit systems due to using 64-bit operations internally</li>
+</ul>
+<p>Performance comparison (approximate, single-threaded on modern CPU):</p>
+<pre><code>MD5:     ~600 MB/s
+SHA-1:   ~500 MB/s
+SHA-256: ~250 MB/s
+SHA-512: ~350 MB/s (faster on 64-bit due to native 64-bit operations)</code></pre>
+
+<h2>Practical Examples</h2>
+
+<h3>File Integrity Verification</h3>
+<pre><code># Generate SHA-256 hash of a file
+sha256sum myfile.tar.gz
+# Output: a1b2c3d4... myfile.tar.gz
+
+# Verify against a published hash
+echo "a1b2c3d4...  myfile.tar.gz" | sha256sum -c
+# Output: myfile.tar.gz: OK</code></pre>
+
+<h3>Password Storage (with Proper Salting)</h3>
+<p>While dedicated password hashing functions (bcrypt, Argon2) are preferred, SHA-256 with proper salting is used in some systems:</p>
+<pre><code>// This is educational — prefer bcrypt/Argon2 for passwords
+const salt = crypto.randomBytes(16).toString('hex');
+const hash = crypto
+  .createHash('sha256')
+  .update(salt + password)
+  .digest('hex');
+const stored = salt + ':' + hash;</code></pre>
+
+<h3>Content-Addressable Storage</h3>
+<p>Git uses SHA-1 (migrating to SHA-256) to identify every object. Docker uses SHA-256 for image layer identification:</p>
+<pre><code># Docker image digest
+sha256:a1b2c3d4e5f6...
+
+# Git object hash (SHA-1, migrating to SHA-256)
+git hash-object myfile.txt</code></pre>
+
+<h2>Generating SHA-256 in Different Languages</h2>
+<pre><code>// JavaScript (Browser)
+const data = new TextEncoder().encode("Hello");
+const hash = await crypto.subtle.digest("SHA-256", data);
+const hex = [...new Uint8Array(hash)]
+  .map(b =&gt; b.toString(16).padStart(2, '0')).join('');
+
+// Python
+import hashlib
+hashlib.sha256(b"Hello").hexdigest()
+
+// Go
+import "crypto/sha256"
+h := sha256.Sum256([]byte("Hello"))
+
+// Bash
+echo -n "Hello" | sha256sum</code></pre>
+
+<h2>Try It Yourself</h2>
+<p>Generate SHA-256 hashes instantly with our <a href="/hash-generator">Hash Generator</a>. Enter any text and see the SHA-256 hash alongside MD5, SHA-1, and SHA-512 for comparison. Everything runs locally in your browser — your data never leaves your machine.</p>
+`,
+  },
+  {
+    slug: "base64-encode-decode-images-files",
+    title: "Base64 Encode & Decode Images and Files — A Practical Guide",
+    description: "Learn how to Base64 encode images and files for data URIs, email attachments, and API payloads. Covers size overhead, performance trade-offs, and practical examples.",
+    date: "2026-03-03",
+    readTime: "10 min",
+    tags: ["Base64", "encoding", "images", "data-uri"],
+    relatedTool: "base64",
+    content: `
+<p>Base64 encoding converts binary data into a text-safe format using 64 printable ASCII characters. This makes it possible to embed images directly in HTML, send binary files through text-only protocols like email, and include file data in JSON API payloads.</p>
+
+<p>This guide covers how Base64 works for images and files, the practical use cases, the size overhead trade-off, and when you should (and shouldn't) use Base64 encoding.</p>
+
+<h2>How Base64 Encoding Works</h2>
+<p>Base64 encodes binary data by mapping every 3 bytes (24 bits) of input to 4 characters from a 64-character alphabet (A-Z, a-z, 0-9, +, /). If the input length isn't divisible by 3, padding characters (<code>=</code>) are added.</p>
+<pre><code>Binary input (3 bytes):  01001000 01100101 01101100
+Split into 6-bit groups:  010010 000110 010101 101100
+Base64 characters:        S      G      V      s
+Result: "Hel" → "SGVs"</code></pre>
+<p>This 3-to-4 byte ratio means Base64 encoded data is always approximately <strong>33% larger</strong> than the original binary. A 75KB image becomes roughly 100KB when Base64 encoded.</p>
+
+<h2>Data URIs: Embedding Images in HTML and CSS</h2>
+<p>The most common use of Base64 for images is the data URI scheme, which lets you embed image data directly in your markup:</p>
+<pre><code>&lt;!-- Inline image using data URI --&gt;
+&lt;img src="data:image/png;base64,iVBORw0KGgo..." alt="icon" /&gt;
+
+/* CSS background with data URI */
+.icon {
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4...');
+}</code></pre>
+<p>Benefits of data URIs:</p>
+<ul>
+<li><strong>Eliminates HTTP requests</strong> — the image loads with the HTML/CSS, no separate request needed</li>
+<li><strong>Works offline</strong> — useful for PWAs and cached pages</li>
+<li><strong>Self-contained</strong> — great for email templates where external images might be blocked</li>
+</ul>
+<p>Drawbacks:</p>
+<ul>
+<li><strong>33% larger file size</strong> — the encoded image is bigger than the binary original</li>
+<li><strong>No caching</strong> — browsers can't cache data URIs separately from the containing document</li>
+<li><strong>Blocks rendering</strong> — large data URIs in CSS delay stylesheet parsing</li>
+</ul>
+
+<h2>When Data URIs Make Sense</h2>
+<p>Use data URIs for small images and icons, typically under 5KB. Common examples:</p>
+<ul>
+<li><strong>Small SVG icons</strong> (under 2KB) — often smaller as Base64 than the HTTP overhead of a separate request</li>
+<li><strong>Tiny UI elements</strong> — loading spinners, checkmarks, bullets</li>
+<li><strong>Email templates</strong> — many email clients block external images by default; inline Base64 images display immediately</li>
+<li><strong>Single-file applications</strong> — when you need everything in one HTML file</li>
+</ul>
+<p>Don't use data URIs for images larger than 10KB. Use a CDN with proper caching instead — the performance benefits of separate caching far outweigh the savings of one fewer HTTP request.</p>
+
+<h2>Base64 in Email (MIME Encoding)</h2>
+<p>Email protocols (SMTP) were originally designed for 7-bit ASCII text only. To send binary attachments, email clients encode them as Base64 within MIME (Multipurpose Internet Mail Extensions) format:</p>
+<pre><code>Content-Type: image/jpeg
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="photo.jpg"
+
+/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAAgGBgcGBQgHBwcJCQgK...</code></pre>
+<p>This is why email attachments are roughly 33% larger than the original file — they're Base64 encoded for transport. Modern email systems handle this transparently, but it explains why a 7MB attachment might cause a 10MB email.</p>
+
+<h2>Base64 in API Payloads</h2>
+<p>REST APIs that accept JSON payloads use Base64 encoding to include binary data like file uploads, images, or documents:</p>
+<pre><code>// Upload an image via JSON API
+const fileData = await readFile('avatar.png');
+const base64 = btoa(String.fromCharCode(...fileData));
+
+fetch('/api/upload', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    filename: 'avatar.png',
+    data: base64,
+    contentType: 'image/png'
+  })
+});</code></pre>
+<p>For large files, <code>multipart/form-data</code> is more efficient than Base64 in JSON because it avoids the 33% size overhead. Reserve Base64 in APIs for small files (thumbnails, signatures) where the simplicity of JSON outweighs the size cost.</p>
+
+<h2>Converting Images to Base64 in JavaScript</h2>
+<pre><code>// Browser: Convert image file to Base64
+function fileToBase64(file) {
+  return new Promise((resolve, reject) =&gt; {
+    const reader = new FileReader();
+    reader.onload = () =&gt; resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file); // Returns "data:image/png;base64,..."
+  });
+}
+
+// Browser: Convert canvas to Base64
+const canvas = document.querySelector('canvas');
+const dataUrl = canvas.toDataURL('image/png');
+
+// Node.js: Read file and encode
+const fs = require('fs');
+const base64 = fs.readFileSync('image.png').toString('base64');
+const dataUri = \`data:image/png;base64,\${base64}\`;</code></pre>
+
+<h2>Decoding Base64 Back to Binary</h2>
+<pre><code>// Browser: Decode Base64 to Blob for download
+function base64ToBlob(base64, contentType) {
+  const bytes = atob(base64);
+  const buffer = new Uint8Array(bytes.length);
+  for (let i = 0; i &lt; bytes.length; i++) {
+    buffer[i] = bytes.charCodeAt(i);
+  }
+  return new Blob([buffer], { type: contentType });
+}
+
+// Node.js: Write Base64 to file
+const buffer = Buffer.from(base64String, 'base64');
+fs.writeFileSync('output.png', buffer);</code></pre>
+
+<h2>Size Overhead: The 33% Tax</h2>
+<p>Every 3 bytes of binary data become 4 bytes of Base64 text. Here's what that means in practice:</p>
+<ul>
+<li><strong>1KB icon</strong> → 1.33KB Base64 (negligible)</li>
+<li><strong>50KB thumbnail</strong> → 66.7KB Base64 (borderline — consider separate file)</li>
+<li><strong>500KB photo</strong> → 666KB Base64 (too large for data URIs — use CDN)</li>
+<li><strong>5MB document</strong> → 6.67MB Base64 (use multipart upload instead)</li>
+</ul>
+<p>With HTTP/2 and HTTP/3 multiplexing, the overhead of additional requests is much lower than in HTTP/1.1 days. This shifts the break-even point: data URIs are only worth it for very small assets.</p>
+
+<h2>Try It Yourself</h2>
+<p>Encode and decode Base64 text instantly with our <a href="/base64-encode-decode">Base64 Encoder/Decoder</a>. Paste any text or Base64 string and convert it with a single click — all processing happens locally in your browser with complete privacy.</p>
+`,
+  },
+  {
+    slug: "regex-lookahead-lookbehind-examples",
+    title: "Regex Lookahead & Lookbehind — Patterns with Practical Examples",
+    description: "Master regex lookahead and lookbehind assertions with practical examples: password validation, price extraction, email parsing, and more. Includes browser support notes.",
+    date: "2026-03-03",
+    readTime: "11 min",
+    tags: ["regex", "lookahead", "lookbehind", "patterns"],
+    relatedTool: "regexTester",
+    content: `
+<p>Lookahead and lookbehind assertions are among the most powerful features in regular expressions. They let you match patterns based on what comes before or after a position, without including those surrounding characters in the match result. Once you master them, patterns that seemed impossible become straightforward.</p>
+
+<p>This guide explains all four types of lookaround assertions with clear syntax breakdowns and practical examples you can use in real projects.</p>
+
+<h2>What Are Lookaround Assertions?</h2>
+<p>Lookaround assertions check for a pattern at a position in the string without consuming characters. They're "zero-width" — they assert that something exists (or doesn't exist) at a position but don't include it in the match.</p>
+<p>There are four types:</p>
+<ul>
+<li><strong>Positive Lookahead</strong> <code>(?=...)</code> — asserts that what follows matches the pattern</li>
+<li><strong>Negative Lookahead</strong> <code>(?!...)</code> — asserts that what follows does NOT match the pattern</li>
+<li><strong>Positive Lookbehind</strong> <code>(?&lt;=...)</code> — asserts that what precedes matches the pattern</li>
+<li><strong>Negative Lookbehind</strong> <code>(?&lt;!...)</code> — asserts that what precedes does NOT match the pattern</li>
+</ul>
+
+<h2>Positive Lookahead: (?=...)</h2>
+<p>A positive lookahead matches a position where the pattern inside the lookahead can be matched looking forward. The classic example is password validation — checking multiple conditions simultaneously:</p>
+<pre><code>// Password must contain:
+// - At least 8 characters
+// - At least one uppercase letter
+// - At least one lowercase letter
+// - At least one digit
+// - At least one special character
+
+const strongPassword = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
+
+strongPassword.test("Abc123!x");  // true
+strongPassword.test("abcdefgh");  // false (no uppercase, digit, special)
+strongPassword.test("ABC123!X");  // false (no lowercase)</code></pre>
+<p>Each <code>(?=...)</code> checks a condition independently at the start of the string. Since lookaheads don't consume characters, all four conditions are checked at the same position. The <code>.{8,}$</code> at the end actually consumes the characters and enforces the minimum length.</p>
+
+<p>Another practical use — match a word only if it's followed by a specific word:</p>
+<pre><code>// Match "New" only when followed by "York"
+const pattern = /New(?= York)/g;
+
+"New York, New Delhi, New Jersey".match(pattern);
+// Matches "New" at positions 0 only? No — matches at 0 and 10 and 21
+// Wait: "New Delhi" has "New" followed by " Delhi", not " York"
+// Correct matches: "New" at position 0 (before " York")</code></pre>
+
+<h2>Negative Lookahead: (?!...)</h2>
+<p>A negative lookahead matches a position where the pattern inside does NOT match looking forward. This is useful for excluding specific patterns:</p>
+<pre><code>// Match "data" NOT followed by "base"
+const pattern = /data(?!base)/g;
+
+"database datafile data-driven".match(pattern);
+// Matches: "data" in "datafile" and "data" in "data-driven"
+// Does NOT match: "data" in "database"</code></pre>
+
+<p>Practical example — match numbers that are NOT percentages:</p>
+<pre><code>// Match numbers not followed by %
+const pattern = /\d+(?!%)/g;
+
+"50% off, save $30, 99% uptime, 42 items".match(pattern);
+// Matches: "5" (from 50%), "30", "9" (from 99%), "42"
+// Note: "50" partially matches as "5" because "50" IS followed by %
+// but "5" is followed by "0" not "%"
+
+// Better version — match complete numbers not followed by %
+const betterPattern = /\d+(?![\d%])/g;
+// This ensures we get complete numbers</code></pre>
+
+<h2>Positive Lookbehind: (?&lt;=...)</h2>
+<p>A positive lookbehind matches a position where the pattern matches looking backward. This is invaluable for extracting values that follow specific prefixes:</p>
+<pre><code>// Extract prices (numbers preceded by $)
+const pattern = /(?&lt;=\$)\d+(\.\d{2})?/g;
+
+"Items: $29.99, $5, €15, $199.00".match(pattern);
+// Matches: "29.99", "5", "199.00"
+// Does NOT match: "15" (preceded by €, not $)</code></pre>
+
+<p>Extract values from key-value strings:</p>
+<pre><code>// Extract the value after "version: "
+const pattern = /(?&lt;=version:\s)\S+/;
+
+"name: myapp version: 2.1.0 author: dev".match(pattern);
+// Matches: "2.1.0"</code></pre>
+
+<h2>Negative Lookbehind: (?&lt;!...)</h2>
+<p>A negative lookbehind matches a position where the pattern does NOT match looking backward:</p>
+<pre><code>// Match "cat" NOT preceded by "bob" (case insensitive)
+const pattern = /(?&lt;!bob)cat/gi;
+
+"bobcat, wildcat, tomcat".match(pattern);
+// Matches: "cat" in "wildcat" and "cat" in "tomcat"
+// Does NOT match: "cat" in "bobcat"</code></pre>
+
+<p>Practical example — match standalone numbers not part of a version string:</p>
+<pre><code>// Match numbers not preceded by a dot (not version components)
+const pattern = /(?&lt;!\.)\b\d+\b/g;
+
+"version 3.2.1, found 42 errors in 7 files".match(pattern);
+// Matches: "3", "42", "7"
+// Does NOT match: "2", "1" (preceded by dots)</code></pre>
+
+<h2>Combining Lookahead and Lookbehind</h2>
+<p>The real power comes from combining lookarounds. Here are practical combinations:</p>
+
+<h3>Extract Content Between Delimiters (Without Including Them)</h3>
+<pre><code>// Extract text between square brackets
+const pattern = /(?&lt;=\[)[^\]]+(?=\])/g;
+
+"[error] Something [warning] failed [info] here".match(pattern);
+// Matches: "error", "warning", "info"</code></pre>
+
+<h3>Add Thousands Separators to Numbers</h3>
+<pre><code>// Insert commas as thousands separators
+const formatted = "1234567890".replace(
+  /(?&lt;=\d)(?=(\d{3})+(?!\d))/g,
+  ","
+);
+// Result: "1,234,567,890"</code></pre>
+
+<h3>Match Email Username (Before @)</h3>
+<pre><code>// Extract username part of email
+const pattern = /[\w.+-]+(?=@[\w.-]+\.\w{2,})/g;
+
+"Contact user@example.com or admin@test.org".match(pattern);
+// Matches: "user", "admin"</code></pre>
+
+<h2>Browser and Engine Support</h2>
+<p>Lookahead has been supported in all major regex engines for decades. Lookbehind support varies:</p>
+<ul>
+<li><strong>JavaScript (Chrome, Edge, Node.js)</strong> — full lookbehind support since 2018 (V8 engine, ES2018)</li>
+<li><strong>Firefox</strong> — full lookbehind support since version 78 (2020)</li>
+<li><strong>Safari</strong> — full lookbehind support since version 16.4 (2023)</li>
+<li><strong>Python</strong> — lookbehind requires fixed-width patterns (no <code>*</code> or <code>+</code> quantifiers inside lookbehind)</li>
+<li><strong>Java</strong> — supports limited-width lookbehind (finite-length alternation is okay)</li>
+<li><strong>.NET</strong> — full variable-length lookbehind support (the most permissive engine)</li>
+</ul>
+<p>If you need to support older browsers, avoid lookbehind and use capturing groups as an alternative.</p>
+
+<h2>Performance Considerations</h2>
+<p>Lookarounds can impact regex performance if used carelessly:</p>
+<ul>
+<li>Avoid nested lookarounds when possible — they increase backtracking</li>
+<li>Place the most restrictive condition first to fail fast</li>
+<li>Use atomic groups or possessive quantifiers (where supported) inside lookaheads for complex patterns</li>
+<li>Test with realistic input sizes — a pattern that works on 10 characters might be slow on 10,000</li>
+</ul>
+
+<h2>Try It Yourself</h2>
+<p>Test your lookahead and lookbehind patterns instantly with our <a href="/regex-tester">Regex Tester</a>. See real-time matches highlighted as you type, with detailed match information and group captures — all processed locally in your browser.</p>
+`,
+  },
+  {
+    slug: "fix-unexpected-token-json-parse-error",
+    title: "Fix 'Unexpected Token' JSON.parse Error — Causes and Solutions",
+    description: "Diagnose and fix the 'Unexpected token' JSON.parse error. Covers common causes like BOM characters, HTML responses, trailing commas, and undefined values with code examples.",
+    date: "2026-03-03",
+    readTime: "12 min",
+    tags: ["JSON", "debugging", "errors", "JavaScript"],
+    relatedTool: "jsonFormatter",
+    content: `
+<p>Few error messages are as common — or as frustrating — as <code>SyntaxError: Unexpected token</code> from <code>JSON.parse()</code>. This error means the JSON parser encountered a character it didn't expect, but the error message often doesn't tell you exactly what went wrong or where.</p>
+
+<p>This guide covers every common cause of the Unexpected token JSON parse error, with specific solutions and code examples in JavaScript, Python, and PHP.</p>
+
+<h2>Understanding the Error Message</h2>
+<p>The error message typically looks like one of these:</p>
+<pre><code>SyntaxError: Unexpected token &lt; in JSON at position 0
+SyntaxError: Unexpected token u in JSON at position 0
+SyntaxError: Unexpected token ' in JSON at position 4
+SyntaxError: Unexpected end of JSON input
+SyntaxError: Expected property name or '}' at position 42</code></pre>
+<p>The key information is:</p>
+<ul>
+<li><strong>The unexpected token</strong> — the character that caused the failure (e.g., <code>&lt;</code>, <code>u</code>, <code>'</code>)</li>
+<li><strong>The position</strong> — where in the string the parser failed (0 means the very first character)</li>
+</ul>
+<p>Let's decode the most common scenarios.</p>
+
+<h2>Cause #1: HTML Response Instead of JSON (Token "&lt;" at Position 0)</h2>
+<p>This is the most frequent cause. When you see <code>Unexpected token &lt;</code> at position 0, it almost always means the server returned HTML instead of JSON — typically a 404 page, error page, or login redirect.</p>
+<pre><code>// The server returned:
+// "&lt;!DOCTYPE html&gt;&lt;html&gt;..."
+// But your code expected JSON
+
+const response = await fetch('/api/users');
+const data = await response.json(); // BOOM: Unexpected token &lt;</code></pre>
+<p><strong>How to fix:</strong></p>
+<pre><code>const response = await fetch('/api/users');
+
+// Check status before parsing
+if (!response.ok) {
+  const text = await response.text();
+  console.error('Server returned:', response.status, text.substring(0, 200));
+  throw new Error(\`API error: \${response.status}\`);
+}
+
+// Check content type
+const contentType = response.headers.get('content-type');
+if (!contentType?.includes('application/json')) {
+  const text = await response.text();
+  console.error('Expected JSON, got:', contentType, text.substring(0, 200));
+  throw new Error('Response is not JSON');
+}
+
+const data = await response.json();</code></pre>
+
+<h2>Cause #2: Undefined or Empty String (Token "u" at Position 0)</h2>
+<p><code>Unexpected token u at position 0</code> means you're trying to parse the string <code>"undefined"</code>, which happens when a variable is undefined and gets coerced to a string.</p>
+<pre><code>// Common scenario
+const savedData = localStorage.getItem('settings'); // returns null if not set
+const parsed = JSON.parse(savedData); // JSON.parse(null) actually works (returns null)
+
+// But this fails:
+let config;
+const parsed = JSON.parse(config); // JSON.parse(undefined) → "undefined" → BOOM</code></pre>
+<p><strong>How to fix:</strong></p>
+<pre><code>function safeJsonParse(str, fallback = null) {
+  if (str === undefined || str === null || str === '') {
+    return fallback;
+  }
+  try {
+    return JSON.parse(str);
+  } catch (e) {
+    console.warn('JSON parse failed:', e.message);
+    return fallback;
+  }
+}
+
+const config = safeJsonParse(localStorage.getItem('settings'), {});</code></pre>
+
+<h2>Cause #3: Single Quotes (Token "'" at Position N)</h2>
+<p>JSON requires double quotes. Single-quoted strings are the second most common syntax error, especially when JSON is generated from Python or manually constructed:</p>
+<pre><code>// This is valid JavaScript but invalid JSON
+const bad = "{'name': 'Alice'}";
+JSON.parse(bad); // Unexpected token '
+
+// Fix: use double quotes
+const good = '{"name": "Alice"}';
+JSON.parse(good); // Works!</code></pre>
+<p><strong>Python fix:</strong></p>
+<pre><code># Wrong: str() uses single quotes
+data = {'name': 'Alice'}
+json_str = str(data)  # "{'name': 'Alice'}" — invalid JSON!
+
+# Right: json.dumps() uses double quotes
+import json
+json_str = json.dumps(data)  # '{"name": "Alice"}' — valid JSON</code></pre>
+
+<h2>Cause #4: Trailing Commas</h2>
+<p>JavaScript allows trailing commas; JSON does not:</p>
+<pre><code>// Invalid JSON
+const bad = '{"a": 1, "b": 2,}';
+JSON.parse(bad); // Unexpected token }
+
+// Valid JSON
+const good = '{"a": 1, "b": 2}';
+JSON.parse(good); // Works</code></pre>
+<p>This commonly happens when JSON is constructed by concatenating strings:</p>
+<pre><code>// Bug: trailing comma when array is empty
+let json = '{"items": [';
+items.forEach((item, i) =&gt; {
+  json += JSON.stringify(item) + ','; // Always adds comma!
+});
+json += ']}';
+
+// Fix: use join() or JSON.stringify()
+const json = JSON.stringify({ items: items });</code></pre>
+
+<h2>Cause #5: BOM Characters (Position 0 Errors with Seemingly Valid JSON)</h2>
+<p>A Byte Order Mark (BOM) is an invisible Unicode character (<code>U+FEFF</code>) at the beginning of a file. Some editors (especially on Windows) add it to UTF-8 files. The JSON looks valid when you inspect it, but <code>JSON.parse()</code> fails:</p>
+<pre><code>// The string looks normal but has a hidden BOM
+const json = '\uFEFF{"name": "test"}';
+JSON.parse(json); // Unexpected token  (invisible character!)
+
+// Fix: strip BOM before parsing
+const clean = json.replace(/^\uFEFF/, '');
+JSON.parse(clean); // Works</code></pre>
+<p>When reading files in Node.js:</p>
+<pre><code>const fs = require('fs');
+let content = fs.readFileSync('data.json', 'utf-8');
+content = content.replace(/^\uFEFF/, ''); // Strip BOM
+const data = JSON.parse(content);</code></pre>
+
+<h2>Cause #6: Unescaped Special Characters in Strings</h2>
+<p>JSON strings must escape certain characters: backslashes, double quotes, and control characters:</p>
+<pre><code>// Invalid: unescaped backslash
+'{"path": "C:\new\folder"}'
+// The \n and \f are interpreted as newline and form feed!
+
+// Valid: escaped backslashes
+'{"path": "C:\\\\new\\\\folder"}'
+
+// Invalid: literal newline in string
+'{"text": "line one
+line two"}'
+
+// Valid: escaped newline
+'{"text": "line one\\nline two"}'</code></pre>
+
+<h2>Debugging Strategy: A Step-by-Step Approach</h2>
+<ol>
+<li><strong>Log the raw string</strong> before parsing: <code>console.log(typeof str, str?.substring(0, 100))</code></li>
+<li><strong>Check for undefined/null</strong> — is the variable actually set?</li>
+<li><strong>Check the first character</strong> — is it <code>{</code> or <code>[</code>? If it's <code>&lt;</code>, you got HTML</li>
+<li><strong>Check for BOM</strong> — <code>console.log(str.charCodeAt(0))</code> should be 123 (<code>{</code>) or 91 (<code>[</code>). If it's 65279, you have a BOM</li>
+<li><strong>Validate with a tool</strong> — paste the string into a JSON validator to get a precise error location</li>
+<li><strong>Use try/catch</strong> — always wrap <code>JSON.parse()</code> in error handling</li>
+</ol>
+
+<h2>Prevention Tips</h2>
+<ul>
+<li>Always use <code>JSON.stringify()</code> to generate JSON — never concatenate strings manually</li>
+<li>Set <code>Content-Type: application/json</code> headers on API responses</li>
+<li>Validate API responses before parsing: check status code and content type</li>
+<li>Use a safe parse wrapper with a fallback value for user-facing code</li>
+<li>Add JSON validation to your CI/CD pipeline for config files</li>
+</ul>
+
+<h2>Try It Yourself</h2>
+<p>Debug your JSON parse errors instantly with our <a href="/json-formatter">JSON Formatter & Validator</a>. Paste any JSON string and get precise error messages showing exactly what's wrong and where — with clear suggestions for fixing the issue. All processing happens locally in your browser.</p>
+`,
+  },
+  {
+    slug: "fix-invalid-regular-expression-error",
+    title: "Fix 'Invalid Regular Expression' Error — Common Regex Mistakes",
+    description: "Resolve 'Invalid regular expression' errors caused by unescaped special characters, unbalanced parentheses, invalid quantifiers, and browser compatibility issues.",
+    date: "2026-03-03",
+    readTime: "10 min",
+    tags: ["regex", "debugging", "errors", "JavaScript"],
+    relatedTool: "regexTester",
+    content: `
+<p>The "Invalid regular expression" error appears when a regex pattern contains syntax that the regex engine can't parse. Unlike runtime errors that occur during matching, this error happens at pattern compilation time — before any matching even begins.</p>
+
+<p>This guide covers the most common causes of invalid regex errors, explains why they happen across different languages and engines, and shows you exactly how to fix each one.</p>
+
+<h2>Understanding the Error</h2>
+<p>The error messages vary by language but follow a similar pattern:</p>
+<pre><code>// JavaScript
+SyntaxError: Invalid regular expression: /[/: Unterminated character class
+
+// Python
+re.error: unterminated character class at position 0
+
+// Java
+PatternSyntaxException: Unclosed character class near index 0</code></pre>
+<p>The message usually tells you what went wrong (unterminated class, nothing to repeat, etc.) and sometimes where in the pattern the error occurred.</p>
+
+<h2>Mistake #1: Unescaped Special Characters</h2>
+<p>Regex has 12 special metacharacters that must be escaped with a backslash when you want to match them literally:</p>
+<pre><code>Special characters: . * + ? ^ $ { } [ ] ( ) | \</code></pre>
+<p>The most common offenders:</p>
+<pre><code>// Invalid: unescaped brackets
+const pattern = /price [$10-$50]/;  // Error: invalid character class
+// Fix:
+const pattern = /price \[\$10-\$50\]/;
+
+// Invalid: unescaped parentheses
+const pattern = /function()/;  // Error: nothing to repeat (after empty group)
+// Fix:
+const pattern = /function\(\)/;
+
+// Invalid: unescaped dot (not an error, but wrong behavior)
+const pattern = /file.txt/;   // Matches "fileTtxt", "file.txt", "file5txt"
+// Fix (for literal dot):
+const pattern = /file\.txt/;</code></pre>
+
+<p>When building regex from user input, always escape special characters:</p>
+<pre><code>function escapeRegex(string) {
+  return string.replace(/[.*+?^$\{\}()|[\\]\\\\]/g, '\\$&amp;');
+}
+
+const userInput = "price ($50)";
+const safe = new RegExp(escapeRegex(userInput));
+// Creates: /price \(\$50\)/</code></pre>
+
+<h2>Mistake #2: Unbalanced Parentheses and Brackets</h2>
+<p>Every opening parenthesis, bracket, or brace must have a matching closing counterpart:</p>
+<pre><code>// Unmatched opening parenthesis
+const bad = /^(hello/;  // Error: Unterminated group
+
+// Unmatched closing parenthesis
+const bad = /hello)/;   // Error: Unmatched ')'
+
+// Unmatched opening bracket
+const bad = /[abc/;     // Error: Unterminated character class
+
+// Fix: escape literal brackets/parens or close them
+const good = /^(hello)/;
+const good = /\(hello\)/;  // Match literal parentheses</code></pre>
+
+<p>Nested groups require careful counting:</p>
+<pre><code>// Count your parentheses
+const complex = /^((https?):\/\/([\w.-]+))(\/[\w./-]*)?$/;
+//                12         2  3         31            1
+// Opening:  1,2 at positions 1-2; 3 at position 18
+// Closing: 2 at position 14; 3 at position 27; 1 at position 28</code></pre>
+
+<h2>Mistake #3: Invalid Quantifier Targets</h2>
+<p>Quantifiers (<code>*</code>, <code>+</code>, <code>?</code>, <code>{n,m}</code>) must follow something they can repeat:</p>
+<pre><code>// Invalid: quantifier at the start
+const bad = /+abc/;     // Error: Nothing to repeat
+const bad = /*abc/;     // Error: Nothing to repeat
+
+// Invalid: double quantifiers
+const bad = /a*+/;      // Error in most engines
+const bad = /a++/;      // Error (unless possessive quantifiers supported)
+
+// Invalid: quantifier after quantifier
+const bad = /a{2}{3}/;  // Varies by engine
+
+// Fix: escape if you want literal characters
+const good = /\+abc/;   // Match "+abc"
+const good = /\*abc/;   // Match "*abc"</code></pre>
+
+<h2>Mistake #4: Invalid Range in Character Class</h2>
+<p>Inside square brackets <code>[]</code>, a hyphen creates a range. If the range is invalid, you get an error:</p>
+<pre><code>// Invalid: reversed range
+const bad = /[z-a]/;    // Error: Range out of order
+
+// Invalid: non-character range endpoint
+const bad = /[\d-z]/;   // Behavior varies by engine
+
+// Fix: put the smaller value first, or escape the hyphen
+const good = /[a-z]/;
+const good = /[a\-z]/;  // Match 'a', '-', or 'z' literally
+const good = /[-az]/;   // Hyphen at start is literal
+const good = /[az-]/;   // Hyphen at end is literal</code></pre>
+
+<h2>Mistake #5: Lookbehind in Unsupported Engines</h2>
+<p>Lookbehind assertions (<code>(?&lt;=...)</code> and <code>(?&lt;!...)</code>) are not supported in all environments:</p>
+<pre><code>// Works in Chrome, Firefox 78+, Safari 16.4+, Node.js 10+
+const pattern = /(?&lt;=\$)\d+/;
+
+// Fails in older Safari, older Firefox, IE11
+// SyntaxError: Invalid regular expression</code></pre>
+<p><strong>Fix:</strong> Use a capturing group as a fallback:</p>
+<pre><code>// Instead of lookbehind:
+const result = text.match(/(?&lt;=\$)\d+/);
+
+// Use a capturing group:
+const match = text.match(/\$(\d+)/);
+const result = match ? match[1] : null;</code></pre>
+
+<h2>Mistake #6: Named Groups and Unicode Escapes</h2>
+<p>Modern regex features may not work in older environments:</p>
+<pre><code>// Named groups (ES2018)
+const pattern = /(?&lt;year&gt;\d{4})-(?&lt;month&gt;\d{2})/;
+// Fails in IE11, older Node.js
+
+// Unicode property escapes (ES2018)
+const pattern = /\p{Letter}+/u;
+// Fails without the 'u' flag, and in older engines
+
+// Fix: use numbered groups for compatibility
+const pattern = /(\d{4})-(\d{2})/;
+const match = text.match(pattern);
+const year = match[1];  // Instead of match.groups.year</code></pre>
+
+<h2>JavaScript vs Python Regex Differences</h2>
+<p>Patterns that work in one language may fail in another:</p>
+<pre><code># Python: variable-length lookbehind NOT supported
+import re
+re.compile(r'(?&lt;=ab+)c')  # Error: look-behind requires fixed-width
+
+# JavaScript: variable-length lookbehind IS supported (ES2018+)
+const pattern = /(?&lt;=ab+)c/;  // Works fine
+
+# Python: atomic groups with (?>...) are supported in Python 3.11+
+# JavaScript: does NOT support atomic groups
+
+# Python: \b is a word boundary in regex
+# But in a regular string, \b is backspace!
+# Always use raw strings in Python:
+pattern = r'\bword\b'   # Correct
+pattern = '\bword\b'    # Wrong! \b = backspace</code></pre>
+
+<h2>Debugging Strategy</h2>
+<ol>
+<li><strong>Read the error message carefully</strong> — it usually tells you the type of problem and position</li>
+<li><strong>Check for unescaped special characters</strong> — especially <code>( ) [ ] { }</code></li>
+<li><strong>Count your parentheses and brackets</strong> — every open must have a close</li>
+<li><strong>Test incrementally</strong> — start with a simple pattern and add complexity piece by piece</li>
+<li><strong>Check your target environment</strong> — lookbehind and named groups aren't universal</li>
+<li><strong>Use a regex tester</strong> — visual tools highlight errors instantly</li>
+</ol>
+
+<h2>Try It Yourself</h2>
+<p>Debug your regex patterns instantly with our <a href="/regex-tester">Regex Tester</a>. The tool highlights syntax errors as you type, shows real-time matches against your test string, and displays detailed group information — all processed locally in your browser.</p>
+`,
+  },
+  {
+    slug: "jwt-expired-token-error-handling",
+    title: "JWT Token Expired Error — How to Handle and Prevent It",
+    description: "Learn how to handle JWT token expiration errors: understanding the exp claim, implementing refresh token flows, sliding sessions, clock skew, and best practices.",
+    date: "2026-03-03",
+    readTime: "13 min",
+    tags: ["JWT", "authentication", "security", "tokens"],
+    relatedTool: "jwtDecoder",
+    content: `
+<p>Every developer who works with JWT (JSON Web Token) authentication will eventually encounter the dreaded "jwt expired" or "TokenExpiredError" message. Token expiration is a security feature, not a bug — but handling it properly is essential for a smooth user experience.</p>
+
+<p>This guide explains how JWT expiration works, walks you through implementing robust token refresh flows, and covers best practices for preventing expiration-related issues in production.</p>
+
+<h2>Understanding JWT Expiration: The exp Claim</h2>
+<p>The <code>exp</code> (expiration time) claim is a standard JWT claim defined in RFC 7519. It contains a Unix timestamp (seconds since January 1, 1970) indicating when the token becomes invalid:</p>
+<pre><code>// Decoded JWT payload
+{
+  "sub": "user-123",
+  "email": "user@example.com",
+  "iat": 1709424000,   // Issued at: March 3, 2026 00:00:00 UTC
+  "exp": 1709427600    // Expires at: March 3, 2026 01:00:00 UTC (1 hour later)
+}</code></pre>
+<p>When a server receives a JWT, it checks: is the current time greater than <code>exp</code>? If yes, the token is rejected. The error typically appears as:</p>
+<pre><code>// Node.js (jsonwebtoken library)
+TokenExpiredError: jwt expired
+
+// Python (PyJWT)
+jwt.ExpiredSignatureError: Signature has expired
+
+// Java (jjwt)
+io.jsonwebtoken.ExpiredJwtException: JWT expired at 2026-03-03T01:00:00Z</code></pre>
+
+<h2>Choosing the Right Expiration Time</h2>
+<p>Token lifetime is a trade-off between security and user experience:</p>
+<ul>
+<li><strong>Short-lived (5-15 minutes)</strong> — most secure; if a token is stolen, it's only valid briefly. Used by banks and high-security applications. Requires a refresh mechanism</li>
+<li><strong>Medium (1-4 hours)</strong> — common for web applications. Balances security and convenience. Users need to re-authenticate if idle for extended periods</li>
+<li><strong>Long-lived (7-30 days)</strong> — used for mobile apps and "remember me" sessions. Higher risk if stolen, but convenient for users</li>
+</ul>
+<p>The general recommendation: use short-lived access tokens (15-60 minutes) with long-lived refresh tokens (7-30 days).</p>
+
+<h2>The Refresh Token Flow</h2>
+<p>The standard pattern for handling token expiration uses two tokens:</p>
+<ol>
+<li><strong>Access token</strong> — short-lived (15 min), sent with every API request</li>
+<li><strong>Refresh token</strong> — long-lived (7-30 days), used only to obtain new access tokens</li>
+</ol>
+<pre><code>// Server: Token generation on login
+function generateTokens(userId) {
+  const accessToken = jwt.sign(
+    { sub: userId, type: 'access' },
+    ACCESS_SECRET,
+    { expiresIn: '15m' }
+  );
+
+  const refreshToken = jwt.sign(
+    { sub: userId, type: 'refresh' },
+    REFRESH_SECRET,
+    { expiresIn: '7d' }
+  );
+
+  return { accessToken, refreshToken };
+}
+
+// Server: Refresh endpoint
+app.post('/auth/refresh', (req, res) =&gt; {
+  const { refreshToken } = req.body;
+
+  try {
+    const payload = jwt.verify(refreshToken, REFRESH_SECRET);
+
+    // Optionally: check if refresh token is in allowlist/database
+    // Optionally: rotate refresh token (issue new one, invalidate old)
+
+    const newAccessToken = jwt.sign(
+      { sub: payload.sub, type: 'access' },
+      ACCESS_SECRET,
+      { expiresIn: '15m' }
+    );
+
+    res.json({ accessToken: newAccessToken });
+  } catch (err) {
+    res.status(401).json({ error: 'Invalid refresh token' });
+  }
+});</code></pre>
+
+<h2>Client-Side: Automatic Token Refresh</h2>
+<p>The client should automatically refresh tokens when they expire, without disrupting the user:</p>
+<pre><code>// Axios interceptor for automatic token refresh
+let isRefreshing = false;
+let failedQueue = [];
+
+function processQueue(error, token = null) {
+  failedQueue.forEach(({ resolve, reject }) =&gt; {
+    error ? reject(error) : resolve(token);
+  });
+  failedQueue = [];
+}
+
+api.interceptors.response.use(
+  (response) =&gt; response,
+  async (error) =&gt; {
+    const originalRequest = error.config;
+
+    if (error.response?.status === 401 &amp;&amp; !originalRequest._retry) {
+      if (isRefreshing) {
+        // Queue this request until refresh completes
+        return new Promise((resolve, reject) =&gt; {
+          failedQueue.push({ resolve, reject });
+        }).then((token) =&gt; {
+          originalRequest.headers.Authorization = \`Bearer \${token}\`;
+          return api(originalRequest);
+        });
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      try {
+        const { data } = await api.post('/auth/refresh', {
+          refreshToken: getStoredRefreshToken()
+        });
+
+        storeAccessToken(data.accessToken);
+        processQueue(null, data.accessToken);
+
+        originalRequest.headers.Authorization = \`Bearer \${data.accessToken}\`;
+        return api(originalRequest);
+      } catch (refreshError) {
+        processQueue(refreshError, null);
+        // Redirect to login
+        window.location.href = '/login';
+        return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);</code></pre>
+
+<h2>Sliding Sessions</h2>
+<p>Sliding sessions extend the token's lifetime with each request, keeping active users logged in while expiring idle sessions:</p>
+<pre><code>// Server middleware: sliding session
+function slidingSession(req, res, next) {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) return next();
+
+  try {
+    const payload = jwt.verify(token, ACCESS_SECRET);
+
+    // If token expires within 5 minutes, issue a new one
+    const expiresIn = payload.exp - Math.floor(Date.now() / 1000);
+    if (expiresIn &lt; 300) { // Less than 5 minutes remaining
+      const newToken = jwt.sign(
+        { sub: payload.sub, type: 'access' },
+        ACCESS_SECRET,
+        { expiresIn: '15m' }
+      );
+      res.setHeader('X-New-Token', newToken);
+    }
+
+    req.user = payload;
+    next();
+  } catch (err) {
+    if (err.name === 'TokenExpiredError') {
+      return res.status(401).json({ error: 'Token expired' });
+    }
+    next(err);
+  }
+}</code></pre>
+
+<h2>Handling Clock Skew</h2>
+<p>Servers and clients may have slightly different clocks. A token generated on a server with a clock 30 seconds ahead might be rejected by a server with a clock 30 seconds behind. Most JWT libraries support a clock tolerance:</p>
+<pre><code>// Node.js: allow 30 seconds of clock skew
+jwt.verify(token, secret, { clockTolerance: 30 });
+
+// Python: allow 30 seconds of leeway
+jwt.decode(token, secret, algorithms=['HS256'], leeway=30)
+
+// Java (jjwt): allow 30 seconds
+Jwts.parserBuilder()
+  .setAllowedClockSkewSeconds(30)
+  .setSigningKey(key)
+  .build()
+  .parseClaimsJws(token);</code></pre>
+<p>A tolerance of 30-60 seconds is standard. Don't set it higher than necessary — it extends the effective token lifetime.</p>
+
+<h2>Security Best Practices</h2>
+<ul>
+<li><strong>Store refresh tokens securely</strong> — use HTTP-only cookies (not localStorage) for web apps. localStorage is vulnerable to XSS attacks</li>
+<li><strong>Rotate refresh tokens</strong> — issue a new refresh token each time one is used, and invalidate the old one. This detects token theft (if the old token is reused, it was stolen)</li>
+<li><strong>Maintain a token blocklist</strong> — for logout and password changes, store invalidated token IDs (the <code>jti</code> claim) in a fast store like Redis until they naturally expire</li>
+<li><strong>Use different secrets</strong> — access tokens and refresh tokens should use different signing secrets</li>
+<li><strong>Never expose tokens in URLs</strong> — use Authorization headers or cookies, not query parameters</li>
+<li><strong>Implement token binding</strong> — tie tokens to specific devices or IP ranges for high-security applications</li>
+</ul>
+
+<h2>Common Anti-Patterns to Avoid</h2>
+<ol>
+<li><strong>Ignoring expiration</strong> — never set <code>expiresIn: '999d'</code> to avoid dealing with refresh logic</li>
+<li><strong>Storing sensitive data in JWT</strong> — the payload is Base64 encoded, not encrypted. Anyone can read it</li>
+<li><strong>Not handling token refresh races</strong> — multiple concurrent requests can trigger multiple refresh attempts. Use a queue (shown above)</li>
+<li><strong>Using the same token for everything</strong> — separate access and refresh tokens serve different purposes with different lifetimes</li>
+</ol>
+
+<h2>Try It Yourself</h2>
+<p>Decode and inspect your JWT tokens with our <a href="/jwt-decoder">JWT Decoder</a>. Paste any JWT to see the header, payload (including <code>exp</code> and <code>iat</code> timestamps converted to readable dates), and signature verification status — all processed locally in your browser with zero server communication.</p>
+`,
+  },
+  {
+    slug: "sql-syntax-error-near-common-fixes",
+    title: "SQL Syntax Error Near... — Most Common SQL Mistakes and Fixes",
+    description: "Fix common SQL syntax errors: missing commas, reserved word conflicts, quote mismatches, JOIN problems, GROUP BY mistakes, and dialect differences between MySQL and PostgreSQL.",
+    date: "2026-03-03",
+    readTime: "11 min",
+    tags: ["SQL", "debugging", "errors", "databases"],
+    relatedTool: "sqlFormatter",
+    content: `
+<p>The "syntax error near..." message is one of the most common SQL errors, and one of the least helpful. The error points to where the parser got confused — which is often not where the actual mistake is. A missing comma on line 3 might cause an error on line 7.</p>
+
+<p>This guide covers the most frequent SQL syntax mistakes, explains why they produce confusing error messages, and shows you how to fix each one. Examples cover both MySQL and PostgreSQL since they're the most widely used databases.</p>
+
+<h2>Mistake #1: Missing Commas in SELECT Lists</h2>
+<p>A missing comma between columns is the most common SQL syntax error. The parser interprets the second column name as an alias for the first, then gets confused by the third column:</p>
+<pre><code>-- Error: missing comma between first_name and last_name
+SELECT
+  id,
+  first_name   -- Missing comma here!
+  last_name,
+  email
+FROM users;
+
+-- MySQL error: You have an error in your SQL syntax near 'last_name, email'
+-- PostgreSQL error: syntax error at or near "last_name"</code></pre>
+<p>The error points to <code>last_name</code>, but the problem is the missing comma after <code>first_name</code>. Without the comma, the parser thinks <code>last_name</code> is an alias for <code>first_name</code>, then fails when it encounters another column.</p>
+<p><strong>Fix:</strong></p>
+<pre><code>SELECT
+  id,
+  first_name,
+  last_name,
+  email
+FROM users;</code></pre>
+
+<h2>Mistake #2: Using Reserved Words as Identifiers</h2>
+<p>Every SQL database has reserved words that can't be used as column or table names without quoting. Common offenders include <code>order</code>, <code>user</code>, <code>group</code>, <code>select</code>, <code>table</code>, <code>index</code>, <code>key</code>, and <code>status</code>:</p>
+<pre><code>-- Error: "order" is a reserved word
+SELECT id, order, total
+FROM orders;
+
+-- MySQL error: You have an error near 'order, total FROM orders'
+-- PostgreSQL error: syntax error at or near "order"</code></pre>
+<p><strong>Fix:</strong> Quote the identifier, or better yet, rename the column:</p>
+<pre><code>-- MySQL: use backticks
+SELECT id, \`order\`, total FROM orders;
+
+-- PostgreSQL: use double quotes
+SELECT id, "order", total FROM orders;
+
+-- Best practice: rename to avoid conflicts
+SELECT id, order_number, total FROM orders;</code></pre>
+<p>Common reserved words that catch developers by surprise:</p>
+<ul>
+<li><code>user</code> / <code>users</code> (PostgreSQL reserves <code>user</code>)</li>
+<li><code>order</code> / <code>group</code> / <code>select</code> / <code>table</code></li>
+<li><code>key</code> / <code>index</code> / <code>value</code> / <code>values</code></li>
+<li><code>status</code> / <code>type</code> / <code>name</code> (reserved in some dialects)</li>
+<li><code>rank</code> / <code>row</code> / <code>rows</code> (reserved in newer SQL standards)</li>
+</ul>
+
+<h2>Mistake #3: Quote Mismatches and Escaping</h2>
+<p>SQL uses single quotes for string literals. Double quotes are for identifiers (column/table names) in standard SQL and PostgreSQL, but MySQL uses backticks:</p>
+<pre><code>-- Wrong: double quotes for strings (works in MySQL by default, fails in PostgreSQL)
+SELECT * FROM users WHERE name = "Alice";
+
+-- Correct: single quotes for strings
+SELECT * FROM users WHERE name = 'Alice';
+
+-- Wrong: unescaped apostrophe in string
+SELECT * FROM users WHERE name = 'O'Brien';  -- Error!
+
+-- Correct: escape by doubling the single quote
+SELECT * FROM users WHERE name = 'O''Brien';
+
+-- Or use prepared statements (always preferred):
+-- SELECT * FROM users WHERE name = $1;  (parameterized query)</code></pre>
+
+<h2>Mistake #4: JOIN Syntax Errors</h2>
+<p>JOIN clauses have specific syntax requirements that are easy to get wrong:</p>
+<pre><code>-- Error: missing ON clause
+SELECT u.name, o.total
+FROM users u
+JOIN orders o;  -- Error: missing ON condition
+
+-- Error: using WHERE instead of ON for JOIN condition
+SELECT u.name, o.total
+FROM users u
+JOIN orders o
+WHERE o.user_id = u.id;  -- This works but is the old implicit JOIN syntax
+-- Not technically an error, but JOIN ... ON is clearer and preferred
+
+-- Correct:
+SELECT u.name, o.total
+FROM users u
+JOIN orders o ON o.user_id = u.id;
+
+-- Error: comma after JOIN (mixing implicit and explicit joins)
+SELECT u.name, o.total
+FROM users u,  -- This comma creates a cross join!
+JOIN orders o ON o.user_id = u.id;  -- Error: unexpected JOIN
+
+-- Correct: remove the comma
+SELECT u.name, o.total
+FROM users u
+JOIN orders o ON o.user_id = u.id;</code></pre>
+
+<h2>Mistake #5: GROUP BY Errors</h2>
+<p>The GROUP BY clause requires that every non-aggregated column in SELECT also appears in GROUP BY. This rule is strictly enforced in PostgreSQL and standard SQL, but MySQL's default behavior is more lenient (and dangerous):</p>
+<pre><code>-- Error in PostgreSQL: name not in GROUP BY
+SELECT department, name, COUNT(*)
+FROM employees
+GROUP BY department;
+-- PostgreSQL: column "name" must appear in GROUP BY clause
+
+-- Fix: add all non-aggregated columns to GROUP BY
+SELECT department, name, COUNT(*)
+FROM employees
+GROUP BY department, name;
+
+-- Or use an aggregate function on name
+SELECT department, MAX(name), COUNT(*)
+FROM employees
+GROUP BY department;</code></pre>
+
+<p>Another common GROUP BY mistake — using aliases:</p>
+<pre><code>-- Error in some dialects: can't use alias in GROUP BY
+SELECT
+  YEAR(created_at) AS yr,
+  COUNT(*) AS total
+FROM orders
+GROUP BY yr;  -- Error in PostgreSQL! (works in MySQL)
+
+-- Fix: repeat the expression
+SELECT
+  YEAR(created_at) AS yr,
+  COUNT(*) AS total
+FROM orders
+GROUP BY YEAR(created_at);</code></pre>
+
+<h2>Mistake #6: Subquery Errors</h2>
+<pre><code>-- Error: subquery returns more than one row
+SELECT name
+FROM users
+WHERE id = (SELECT user_id FROM orders);  -- Error if subquery returns multiple rows
+
+-- Fix: use IN instead of =
+SELECT name
+FROM users
+WHERE id IN (SELECT user_id FROM orders);
+
+-- Error: missing alias for subquery
+SELECT *
+FROM (SELECT id, name FROM users);  -- Error in PostgreSQL!
+
+-- Fix: add an alias
+SELECT *
+FROM (SELECT id, name FROM users) AS subquery;</code></pre>
+
+<h2>MySQL vs PostgreSQL Differences</h2>
+<p>Several syntax elements differ between the two most popular databases:</p>
+<ul>
+<li><strong>String quoting</strong> — PostgreSQL: single quotes only for strings. MySQL: double quotes work by default</li>
+<li><strong>Identifier quoting</strong> — PostgreSQL: double quotes. MySQL: backticks</li>
+<li><strong>LIMIT syntax</strong> — Both: <code>LIMIT 10</code>. MySQL also: <code>LIMIT 10 OFFSET 20</code> or <code>LIMIT 20, 10</code>. PostgreSQL: <code>LIMIT 10 OFFSET 20</code> only</li>
+<li><strong>AUTO_INCREMENT vs SERIAL</strong> — MySQL: <code>id INT AUTO_INCREMENT</code>. PostgreSQL: <code>id SERIAL</code> or <code>id INT GENERATED ALWAYS AS IDENTITY</code></li>
+<li><strong>UPSERT</strong> — MySQL: <code>ON DUPLICATE KEY UPDATE</code>. PostgreSQL: <code>ON CONFLICT DO UPDATE</code></li>
+<li><strong>Boolean</strong> — MySQL: uses 0/1 (TINYINT). PostgreSQL: native BOOLEAN type</li>
+</ul>
+
+<h2>Debugging Strategy for SQL Errors</h2>
+<ol>
+<li><strong>Look above the error line</strong> — the actual mistake is often on a previous line (missing comma, unclosed parenthesis)</li>
+<li><strong>Simplify the query</strong> — remove clauses one at a time until the error disappears, then re-add them</li>
+<li><strong>Check for reserved words</strong> — look up your column names in your database's reserved word list</li>
+<li><strong>Count parentheses</strong> — mismatched parentheses in subqueries and function calls cause confusing errors</li>
+<li><strong>Format your SQL</strong> — a well-formatted query makes structural errors visible. One clause per line, one column per line</li>
+<li><strong>Use parameterized queries</strong> — eliminates quoting and escaping issues entirely</li>
+</ol>
+
+<h2>Try It Yourself</h2>
+<p>Format and debug your SQL queries with our <a href="/sql-formatter">SQL Formatter</a>. Paste any SQL statement and get clean, consistently formatted output with proper indentation and keyword casing. Well-formatted SQL makes syntax errors much easier to spot — all processing happens locally in your browser.</p>
+`,
+  },
 ];
 
 export function getPostBySlug(slug: string): BlogPost | undefined {
