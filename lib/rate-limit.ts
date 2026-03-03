@@ -32,7 +32,7 @@ export async function checkRateLimit(
   ip: string,
   isPro: boolean,
 ): Promise<RateLimitResult> {
-  const limit = isPro ? 1000 : 10;
+  const limit = isPro ? 1000 : 5;
   const tier = isPro ? "pro" : "free";
   const key = `rl:ai:${tier}:${ip}`;
 
