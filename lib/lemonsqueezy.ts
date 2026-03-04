@@ -25,35 +25,48 @@ export async function validateLicenseKey(
   licenseKey: string,
   instanceName: string,
 ): Promise<LicenseValidation> {
-  const res = await fetch(`${BASE_URL}/licenses/validate`, {
-    method: "POST",
-    headers: getHeaders(),
-    body: JSON.stringify({
-      license_key: licenseKey,
-      instance_name: instanceName,
-    }),
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${BASE_URL}/licenses/validate`, {
+      method: "POST",
+      headers: getHeaders(),
+      body: JSON.stringify({
+        license_key: licenseKey,
+        instance_name: instanceName,
+      }),
+    });
+  } catch {
+    return { valid: false, error: "Unable to reach license server" };
+  }
 
-  const data = await res.json();
+  let data: Record<string, unknown>;
+  try {
+    data = await res.json();
+  } catch {
+    return { valid: false, error: "Invalid response from license server" };
+  }
 
   if (!res.ok || !data.valid) {
     return {
       valid: false,
-      error: data.error || "Invalid license key",
+      error: (data.error as string) || "Invalid license key",
     };
   }
 
   const storeId = Number(process.env.LEMONSQUEEZY_STORE_ID);
-  if (storeId && data.meta?.store_id !== storeId) {
+  const meta = data.meta as Record<string, unknown> | undefined;
+  if (storeId && meta?.store_id !== storeId) {
     return { valid: false, error: "License key does not belong to this store" };
   }
+
+  const licenseKeyData = data.license_key as Record<string, unknown> | undefined;
 
   return {
     valid: true,
     meta: {
-      store_id: data.meta?.store_id,
-      product_name: data.meta?.product_name,
-      status: data.license_key?.status,
+      store_id: meta?.store_id as number,
+      product_name: meta?.product_name as string,
+      status: licenseKeyData?.status as string,
     },
   };
 }
@@ -63,21 +76,31 @@ export async function activateLicenseKey(
   licenseKey: string,
   instanceName: string,
 ): Promise<LicenseValidation> {
-  const res = await fetch(`${BASE_URL}/licenses/activate`, {
-    method: "POST",
-    headers: getHeaders(),
-    body: JSON.stringify({
-      license_key: licenseKey,
-      instance_name: instanceName,
-    }),
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${BASE_URL}/licenses/activate`, {
+      method: "POST",
+      headers: getHeaders(),
+      body: JSON.stringify({
+        license_key: licenseKey,
+        instance_name: instanceName,
+      }),
+    });
+  } catch {
+    return { valid: false, error: "Unable to reach license server" };
+  }
 
-  const data = await res.json();
+  let data: Record<string, unknown>;
+  try {
+    data = await res.json();
+  } catch {
+    return { valid: false, error: "Invalid response from license server" };
+  }
 
   if (!res.ok || data.error) {
     return {
       valid: false,
-      error: data.error || "Failed to activate license",
+      error: (data.error as string) || "Failed to activate license",
     };
   }
 
@@ -89,14 +112,17 @@ export async function deactivateLicenseKey(
   licenseKey: string,
   instanceId: string,
 ): Promise<boolean> {
-  const res = await fetch(`${BASE_URL}/licenses/deactivate`, {
-    method: "POST",
-    headers: getHeaders(),
-    body: JSON.stringify({
-      license_key: licenseKey,
-      instance_id: instanceId,
-    }),
-  });
-
-  return res.ok;
+  try {
+    const res = await fetch(`${BASE_URL}/licenses/deactivate`, {
+      method: "POST",
+      headers: getHeaders(),
+      body: JSON.stringify({
+        license_key: licenseKey,
+        instance_id: instanceId,
+      }),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
 }
