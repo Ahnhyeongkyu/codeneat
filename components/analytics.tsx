@@ -1,21 +1,11 @@
-const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
+import { GoogleAnalytics as NextGoogleAnalytics } from "@next/third-parties/google";
+
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID?.trim();
 
 export function GoogleAnalytics() {
   if (!GA_ID) return null;
 
-  return (
-    <>
-      <script
-        async
-        src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
-      />
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}',{page_path:window.location.pathname});`,
-        }}
-      />
-    </>
-  );
+  return <NextGoogleAnalytics gaId={GA_ID} />;
 }
 
 /** Track custom events — call from tool components */

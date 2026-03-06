@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
+    "@next/third-parties": "^16.1.6",
     "@tailwindcss/typography": "^0.5.19",
     "@types/dompurify": "^3.0.5",
     "@upstash/redis": "^1.36.3",
