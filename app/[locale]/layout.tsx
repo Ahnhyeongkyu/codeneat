@@ -6,6 +6,10 @@ import { Footer } from "@/components/layout/footer";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ProProvider } from "@/lib/pro-context";
 
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
 type Props = {
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
