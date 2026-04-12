@@ -17,6 +17,7 @@ import {
   Database,
   Hash,
   ArrowRight,
+  AlertTriangle,
 } from "lucide-react";
 
 const tools = [
@@ -98,12 +99,17 @@ export default function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homeFaqJsonLd) }}
       />
-      {/* Hero — 단색 배경 (그라디언트 금지) */}
+      {/* Hero — Privacy-First 포지셔닝 */}
       <section className="border-b bg-muted/30 py-16 sm:py-24">
         <div className="mx-auto max-w-4xl px-4 text-center">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-destructive/30 bg-destructive/5 px-4 py-1.5 text-sm text-destructive">
+            <AlertTriangle className="h-4 w-4" />
+            {t("home.hero.problem")}
+          </div>
+
           <Badge
             variant="secondary"
-            className="mb-6 gap-2 bg-success/10 text-success"
+            className="mb-6 ml-2 gap-2 bg-success/10 text-success"
           >
             <Shield className="h-4 w-4" />
             {t("home.hero.badge")}
@@ -113,7 +119,7 @@ export default function HomePage() {
             {t("home.hero.title")}
           </h1>
 
-          <p className="mx-auto mb-8 max-w-2xl text-lg text-muted-foreground">
+          <p className="mx-auto mb-6 max-w-2xl text-lg text-muted-foreground">
             {t("home.hero.subtitle")}
           </p>
 
@@ -123,6 +129,10 @@ export default function HomePage() {
               <ArrowRight className="h-4 w-4" />
             </a>
           </Button>
+
+          <p className="mt-4 text-sm text-muted-foreground">
+            {t("home.hero.trust")}
+          </p>
         </div>
       </section>
 

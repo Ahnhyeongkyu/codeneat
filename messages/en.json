@@ -21,10 +21,12 @@
   },
   "home": {
     "hero": {
-      "title": "Clean Up Your Code",
-      "subtitle": "Free, fast, and private developer tools. Format, encode, decode, and validate — all in your browser.",
-      "badge": "Your data never leaves your browser",
-      "cta": "Explore Tools"
+      "problem": "Your code is being sent to external servers.",
+      "title": "Developer Tools That Never See Your Code",
+      "subtitle": "Most online tools transmit your code to their servers for processing. CodeNeat runs 100% in your browser — nothing leaves your device. Ever.",
+      "badge": "100% Client-Side Processing",
+      "cta": "Use Tools Privately",
+      "trust": "Open source · No sign-up · Works offline"
     },
     "tools": {
       "title": "Developer Tools",
@@ -372,7 +374,13 @@
     "about": "About",
     "blog": "Blog",
     "github": "GitHub",
-    "tagline": "Clean Up Your Code",
-    "copyright": "© {year} CodeNeat. All rights reserved."
+    "tagline": "Privacy-first developer tools. Your code never leaves your browser.",
+    "copyright": "© {year} CodeNeat. All rights reserved.",
+    "resources": "Resources",
+    "compare": "CodeNeat vs CodeBeautify",
+    "bestTools": "Best Dev Tools 2026",
+    "chromeExtension": "Chrome Extension",
+    "twitter": "Twitter / X",
+    "devto": "Dev.to"
   }
 }

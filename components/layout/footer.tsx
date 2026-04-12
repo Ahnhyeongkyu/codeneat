@@ -20,7 +20,7 @@ export function Footer() {
   return (
     <footer className="border-t bg-muted/30">
       <div className="mx-auto max-w-7xl px-4 py-12">
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-5">
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
@@ -51,22 +51,46 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* More Tools */}
+          {/* Resources */}
           <div>
             <h3 className="mb-4 text-sm font-semibold">
-              {t("nav.allTools")}
+              {t("footer.resources")}
             </h3>
             <ul className="space-y-2">
-              {toolLinks.slice(4).map((tool) => (
-                <li key={tool.key}>
-                  <Link
-                    href={tool.href}
-                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                  >
-                    {t(`nav.${tool.key}`)}
-                  </Link>
-                </li>
-              ))}
+              <li>
+                <Link
+                  href="/blog"
+                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {t("footer.blog")}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/codeneat-vs-codebeautify"
+                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {t("footer.compare")}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/best-free-developer-tools-online-2026"
+                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {t("footer.bestTools")}
+                </Link>
+              </li>
+              <li>
+                <a
+                  href="https://dev.to/ahnhyeongkyu"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {t("footer.devto")}
+                </a>
+              </li>
             </ul>
           </div>
 

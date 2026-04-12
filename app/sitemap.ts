@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getAllPosts } from "@/lib/blog";
+import { getAllSlugs } from "@/lib/pseo-data";
 
 const tools = [
   "json-formatter",
@@ -59,6 +60,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
   ]);
 
+  const pseoSlugs = getAllSlugs();
+  const pseoPages: MetadataRoute.Sitemap = pseoSlugs.map((slug) => ({
+    url: `${baseUrl}/${slug}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+    alternates: alternates(`/${slug}`),
+  }));
+
   return [
     {
       url: baseUrl,
@@ -74,6 +84,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     })),
     ...toolPages,
+    ...pseoPages,
     {
       url: `${baseUrl}/blog`,
       lastModified: new Date(),
